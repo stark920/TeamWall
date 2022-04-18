@@ -1,20 +1,20 @@
 # NodejsTeamworkW2
 
 環境說明：
-Node: v14.19.1
-框架：Vue3
-建構：Vite
-路由管理：vue-router
-狀態管理：pinia
-CSS 框架：tailwindcss
-tailwind 插件：tailwind forms
-eslint：有
-prettier：有
+* Node: v14.19.1
+* 框架：Vue3
+* 建構：Vite
+* 路由管理：vue-router
+* 狀態管理：pinia
+* CSS 框架：tailwindcss
+* tailwind 插件：tailwind forms
+* eslint：有
+* prettier：有
 
 ## IDE
 
-請使用 Volar 代替 Vetur
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.vscode-typescript-vue-plugin).
+* 請使用 Volar 代替 Vetur
+* [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.vscode-typescript-vue-plugin).
 
 ## Project Setup
 
