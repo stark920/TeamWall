@@ -8,7 +8,7 @@ defineProps({
 
 <template>
   <div
-    class="flex-center font-azeret bg-white text-xl p-5 mb-8 border-2 border-black relative shadow-block"
+    class="flex justify-center items-center font-azeret bg-white text-xl p-5 mb-8 border-2 border-black relative shadow-block"
   >
     {{ title }}
   </div>
