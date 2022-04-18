@@ -69,12 +69,12 @@ import IconThumbsUpVue from "../components/icons/IconThumbsUp.vue";
       <h1 class="text-xl font-bold">Component: Avatar.vue</h1>
       <hr class="my-4" />
       <p>參數1 size 預設40</p>
-      <p>參數2 imgUrl 本地圖片預設路徑為assets 傳入值請在前方加 "/"</p>
+      <p>參數2 imgUrl 本地圖片預設路徑為assets</p>
       <p>DEMO:</p>
       <p>AvatarVue size="60"</p>
       <AvatarVue size="60" />
-      <p>AvatarVue size="40" imgUrl="/avatars/user.png"</p>
-      <AvatarVue size="40" imgUrl="/avatars/user.png" />
+      <p>AvatarVue size="40" imgUrl="avatars/user.png"</p>
+      <AvatarVue size="40" imgUrl="avatars/user.png" />
       <p>AvatarVue size="50" imgUrl="https://picsum.photos/50/50"</p>
       <AvatarVue size="50" imgUrl="https://picsum.photos/50/50" />
     </div>
@@ -83,7 +83,7 @@ import IconThumbsUpVue from "../components/icons/IconThumbsUp.vue";
       <hr class="my-4" />
       <p>這個配置會經常出現，所以把它整合成模組</p>
       <p>參數1 size 預設40</p>
-      <p>參數2 imgUrl 頭像圖片位址 預設"/avatars/user_default.png"</p>
+      <p>參數2 imgUrl 頭像圖片位址 預設"avatars/user_default.png"</p>
       <p>參數3 name 使用者名稱 預設 Unknown</p>
       <p>
         參數4 userPageUrl 使用者名稱本身是超連結，此參數傳入連結網址 預設"#"
@@ -93,11 +93,11 @@ import IconThumbsUpVue from "../components/icons/IconThumbsUp.vue";
       <p>UserInfoVue (全部預設)</p>
       <UserInfoVue />
       <p>
-        UserInfoVue imgUrl="/avatars/user3.png" name="DEMO" userPageUrl="#"
+        UserInfoVue imgUrl="avatars/user3.png" name="DEMO" userPageUrl="#"
         subTitle="test"
       </p>
       <UserInfoVue
-        imgUrl="/avatars/user3.png"
+        imgUrl="avatars/user3.png"
         name="DEMO"
         userPageUrl="#"
         subTitle="test"

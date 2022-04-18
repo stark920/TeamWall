@@ -9,7 +9,6 @@ defineProps({
   },
   imgUrl: {
     type: String,
-    default: "/avatars/user_default.png",
   },
   name: {
     type: String,
