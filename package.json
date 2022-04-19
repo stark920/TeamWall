@@ -13,6 +13,7 @@
     "vue-router": "^4.0.14"
   },
   "devDependencies": {
+    "@faker-js/faker": "^6.1.2",
     "@rushstack/eslint-patch": "^1.1.0",
     "@tailwindcss/forms": "^0.5.0",
     "@vitejs/plugin-vue": "^2.3.1",
@@ -20,9 +21,13 @@
     "autoprefixer": "^10.4.4",
     "eslint": "^8.5.0",
     "eslint-plugin-vue": "^8.2.0",
+    "msw": "^0.39.2",
     "postcss": "^8.4.12",
     "prettier": "^2.5.1",
     "tailwindcss": "^3.0.24",
     "vite": "^2.9.1"
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }
