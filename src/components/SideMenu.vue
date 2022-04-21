@@ -24,7 +24,7 @@ defineProps({
   <div class="flex flex-col px-6 py-8 border-2 border-black">
     <button
       type="button"
-      class="h-12 bg-primary text-white border-2 border-black rounded mb-6"
+      class="h-12 bg-primary text-white border-2 border-black rounded-lg mb-6"
     >
       張貼動態
     </button>
