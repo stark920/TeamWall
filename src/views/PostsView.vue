@@ -28,11 +28,10 @@
         </div>
       </div>
       <div class="basis-1/3">
-        <UserInfoVue
-          imgUrl="avatars/user3.png"
-          name="DEMO"
-          userPageUrl="#"
-          :subTitle="num"
+        <SideMenuVue
+          name="邊緣小杰"
+          imgUrl="avatars/user.png"
+          userPageUrl="/user"
         />
       </div>
     </div>
@@ -45,6 +44,7 @@ import UserInfoVue from "../components/UserInfo.vue";
 import IconSearchVue from "../components/icons/IconSearch.vue";
 import AvatarVue from "../components/Avatar.vue";
 import NavbarVue from "../components/Navbar.vue";
+import SideMenuVue from "../components/SideMenu.vue";
 
 export default {
   components: {
@@ -52,6 +52,7 @@ export default {
     IconSearchVue,
     AvatarVue,
     NavbarVue,
+    SideMenuVue,
   },
   setup() {
     const num = ref(12313131);
