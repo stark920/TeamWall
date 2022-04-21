@@ -15,6 +15,10 @@ module.exports = {
         black: "#000400",
         subtitle: "#9B9893",
       },
+      boxShadow: {
+        btn: "-2px 2px 0px #000400",
+        post: "0px 3px 0px #000400",
+      },
     },
   },
   plugins: [require("@tailwindcss/forms")],

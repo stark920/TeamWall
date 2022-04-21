@@ -111,6 +111,10 @@ import IconThumbsUpVue from "../components/icons/IconThumbsUp.vue";
       <p>CardTitleVue title="Title"</p>
       <CardTitleVue title="Title" />
     </div>
+
+    <router-link to="/post-news" class="bg-warning border-2 border-black h-10 text-xl p-1 text-center">
+      張貼動態
+    </router-link>
   </div>
 </template>
 <style>
