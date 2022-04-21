@@ -44,6 +44,7 @@
             />
           </li>
         </ul>
+        <PostOptionVue />
       </div>
       <div class="hidden md:block">
         <SideMenuVue
@@ -62,6 +63,7 @@ import UserInfoVue from "../components/UserInfo.vue";
 import IconSearchVue from "../components/icons/IconSearch.vue";
 import NavbarVue from "../components/Navbar.vue";
 import SideMenuVue from "../components/SideMenu.vue";
+import PostOptionVue from "../components/PostOption.vue";
 
 export default {
   components: {
@@ -69,6 +71,7 @@ export default {
     IconSearchVue,
     NavbarVue,
     SideMenuVue,
+    PostOptionVue,
   },
   setup() {
     const posts = ref([
