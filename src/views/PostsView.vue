@@ -1,9 +1,9 @@
 <template>
   <NavbarVue class="mb-12" />
-  <div class="container mx-auto">
+  <div class="container mx-auto px-3 sm:px-0">
     <div class="grid md:grid-cols-3 gap-6">
       <div class="md:col-span-2">
-        <div class="grid md:grid-cols-3 gap-3 mb-4">
+        <div class="grid md:grid-cols-3 gap-x-3 gap-y-1.5 mb-4">
           <div>
             <select class="w-full h-11 border-2 border-black" name="category">
               <option value="newest" selected>最新貼文</option>
@@ -12,7 +12,11 @@
           </div>
           <div class="md:col-span-2">
             <div class="flex h-11 border-2 border-black">
-              <input class="w-full" type="text" placeholder="搜尋貼文" />
+              <input
+                class="w-full border-0"
+                type="text"
+                placeholder="搜尋貼文"
+              />
               <button
                 type="button"
                 class="bg-primary w-11 flex justify-center items-center border-l-2 border-black"
@@ -44,7 +48,6 @@
             />
           </li>
         </ul>
-        <PostOptionVue />
       </div>
       <div class="hidden md:block">
         <SideMenuVue
@@ -55,6 +58,7 @@
       </div>
     </div>
   </div>
+  <PostOptionVue class="fixed left-1/2 -translate-x-1/2 bottom-12 md:hidden" />
 </template>
 
 <script>
