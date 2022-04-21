@@ -1,20 +1,16 @@
 <template>
   <NavbarVue class="mb-12" />
   <div class="container mx-auto">
-    <div class="flex gap-6">
-      <div class="basis-2/3">
-        <div class="flex gap-3 mb-4">
-          <div class="basis-1/3">
-            <select
-              class="w-full h-11 border-2 border-black"
-              name="category"
-              id="categorySelect"
-            >
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="md:col-span-2">
+        <div class="grid md:grid-cols-3 gap-3 mb-4">
+          <div>
+            <select class="w-full h-11 border-2 border-black" name="category">
               <option value="newest" selected>最新貼文</option>
               <option value="popular">熱門貼文</option>
             </select>
           </div>
-          <div class="basis-2/3">
+          <div class="md:col-span-2">
             <div class="flex h-11 border-2 border-black">
               <input class="w-full" type="text" placeholder="搜尋貼文" />
               <button
@@ -49,7 +45,7 @@
           </li>
         </ul>
       </div>
-      <div class="basis-1/3">
+      <div class="hidden md:block">
         <SideMenuVue
           name="邊緣小杰"
           imgUrl="avatars/user.png"
