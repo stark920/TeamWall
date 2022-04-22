@@ -45,7 +45,7 @@
   <PostOptionVue class="fixed left-1/2 -translate-x-1/2 bottom-12 md:hidden" />
 </template>
 
-<script>
+<script setup>
 import { ref, onMounted, inject, computed } from "vue";
 import IconSearchVue from "../components/icons/IconSearch.vue";
 import NavbarVue from "../components/Navbar.vue";
@@ -53,49 +53,32 @@ import SideMenuVue from "../components/SideMenu.vue";
 import PostOptionVue from "../components/PostOption.vue";
 import PostCardVue from "../components/PostCard.vue";
 
-export default {
-  components: {
-    IconSearchVue,
-    NavbarVue,
-    SideMenuVue,
-    PostOptionVue,
-    PostCardVue,
-  },
-  setup() {
-    const axios = inject("axios"); // inject axios
-    const posts = ref([]);
-    const searchKey = ref("");
+const axios = inject("axios"); // inject axios
+const posts = ref([]);
+const searchKey = ref("");
 
-    function getPosts() {
-      axios
-        .get("http://localhost:3000/posts")
-        .then((res) => {
-          posts.value = res.data.posts;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-
-    const filterPosts = computed(() => {
-      const str = searchKey.value.trim().toLocaleLowerCase();
-      const newPosts = posts.value.filter((item) => {
-        // 搜尋條件: 姓名 or 貼文有符合關鍵字
-        return item.userName.match(str) || item.content.match(str);
-      });
-      return newPosts;
+function getPosts() {
+  axios
+    .get("http://localhost:3000/posts")
+    .then((res) => {
+      posts.value = res.data.posts;
+    })
+    .catch((err) => {
+      console.log(err);
     });
+}
 
-    onMounted(() => {
-      getPosts();
-    });
+// 篩選貼文
+const filterPosts = computed(() => {
+  const str = searchKey.value.trim().toLocaleLowerCase();
+  const newPosts = posts.value.filter((item) => {
+    // 搜尋條件: 姓名 or 貼文有符合關鍵字
+    return item.userName.match(str) || item.content.match(str);
+  });
+  return newPosts;
+});
 
-    return {
-      posts,
-      getPosts,
-      searchKey,
-      filterPosts,
-    };
-  },
-};
+onMounted(() => {
+  getPosts();
+});
 </script>
