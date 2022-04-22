@@ -61,7 +61,7 @@ function getPosts() {
   axios
     .get("http://localhost:3000/posts")
     .then((res) => {
-      posts.value = res.data.posts;
+      posts.value = res.data.data.data;
     })
     .catch((err) => {
       console.log(err);
