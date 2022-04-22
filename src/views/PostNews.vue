@@ -12,7 +12,7 @@
           name="postContent"
           rows="6"
           placeholder="輸入您的貼文內容"
-          class="w-full border-2 px-4 py-3 rounded-none mt-1"
+          class="w-full border-2 px-4 py-3 rounded-none mt-1 focus:border-black focus:shadow-transparent"
           @focus="isWarnHint = false"
         ></textarea>
         <div
@@ -28,7 +28,7 @@
           <span>上傳圖片</span>
         </div>
         <div class="w-full border-2 border-black rounded-lg h-40 mb-6">
-          <img src="@/assets/images/snow.png" class="h-full" />
+          <img :src="image" class="h-full" />
         </div>
         <div class="text-center">
           <div v-show="isWarnHint" class="text-sm -mt-2 mb-2 text-red_x mb-1">
@@ -47,32 +47,42 @@
   </div>
 </template>
 
-<script setup>
-defineProps({
-  data() {
-    return {
+<script>
+import { toRefs, reactive } from "@vue/reactivity";
+
+export default {
+  setup() {
+    const data = reactive({
       isWarnHint: false,
       preview: null,
-    };
-  },
-  methods: {
-    submitPost() {
-      this.isWarnHint = true;
-    },
-    previewImage(event) {
+      image: "",
+    });
+
+    const refData = toRefs(data);
+    const previewImage = (event) => {
       var input = event.target;
       if (input.files) {
         var reader = new FileReader();
         reader.onload = (e) => {
-          this.preview = e.target.result;
+          data.preview = e.target.result;
         };
         console.log(input.files[0]);
-        this.image = input.files[0];
+        data.image = input.files[0];
         reader.readAsDataURL(input.files[0]);
       }
-    },
+    };
+
+    const submitPost = () => {
+      data.isWarnHint = true;
+    };
+
+    return {
+      ...refData,
+      previewImage,
+      submitPost,
+    };
   },
-});
+};
 </script>
 
 <style>
@@ -87,9 +97,5 @@ defineProps({
   left: 2px;
   z-index: -1;
   box-sizing: content-box;
-}
-.post-page textarea:focus {
-  border-color: #000040;
-  box-shadow: none;
 }
 </style>
