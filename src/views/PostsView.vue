@@ -43,7 +43,7 @@
             <img
               class="w-full"
               v-if="item.coverImage"
-              :src="getImageUrl(item.coverImage)"
+              :src="item.coverImage"
               alt="貼文圖片"
             />
           </li>
@@ -62,12 +62,13 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import UserInfoVue from "../components/UserInfo.vue";
 import IconSearchVue from "../components/icons/IconSearch.vue";
 import NavbarVue from "../components/Navbar.vue";
 import SideMenuVue from "../components/SideMenu.vue";
 import PostOptionVue from "../components/PostOption.vue";
+import axios from "axios";
 
 export default {
   components: {
@@ -78,39 +79,26 @@ export default {
     PostOptionVue,
   },
   setup() {
-    const posts = ref([
-      {
-        id: 1650284959971,
-        userPhoto: "avatars/user.png",
-        userName: "邊緣小杰",
-        content: "外面看起來就超冷.... \n我決定回被窩繼續睡....>.<",
-        coverImage: "images/snow.png",
-        createAt: "2022/1/10 12:00",
-      },
-      {
-        id: 1650284959111,
-        userPhoto: "avatars/user6.png",
-        userName: "波吉",
-        content: "我一定要成為很棒棒的國王！",
-        createAt: "2022/1/10 12:00",
-      },
-      {
-        id: 1650284959222,
-        userPhoto: "avatars/user5.png",
-        userName: "阿爾敏",
-        content: "各位我有一個作戰計畫",
-        createAt: "2022/1/10 12:00",
-      },
-    ]);
+    const posts = ref([]);
 
-    function getImageUrl(url) {
-      if (url.startsWith("http")) return url;
-      return new URL(`../assets/${url}`, import.meta.url).href;
+    function getPosts() {
+      axios
+        .get("http://localhost:3000/posts")
+        .then((res) => {
+          posts.value = res.data.posts;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
+
+    onMounted(() => {
+      getPosts();
+    });
 
     return {
       posts,
-      getImageUrl,
+      getPosts,
     };
   },
 };
