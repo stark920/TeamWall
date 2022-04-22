@@ -16,6 +16,7 @@
                 class="w-full border-0"
                 type="text"
                 placeholder="搜尋貼文"
+                v-model.trim="searchKey"
               />
               <button
                 type="button"
@@ -27,25 +28,8 @@
           </div>
         </div>
         <ul>
-          <li
-            v-for="item in posts"
-            :key="item.id"
-            class="border-2 border-black rounded-lg mb-4 p-6"
-          >
-            <UserInfoVue
-              class="mb-4"
-              :imgUrl="item.userPhoto"
-              :name="item.userName"
-              userPageUrl="#"
-              :subTitle="item.createAt"
-            />
-            <p class="whitespace-pre mb-4">{{ item.content }}</p>
-            <img
-              class="w-full"
-              v-if="item.coverImage"
-              :src="item.coverImage"
-              alt="貼文圖片"
-            />
+          <li v-for="item in filterPosts" :key="item.id">
+            <PostCardVue :post="item" />
           </li>
         </ul>
       </div>
@@ -62,24 +46,25 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
-import UserInfoVue from "../components/UserInfo.vue";
+import { ref, onMounted, inject, computed } from "vue";
 import IconSearchVue from "../components/icons/IconSearch.vue";
 import NavbarVue from "../components/Navbar.vue";
 import SideMenuVue from "../components/SideMenu.vue";
 import PostOptionVue from "../components/PostOption.vue";
-import axios from "axios";
+import PostCardVue from "../components/PostCard.vue";
 
 export default {
   components: {
-    UserInfoVue,
     IconSearchVue,
     NavbarVue,
     SideMenuVue,
     PostOptionVue,
+    PostCardVue,
   },
   setup() {
+    const axios = inject("axios"); // inject axios
     const posts = ref([]);
+    const searchKey = ref("");
 
     function getPosts() {
       axios
@@ -92,6 +77,15 @@ export default {
         });
     }
 
+    const filterPosts = computed(() => {
+      const str = searchKey.value.trim().toLocaleLowerCase();
+      const newPosts = posts.value.filter((item) => {
+        // 搜尋條件: 姓名 or 貼文有符合關鍵字
+        return item.userName.match(str) || item.content.match(str);
+      });
+      return newPosts;
+    });
+
     onMounted(() => {
       getPosts();
     });
@@ -99,6 +93,8 @@ export default {
     return {
       posts,
       getPosts,
+      searchKey,
+      filterPosts,
     };
   },
 };
