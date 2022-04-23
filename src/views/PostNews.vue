@@ -14,6 +14,7 @@
           placeholder="輸入您的貼文內容"
           class="w-full border-2 px-4 py-3 rounded-none mt-1 focus:border-black focus:shadow-transparent"
           @focus="isWarnHint = false"
+          v-model="postContent"
         ></textarea>
         <div
           class="rounded bg-black text-white w-32 gap-y-8 py-1 px-8 my-4 relative"
@@ -28,7 +29,7 @@
           <span>上傳圖片</span>
         </div>
         <div class="w-full border-2 border-black rounded-lg h-40 mb-6">
-          <img :src="image" class="h-full" />
+          <img :src="data.preview" class="h-full" />
         </div>
         <div class="text-center">
           <div v-show="isWarnHint" class="text-sm -mt-2 mb-2 text-red_x mb-1">
@@ -47,41 +48,49 @@
   </div>
 </template>
 
-<script>
-import { toRefs, reactive } from "@vue/reactivity";
+<script setup>
+import { ref, toRefs, inject, reactive } from "vue";
 
-export default {
-  setup() {
-    const data = reactive({
-      isWarnHint: false,
-      preview: null,
-      image: "",
+const axios = inject("axios");
+
+const postContent = ref("");
+
+const data = reactive({
+  isWarnHint: false,
+  preview: null,
+  image: "",
+});
+
+const refData = toRefs(data);
+const previewImage = (event) => {
+  var input = event.target;
+  if (input.files) {
+    var reader = new FileReader();
+    reader.onload = (e) => {
+      data.preview = e.target.result;
+    };
+    console.log(input.files[0]);
+    data.image = input.files[0];
+    reader.readAsDataURL(input.files[0]);
+  }
+};
+
+const submitPost = () => {
+  data.isWarnHint = true;
+  axios
+    .post("https://teamwork02.herokuapp.com/posts", {
+      userName: "aa",
+      avatar:
+        "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/377.jpg",
+      content: postContent.value,
+      updateImage: data.preview,
+    })
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(err);
     });
-
-    const refData = toRefs(data);
-    const previewImage = (event) => {
-      var input = event.target;
-      if (input.files) {
-        var reader = new FileReader();
-        reader.onload = (e) => {
-          data.preview = e.target.result;
-        };
-        console.log(input.files[0]);
-        data.image = input.files[0];
-        reader.readAsDataURL(input.files[0]);
-      }
-    };
-
-    const submitPost = () => {
-      data.isWarnHint = true;
-    };
-
-    return {
-      ...refData,
-      previewImage,
-      submitPost,
-    };
-  },
 };
 </script>
 

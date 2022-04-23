@@ -59,7 +59,7 @@ const searchKey = ref("");
 
 function getPosts() {
   axios
-    .get("http://localhost:3000/posts")
+    .get("https://teamwork02.herokuapp.com/posts")
     .then((res) => {
       posts.value = res.data.data.data;
     })
