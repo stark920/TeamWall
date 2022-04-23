@@ -15,14 +15,11 @@ const router = createRouter({
       name: "post-news",
       component: PostNews,
     },
-    // {
-    //   path: "/about",
-    //   name: "about",
-    //   // route level code-splitting
-    //   // this generates a separate chunk (About.[hash].js) for this route
-    //   // which is lazy-loaded when the route is visited.
-    //   component: () => import("../views/AboutView.vue"),
-    // },
+    {
+      path: "/posts",
+      name: "posts",
+      component: () => import("../views/PostsView.vue"),
+    },
   ],
 });
 
