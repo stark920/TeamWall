@@ -31,13 +31,13 @@ defineProps({
 
     <ul class="flex flex-col ml-2">
       <li>
-        <RouterLink :to="userPageUrl" class="flex items-center mb-5">
+        <RouterLink to="#" class="flex items-center mb-5">
           <AvatarVue size="50" :imgUrl="imgUrl" class="cursor-pointer" />
           <h3 class="font-bold ml-4">{{ name }}</h3>
         </RouterLink>
       </li>
       <li>
-        <RouterLink to="/tracks" class="flex items-center mb-5">
+        <RouterLink to="#" class="flex items-center mb-5">
           <IconButtonVue size="50">
             <IconBellVue class="w-6 h-6" />
           </IconButtonVue>
@@ -45,7 +45,7 @@ defineProps({
         </RouterLink>
       </li>
       <li>
-        <RouterLink to="/likes" class="flex items-center">
+        <RouterLink to="#" class="flex items-center">
           <IconButtonVue size="50">
             <IconThumbsUpVue class="w-6 h-6" />
           </IconButtonVue>
