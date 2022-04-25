@@ -11,6 +11,22 @@ import IconThumbsUpVue from "../components/icons/IconThumbsUp.vue";
 </script>
 
 <template>
+  <p class="m-8">頁面連結：</p>
+
+  <router-link
+    to="/posts"
+    class="mx-8 bg-warning border-2 border-black h-10 text-xl p-1 text-center"
+  >
+    動態牆
+  </router-link>
+  <router-link
+    to="/post-news"
+    class="bg-warning border-2 border-black h-10 text-xl p-1 text-center"
+  >
+    張貼動態
+  </router-link>
+  <h1 class="m-8">元件說明：</h1>
+
   <div class="p-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
     <div class="border-2 border-black p-4">
       <h1 class="text-xl font-bold">Tailwind 配置</h1>
@@ -111,10 +127,6 @@ import IconThumbsUpVue from "../components/icons/IconThumbsUp.vue";
       <p>CardTitleVue title="Title"</p>
       <CardTitleVue title="Title" />
     </div>
-
-    <router-link to="/post-news" class="bg-warning border-2 border-black h-10 text-xl p-1 text-center">
-      張貼動態
-    </router-link>
   </div>
 </template>
 <style>
