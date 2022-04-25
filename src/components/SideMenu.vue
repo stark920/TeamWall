@@ -22,12 +22,13 @@ defineProps({
 
 <template>
   <div class="flex flex-col px-6 py-8 border-2 border-black">
-    <button
-      type="button"
-      class="h-12 bg-primary text-white border-2 border-black rounded-lg mb-6"
+    <RouterLink
+      to="/post-news"
+      class="flex items-center justify-center text-lg py-2 bg-primary text-white border-2 border-black rounded-lg mb-6 hover:bg-warning hover:text-black"
     >
       張貼動態
-    </button>
+    </RouterLink>
+
     <ul class="flex flex-col ml-2">
       <li>
         <RouterLink :to="userPageUrl" class="flex items-center mb-5">
