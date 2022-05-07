@@ -23,7 +23,7 @@ defineProps({
 <template>
   <div class="flex flex-col px-6 py-8 border-2 border-black">
     <RouterLink
-      to="/post-news"
+      to="/front/post-news"
       class="flex items-center justify-center text-lg py-2 bg-primary text-white border-2 border-black rounded-lg mb-6 hover:bg-warning hover:text-black"
     >
       張貼動態

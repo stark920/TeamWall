@@ -14,13 +14,13 @@ import IconThumbsUpVue from "../components/icons/IconThumbsUp.vue";
   <p class="m-8">頁面連結：</p>
 
   <router-link
-    to="/posts"
+    to="/front/posts"
     class="mx-8 bg-warning border-2 border-black h-10 text-xl p-1 text-center"
   >
     動態牆
   </router-link>
   <router-link
-    to="/post-news"
+    to="/front/post-news"
     class="bg-warning border-2 border-black h-10 text-xl p-1 text-center"
   >
     張貼動態

@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import InfoView from "../views/InfoView.vue";
-import PostNews from "../views/PostNews.vue";
+import PostNews from "../views/Frontend/PostNews.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,14 +11,21 @@ const router = createRouter({
       component: InfoView,
     },
     {
-      path: "/post-news",
-      name: "post-news",
-      component: PostNews,
-    },
-    {
-      path: "/posts",
-      name: "posts",
-      component: () => import("../views/PostsView.vue"),
+      path: "/front",
+      name: "frontend",
+      component: () => import("../views/Frontend/FrontendView.vue"),
+      children: [
+        {
+          path: "post-news",
+          name: "post-news",
+          component: PostNews,
+        },
+        {
+          path: "posts",
+          name: "posts",
+          component: () => import("../views/Frontend/PostsView.vue"),
+        },
+      ],
     },
   ],
 });

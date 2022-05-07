@@ -8,7 +8,7 @@ import AvatarVue from "./Avatar.vue";
     <div class="container mx-auto px-3 sm:px-0">
       <div class="h-16 flex justify-between items-center">
         <h1 class="text-3xl text-black font-paytone">
-          <RouterLink to="/"> MetaWall </RouterLink>
+          <RouterLink to="/front/posts"> MetaWall </RouterLink>
         </h1>
         <div class="flex items-center">
           <AvatarVue size="30" imgUrl="avatars/user.png" />
