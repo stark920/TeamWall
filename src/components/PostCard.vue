@@ -12,7 +12,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="border-2 border-black rounded-lg mb-4 p-6">
+  <div class="bg-white border-2 border-black rounded-lg mb-4 p-6">
     <UserInfoVue
       class="mb-4"
       :imgUrl="post.avatar"
