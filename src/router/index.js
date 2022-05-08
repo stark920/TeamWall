@@ -30,6 +30,11 @@ const router = createRouter({
           component: () => import('../views/Foreground/LikesView.vue'),
         },
         {
+          path: '/user/settings',
+          name: 'user-settings',
+          component: () => import('../views/Foreground/Settings.vue'),
+        },
+        {
           path: '/user/:id',
           name: 'user-profile',
           component: () => import('../views/Foreground/UserView.vue'),
