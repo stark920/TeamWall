@@ -1,10 +1,10 @@
 <script setup>
 import { RouterLink } from 'vue-router';
-import AvatarVue from '../Avatar.vue';
-import IconButtonVue from '../ButtonIcon.vue';
-import IconBellVue from '../icons/IconBell.vue';
-import IconThumbsUpVue from '../icons/IconThumbsUp.vue';
-import IconChatVue from '../icons/IconChat.vue';
+import AvatarVue from '../components/Avatar.vue';
+import IconButtonVue from '../components/IconButton.vue';
+import IconBellVue from '../components/icons/IconBell.vue';
+import IconThumbsUpVue from '../components/icons/IconThumbsUp.vue';
+import IconChatVue from '../components/icons/IconChat.vue';
 defineProps({
   imgUrl: {
     type: String,
@@ -31,13 +31,13 @@ defineProps({
 
     <ul class="ml-2 flex flex-col">
       <li>
-        <RouterLink to="/user/aasdfasdfasdf" class="mb-5 flex items-center">
+        <RouterLink to="#" class="mb-5 flex items-center">
           <AvatarVue size="50" :imgUrl="imgUrl" class="cursor-pointer" />
           <h3 class="ml-4 font-bold">{{ name }}</h3>
         </RouterLink>
       </li>
       <li>
-        <RouterLink to="/track" class="mb-5 flex items-center">
+        <RouterLink to="#" class="mb-5 flex items-center">
           <IconButtonVue size="50">
             <IconBellVue class="h-6 w-6" />
           </IconButtonVue>
@@ -45,7 +45,7 @@ defineProps({
         </RouterLink>
       </li>
       <li>
-        <RouterLink to="/likes" class="mb-5 flex items-center">
+        <RouterLink to="#" class="mb-5 flex items-center">
           <IconButtonVue size="50">
             <IconThumbsUpVue class="h-6 w-6" />
           </IconButtonVue>
@@ -53,7 +53,7 @@ defineProps({
         </RouterLink>
       </li>
       <li>
-        <RouterLink to="/chat-room-list" class="flex items-center">
+        <RouterLink to="/chatroomlist" class="flex items-center">
           <IconButtonVue size="50">
             <IconChatVue class="h-6 w-6" />
           </IconButtonVue>

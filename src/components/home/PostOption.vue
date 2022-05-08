@@ -5,11 +5,12 @@ import IconBell from '../icons/IconBell.vue';
 import IconThumbsUp from '../icons/IconThumbsUp.vue';
 import IconHome from '../icons/IconHome.vue';
 import IconPlus from '../icons/IconPlus.vue';
+import IconChat from '../icons/IconChat.vue';
 </script>
 
 <template>
   <ul
-    class="flex h-16 w-80 items-center justify-evenly rounded-full border-2 border-black bg-secondary"
+    class="flex h-16 w-96 items-center justify-evenly rounded-full border-2 border-black bg-secondary"
   >
     <li>
       <RouterLink to="/">
@@ -19,19 +20,26 @@ import IconPlus from '../icons/IconPlus.vue';
       </RouterLink>
     </li>
     <li>
-      <RouterLink to="/">
+      <RouterLink to="/track">
         <ButtonIcon size="50"> <IconBell class="h-6 w-6" /> </ButtonIcon
       ></RouterLink>
     </li>
     <li>
-      <RouterLink to="/">
+      <RouterLink to="/likes">
         <ButtonIcon size="50"> <IconThumbsUp class="h-6 w-6" /> </ButtonIcon
       ></RouterLink>
     </li>
     <li>
-      <RouterLink to="/">
+      <RouterLink to="/post-news">
         <ButtonIcon size="50">
           <IconPlus class="h-6 w-6" />
+        </ButtonIcon>
+      </RouterLink>
+    </li>
+    <li>
+      <RouterLink to="/chat-room-list">
+        <ButtonIcon size="50">
+          <IconChat class="h-6 w-6" />
         </ButtonIcon>
       </RouterLink>
     </li>

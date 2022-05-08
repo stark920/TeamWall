@@ -3,6 +3,7 @@ import { RouterView } from 'vue-router';
 import Navbar from '../components/home/Navbar.vue';
 import PostOption from '../components/home/PostOption.vue';
 import SideMenu from '../components/home/SideMenu.vue';
+import ChatContainer from '../components/ChatContainer.vue';
 </script>
 
 <template>
@@ -22,6 +23,7 @@ import SideMenu from '../components/home/SideMenu.vue';
         </div>
       </div>
     </div>
+    <ChatContainer />
     <PostOption class="fixed left-1/2 bottom-12 -translate-x-1/2 md:hidden" />
   </div>
 </template>
