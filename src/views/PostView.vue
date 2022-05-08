@@ -29,7 +29,11 @@
             </div>
           </div>
           <ul>
-            <li v-for="item in filterPosts" :key="item.id">
+            <li
+              v-for="(item, index) in filterPosts"
+              :key="item.id"
+              :class="{ 'mb-4': index < filterPosts.length - 1 }"
+            >
               <PostCardVue :post="item" />
             </li>
           </ul>
@@ -43,7 +47,9 @@
         </div>
       </div>
     </div>
-    <PostOptionVue class="fixed left-1/2 -translate-x-1/2 bottom-12 md:hidden" />
+    <PostOptionVue
+      class="fixed left-1/2 -translate-x-1/2 bottom-12 md:hidden"
+    />
   </div>
 </template>
 

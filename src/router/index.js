@@ -32,6 +32,11 @@ const router = createRouter({
       name: "likes",
       component: () => import("../views/LikesView.vue"),
     },
+    {
+      path: "/user/:id",
+      name: "個人頁",
+      component: () => import("../views/UserView.vue"),
+    },
   ],
 });
 

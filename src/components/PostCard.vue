@@ -12,7 +12,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="bg-white border-2 border-black rounded-lg mb-4 p-6">
+  <div class="border-2 border-black rounded-lg p-6">
     <UserInfoVue
       class="mb-4"
       :imgUrl="post.avatar"
@@ -22,7 +22,7 @@ defineProps({
     />
     <p class="whitespace-pre mb-4">{{ post.content }}</p>
     <img
-      class="w-full"
+      class="border-2 border-black rounded-lg w-full max-h-96 object-cover object-center"
       v-if="post.updateImage"
       :src="post.updateImage"
       alt="貼文圖片"
