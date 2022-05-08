@@ -49,7 +49,7 @@
 </template>
 
 <script setup>
-import { ref, toRefs, inject, reactive } from "vue";
+import { ref, inject, reactive } from "vue";
 
 const axios = inject("axios");
 
@@ -61,7 +61,6 @@ const data = reactive({
   image: "",
 });
 
-const refData = toRefs(data);
 const previewImage = (event) => {
   var input = event.target;
   if (input.files) {
