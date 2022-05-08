@@ -27,6 +27,16 @@ const router = createRouter({
       name: "track",
       component: TrackList,
     },
+    {
+      path: "/likes",
+      name: "likes",
+      component: () => import("../views/LikesView.vue"),
+    },
+    {
+      path: "/user/:id",
+      name: "個人頁",
+      component: () => import("../views/UserView.vue"),
+    },
   ],
 });
 
