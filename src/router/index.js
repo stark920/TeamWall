@@ -1,41 +1,40 @@
-import { createRouter, createWebHistory } from "vue-router";
-import InfoView from "../views/InfoView.vue";
-import PostView from "../views/PostView.vue";
-import PostNews from "../views/PostNews.vue";
-import TrackList from "../views/TrackList.vue";
+import { createRouter, createWebHashHistory } from 'vue-router';
+import HomeView from '../views/HomeView.vue';
+import PostsView from '../views/Foreground/PostsView.vue';
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: "/",
-      name: "project-info",
-      component: InfoView,
-    },
-    {
-      path: "/post-news",
-      name: "post-news",
-      component: PostNews,
-    },
-    {
-      path: "/posts",
-      name: "posts",
-      component: PostView,
-    },
-    {
-      path: "/track",
-      name: "track",
-      component: TrackList,
-    },
-    {
-      path: "/likes",
-      name: "likes",
-      component: () => import("../views/LikesView.vue"),
-    },
-    {
-      path: "/user/:id",
-      name: "個人頁",
-      component: () => import("../views/UserView.vue"),
+      path: '/',
+      component: HomeView,
+      children: [
+        {
+          path: '/',
+          name: 'posts',
+          component: PostsView,
+        },
+        {
+          path: '/post-news',
+          name: 'post-news',
+          component: () => import('../views/Foreground/PostNews.vue'),
+        },
+        {
+          path: '/track',
+          name: 'track',
+          component: () => import('../views/Foreground/TrackList.vue'),
+        },
+        {
+          path: '/likes',
+          name: 'likes',
+          component: () => import('../views/Foreground/LikesView.vue'),
+        },
+        {
+          path: '/user/:id',
+          name: 'user-profile',
+          component: () => import('../views/Foreground/UserView.vue'),
+        },
+      ],
     },
   ],
 });

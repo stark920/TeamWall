@@ -2,16 +2,16 @@
 defineProps({
   imgUrl: {
     type: String,
-    default: "avatars/user_default.png",
+    default: 'avatars/user_default.png',
   },
   size: {
     type: String,
-    default: "40",
+    default: '40',
   },
 });
 
 function getImageUrl(url) {
-  if (url.startsWith("http")) return url;
+  if (url.startsWith('http')) return url;
   return new URL(`../assets/${url}`, import.meta.url).href;
 }
 </script>

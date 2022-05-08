@@ -2,14 +2,14 @@
 defineProps({
   size: {
     type: String,
-    default: "40",
+    default: '40',
   },
 });
 </script>
 
 <template>
   <div
-    class="overflow-hidden rounded-full border-2 border-black bg-light-blue flex justify-center items-center text-black cursor-pointer hover:text-white hover:bg-primary"
+    class="bg-light-blue flex cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-black text-black hover:bg-primary hover:text-white"
     :style="`width: ${size}px; height: ${size}px;`"
   >
     <slot></slot>

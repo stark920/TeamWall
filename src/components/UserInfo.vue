@@ -1,22 +1,22 @@
 <script setup>
-import { RouterLink } from "vue-router";
-import AvatarVue from "./Avatar.vue";
+import { RouterLink } from 'vue-router';
+import AvatarVue from './Avatar.vue';
 
 defineProps({
   size: {
     type: String,
-    default: "40",
+    default: '40',
   },
   imgUrl: {
     type: String,
   },
   name: {
     type: String,
-    default: "Unknown",
+    default: 'Unknown',
   },
   userPageUrl: {
     type: String,
-    default: "#",
+    default: '#',
   },
   subTitle: {
     type: String,

@@ -1,7 +1,7 @@
 <template>
-  <div class="grid md:grid-cols-3 gap-x-3 gap-y-1.5 mb-4">
+  <div class="mb-4 grid gap-x-3 gap-y-1.5 md:grid-cols-3">
     <div>
-      <select class="w-full h-11 border-2 border-black" name="category">
+      <select class="h-11 w-full border-2 border-black" name="category">
         <option value="newest" selected>最新貼文</option>
         <option value="popular">熱門貼文</option>
       </select>
@@ -16,9 +16,9 @@
         />
         <button
           type="button"
-          class="bg-primary w-11 flex justify-center items-center border-l-2 border-black"
+          class="flex w-11 items-center justify-center border-l-2 border-black bg-primary"
         >
-          <IconSearchVue class="w-8 h-8 text-white" />
+          <IconSearchVue class="h-8 w-8 text-white" />
         </button>
       </div>
     </div>
@@ -26,8 +26,8 @@
 </template>
 
 <script setup>
-import IconSearchVue from "../components/icons/IconSearch.vue";
-import { ref } from "vue";
+import IconSearchVue from '../components/icons/IconSearch.vue';
+import { ref } from 'vue';
 
-const searchKey = ref("");
+const searchKey = ref('');
 </script>
