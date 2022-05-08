@@ -1,6 +1,7 @@
 <script setup>
 import { reactive } from "vue";
-import ChatRoomListItem from "@/components/ChatRoomListItem.vue";
+import CardTitleVue from "../components/CardTitle.vue";
+import ChatRoomListItem from "../components/ChatRoomListItem.vue";
 const chatList = reactive([
   {
     roomId: 124234234,
@@ -46,7 +47,7 @@ const chatList = reactive([
 
 <template>
   <section>
-    <h1 class="title">聊天室</h1>
+    <CardTitleVue title="聊天室" />
     <ul class="pt-4">
       <template v-for="room in chatList" :key="room.channelId">
         <chat-room-list-item :room="room" />

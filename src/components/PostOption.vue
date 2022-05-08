@@ -33,9 +33,11 @@ import IconChatVue from "./icons/IconChat.vue";
       </IconButtonVue>
     </li>
     <li>
-      <IconButtonVue size="50">
-        <IconChatVue class="w-6 h-6" />
-      </IconButtonVue>
+      <router-link to="/chatroomlist">
+        <IconButtonVue size="50">
+          <IconChatVue class="w-6 h-6" />
+        </IconButtonVue>
+      </router-link>
     </li>
   </ul>
 </template>

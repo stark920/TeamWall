@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import IconChat from "@/icons/IconChat.vue";
+import IconChat from "./icons/IconChat.vue";
 const inputBox = ref(null);
 
 onMounted(() => {
@@ -19,7 +19,7 @@ onMounted(() => {
 
 <template>
   <div
-    class="bg-slate-700 w-full p-2 fixed sm:absolute bottom-0 flex justify-between items-center left-0"
+    class="bg-slate-700 w-full p-2 fixed md:absolute bottom-0 flex justify-between items-center left-0"
   >
     <div
       class="bg-white min-h-[32px] max-h-36 flex items-center rounded-2xl w-11/12 break-all px-2 outline-none overflow-hidden"
@@ -30,6 +30,6 @@ onMounted(() => {
       tabindex="0"
       ref="inputBox"
     ></div>
-    <IconChat class="text-white cursor-pointer" />
+    <IconChat class="text-white cursor-pointer w-6 h-6" />
   </div>
 </template>

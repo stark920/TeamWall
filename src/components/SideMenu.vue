@@ -53,7 +53,7 @@ defineProps({
         </RouterLink>
       </li>
       <li>
-        <RouterLink to="#" class="flex items-center">
+        <RouterLink to="/chatroomlist" class="flex items-center">
           <IconButtonVue size="50">
             <IconChatVue class="w-6 h-6" />
           </IconButtonVue>
