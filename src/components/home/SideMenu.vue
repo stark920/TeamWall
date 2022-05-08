@@ -4,7 +4,7 @@ import AvatarVue from '../Avatar.vue';
 import IconButtonVue from '../ButtonIcon.vue';
 import IconBellVue from '../icons/IconBell.vue';
 import IconThumbsUpVue from '../icons/IconThumbsUp.vue';
-
+import IconChatVue from '../icons/IconChat.vue';
 defineProps({
   imgUrl: {
     type: String,
@@ -45,11 +45,19 @@ defineProps({
         </RouterLink>
       </li>
       <li>
-        <RouterLink to="/likes" class="flex items-center">
+        <RouterLink to="/likes" class="mb-5 flex items-center">
           <IconButtonVue size="50">
             <IconThumbsUpVue class="h-6 w-6" />
           </IconButtonVue>
           <h3 class="ml-4 font-bold">我按讚的文章</h3>
+        </RouterLink>
+      </li>
+      <li>
+        <RouterLink to="/chat-room-list" class="flex items-center">
+          <IconButtonVue size="50">
+            <IconChatVue class="h-6 w-6" />
+          </IconButtonVue>
+          <h3 class="ml-4 font-bold">聊天室</h3>
         </RouterLink>
       </li>
     </ul>

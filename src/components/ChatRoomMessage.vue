@@ -1,8 +1,8 @@
 <script setup>
-import { defineProps, toRefs, computed } from "vue";
-import { useUserStore } from "../stores";
-import { storeToRefs } from "pinia";
-import { formateTime as formateDate } from "../utils/formateTime";
+import { defineProps, toRefs, computed } from 'vue';
+import { useUserStore } from '../stores';
+import { storeToRefs } from 'pinia';
+import { formateTime as formateDate } from '../utils/formateTime';
 const useStore = useUserStore();
 const { user: userInfo } = storeToRefs(useStore);
 const props = defineProps({
@@ -18,7 +18,7 @@ const isSelf = computed(() => {
 });
 
 const formateTime = (time) => {
-  return formateDate(time, "HH:mm");
+  return formateDate(time, 'HH:mm');
 };
 </script>
 
@@ -28,13 +28,13 @@ const formateTime = (time) => {
     <div :class="['flex items-end', { 'flex-row-reverse': isSelf }]">
       <div
         :class="[
-          'inline-flex text-slate-700 max-w-[300px] p-2 m-h-[20px] border-2 rounded-2xl',
+          'm-h-[20px] inline-flex max-w-[300px] rounded-2xl p-2 text-slate-700',
           isSelf ? 'bg-slate-300' : 'bg-slate-200',
         ]"
       >
         {{ content }}
       </div>
-      <span class="text-xs px-2">{{ formateTime(createdAt) }}</span>
+      <span class="px-2 text-xs">{{ formateTime(createdAt) }}</span>
     </div>
   </div>
 </template>

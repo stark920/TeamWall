@@ -1,11 +1,11 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia';
 
-export default defineStore("user", {
-  id: "user",
+export default defineStore('user', {
+  id: 'user',
   state: () => ({
     user: {
-      _id: "5566",
-      userName: "joe",
+      _id: '5566',
+      userName: 'joe',
     },
   }),
   actions: {

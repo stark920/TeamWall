@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 
 /**
  *
@@ -7,6 +7,6 @@ import dayjs from "dayjs";
  * @returns {string}
  */
 
-export const formateTime = (time, formate = "YYYY/MM/DD HH:mm") => {
+export const formateTime = (time, formate = 'YYYY/MM/DD HH:mm') => {
   return dayjs(time).format(formate);
 };

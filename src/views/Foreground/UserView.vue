@@ -21,6 +21,11 @@
         >
           {{ isFollow ? '追蹤' : '取消追蹤' }}
         </button>
+        <button
+          class="rounded-lg border-2 border-black px-8 py-1.5 shadow-post ml-2"
+        >
+          傳送訊息
+        </button>
       </div>
     </div>
   </div>
