@@ -57,8 +57,23 @@ const posts = [
     userName: '阿爾敏',
     createAt: '2022/1/10 12:00',
     content: '今天找到一張大海的照片\n 太美拉～～～',
+    likes: 10,
     updateImage:
       'https://images.unsplash.com/photo-1492571350019-22de08371fd3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1053&q=80',
+    comments: [
+      {
+        _id: 'akjsdfkshdkd',
+        userName: '阿爾敏',
+        createAt: '2022/1/10 16:00',
+        content: '各位我有一個作戰計畫',
+      },
+      {
+        _id: 'akjsdfkshdkd',
+        userName: '阿爾敏',
+        createAt: '2022/1/10 16:00',
+        content: '各位我有一個作戰計畫',
+      },
+    ],
   },
   {
     _id: 'akjsdfkshdkd',
@@ -68,6 +83,21 @@ const posts = [
     userName: '阿爾敏',
     createAt: '2022/1/10 16:00',
     content: '各位我有一個作戰計畫',
+    likes: 10,
+    comments: [
+      {
+        _id: 'akjsdfkshdkd',
+        userName: '阿爾敏',
+        createAt: '2022/1/10 16:00',
+        content: '各位我有一個作戰計畫',
+      },
+      {
+        _id: 'akjsdfkshdkd',
+        userName: '阿爾敏',
+        createAt: '2022/1/10 16:00',
+        content: '各位我有一個作戰計畫',
+      },
+    ],
   },
 ];
 
