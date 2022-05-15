@@ -19,6 +19,17 @@ const getLikes = () => {
     console.log(err);
   });
 };
+
+const canclePost = (posts) => {
+  const data = { userInfo, posts };
+  const url = `http://localhost:3011/likes/likePost`;
+  axios.post(url, data).then(() => {
+    getLikes();
+  }).catch((err) => {
+    console.log(err);
+  });
+};
+
 onMounted(() => {
   getLikes();
 });
@@ -35,7 +46,7 @@ onMounted(() => {
           :imgUrl="item.userInfo?.photo" />
         <ul class="flex gap-10">
           <li>
-            <button type="button" class="flex flex-col items-center justify-center gap-1">
+            <button type="button" class="flex flex-col items-center justify-center gap-1" @click="canclePost(item._id)">
               <IconThumbsUpVue class="h-5 w-5 text-primary" />
               <span>取消</span>
             </button>
