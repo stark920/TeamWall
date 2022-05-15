@@ -31,7 +31,8 @@ onMounted(() => {
       class="rounded-lg border-2 border-black bg-white py-5 pl-4 pr-10 shadow-post"
       :class="{ 'mb-2': index < likes.posts.length - 1 }">
       <div class="flex justify-between">
-        <UserInfo :name="item.UserInfo" :subTitle="$filters.dateTime(item.createAt)" />
+        <UserInfo :name="item.userInfo?.name" :subTitle="$filters.dateTime(item.createAt)"
+          :imgUrl="item.userInfo?.photo" />
         <ul class="flex gap-10">
           <li>
             <button type="button" class="flex flex-col items-center justify-center gap-1">
