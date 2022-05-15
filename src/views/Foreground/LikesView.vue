@@ -5,13 +5,15 @@ import IconThumbsUpVue from '@/components/icons/IconThumbsUp.vue';
 import IconArrowRightVue from '@/components/icons/IconArrowRight.vue';
 
 import { ref, onMounted, inject } from 'vue';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 const axios = inject('axios'); // inject axios
 
-const userInfo = "62808a1b0e634d4c5982976c"; // 目前登入的使用者ID
+const userId = "62808a1b0e634d4c5982976c"; // 目前登入的使用者ID
 const likes = ref([]);
 
 const getLikes = () => {
-  const data = { userInfo };
+  const data = { userId };
   const url = `http://localhost:3011/likes`;
   axios.post(url, data).then((res) => {
     likes.value = res.data.data;
@@ -20,8 +22,8 @@ const getLikes = () => {
   });
 };
 
-const canclePost = (posts) => {
-  const data = { userInfo, posts };
+const canclePost = (postId) => {
+  const data = { userId, posts: postId };
   const url = `http://localhost:3011/likes/likePost`;
   axios.post(url, data).then(() => {
     getLikes();
@@ -42,8 +44,7 @@ onMounted(() => {
       class="rounded-lg border-2 border-black bg-white py-5 pl-4 pr-10 shadow-post"
       :class="{ 'mb-2': index < likes.posts.length - 1 }">
       <div class="flex justify-between">
-        <UserInfo :name="item.userInfo?.name" :subTitle="$filters.dateTime(item.createAt)"
-          :imgUrl="item.userInfo?.photo" />
+        <UserInfo :name="item.userId?.name" :subTitle="$filters.dateTime(item.createAt)" :imgUrl="item.userId?.photo" />
         <ul class="flex gap-10">
           <li>
             <button type="button" class="flex flex-col items-center justify-center gap-1" @click="canclePost(item._id)">
@@ -52,7 +53,8 @@ onMounted(() => {
             </button>
           </li>
           <li>
-            <button type="button" class="flex flex-col items-center justify-center gap-1">
+            <button type="button" class="flex flex-col items-center justify-center gap-1"
+              @click="router.push(`/user/${item.userId._id}`)">
               <IconArrowRightVue class="h-5 w-5" />
               <span>查看</span>
             </button>

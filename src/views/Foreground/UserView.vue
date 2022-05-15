@@ -59,11 +59,10 @@ const getPosts = (sort = 1, searchKey) => {
 
 // 當前 id 篩選全部貼文
 const userPosts = computed(() => {
-  return posts.value.filter((item) => item.userInfo._id === id.value);
+  return posts.value.filter((item) => item.userId._id === id.value);
 });
 
 onMounted(() => {
-  console.log(id.value);
   getPosts();
 });
 </script>
