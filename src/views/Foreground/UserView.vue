@@ -1,7 +1,12 @@
 <template>
-  <div class="track relative mb-4 flex rounded-lg border-2 border-black bg-white">
+  <div
+    class="track relative mb-4 flex rounded-lg border-2 border-black bg-white"
+  >
     <div class="h-20 w-20">
-      <img src="https://randomuser.me/api/portraits/men/72.jpg" class="h-full object-cover object-center" />
+      <img
+        src="https://randomuser.me/api/portraits/men/72.jpg"
+        class="h-full object-cover object-center"
+      />
     </div>
     <div class="flex w-full justify-between p-4">
       <div>
@@ -9,12 +14,16 @@
         <span>987,987 人追蹤</span>
       </div>
       <div class="flex items-center justify-center">
-        <button type="button"
+        <button
+          type="button"
           class="rounded-lg border-2 border-black px-8 py-1.5 shadow-post hover:bg-primary hover:text-white"
-          :class="isFollow ? 'bg-warning' : 'bg-secondary'">
+          :class="isFollow ? 'bg-warning' : 'bg-secondary'"
+        >
           {{ isFollow ? '追蹤' : '取消追蹤' }}
         </button>
-        <button class="rounded-lg border-2 border-black px-8 py-1.5 shadow-post ml-2">
+        <button
+          class="ml-2 rounded-lg border-2 border-black px-8 py-1.5 shadow-post"
+        >
           傳送訊息
         </button>
       </div>
@@ -22,7 +31,11 @@
   </div>
   <PostFilter @get-posts="getPosts" />
   <ul>
-    <li v-for="(item, index) in userPosts" :key="index" :class="{ 'mb-4': index < posts.length - 1 }">
+    <li
+      v-for="(item, index) in userPosts"
+      :key="index"
+      :class="{ 'mb-4': index < posts.length - 1 }"
+    >
       <PostCard :post="item" />
     </li>
   </ul>
@@ -49,12 +62,17 @@ const getPosts = (sort = 1, searchKey) => {
   if (sort?.value === 2) {
     sortValue = 'asc';
   }
-  const url = `http://localhost:3011/posts?timeSort=${sortValue}&search=${searchKey ? searchKey.value : ''}`;
-  axios.get(url).then((res) => {
-    posts.value = res.data.data;
-  }).catch((err) => {
-    console.log(err);
-  });
+  const url = `http://localhost:3011/posts?timeSort=${sortValue}&search=${
+    searchKey ? searchKey.value : ''
+  }`;
+  axios
+    .get(url)
+    .then((res) => {
+      posts.value = res.data.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 // 當前 id 篩選全部貼文
