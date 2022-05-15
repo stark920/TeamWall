@@ -52,6 +52,8 @@ const getPosts = (sort = 1, searchKey) => {
   const url = `http://localhost:3011/posts?timeSort=${sortValue}&search=${searchKey ? searchKey.value : ''}`;
   axios.get(url).then((res) => {
     posts.value = res.data.data;
+  }).catch((err) => {
+    console.log(err);
   });
 };
 
