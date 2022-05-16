@@ -15,11 +15,7 @@ import ChatContainer from '../components/ChatContainer.vue';
           <RouterView></RouterView>
         </div>
         <div class="hidden md:block">
-          <SideMenu
-            name="邊緣小杰"
-            imgUrl="avatars/user.png"
-            userPageUrl="/user"
-          />
+          <SideMenu name="邊緣小杰" imgUrl="avatars/user.png" userPageUrl="/user/62808a1b0e634d4c5982976c" />
         </div>
       </div>
     </div>

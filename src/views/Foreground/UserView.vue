@@ -22,17 +22,17 @@
           {{ isFollow ? '追蹤' : '取消追蹤' }}
         </button>
         <button
-          class="rounded-lg border-2 border-black px-8 py-1.5 shadow-post ml-2"
+          class="ml-2 rounded-lg border-2 border-black px-8 py-1.5 shadow-post"
         >
           傳送訊息
         </button>
       </div>
     </div>
   </div>
-  <PostFilter />
+  <PostFilter @get-posts="getPosts" />
   <ul>
     <li
-      v-for="(item, index) in posts"
+      v-for="(item, index) in userPosts"
       :key="index"
       :class="{ 'mb-4': index < posts.length - 1 }"
     >
@@ -45,69 +45,44 @@
 import PostFilter from '@/components/PostFilter.vue';
 import PostCard from '@/components/PostCard.vue';
 
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, inject, computed } from 'vue';
 import { useRoute } from 'vue-router';
-
-const posts = [
-  {
-    _id: 'aasdfasdfasdf',
-    user: {
-      name: '阿爾敏',
-    },
-    userName: '阿爾敏',
-    createAt: '2022/1/10 12:00',
-    content: '今天找到一張大海的照片\n 太美拉～～～',
-    likes: 10,
-    updateImage:
-      'https://images.unsplash.com/photo-1492571350019-22de08371fd3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1053&q=80',
-    comments: [
-      {
-        _id: 'akjsdfkshdkd',
-        userName: '阿爾敏',
-        createAt: '2022/1/10 16:00',
-        content: '各位我有一個作戰計畫',
-      },
-      {
-        _id: 'akjsdfkshdkd',
-        userName: '阿爾敏',
-        createAt: '2022/1/10 16:00',
-        content: '各位我有一個作戰計畫',
-      },
-    ],
-  },
-  {
-    _id: 'akjsdfkshdkd',
-    user: {
-      name: '阿爾敏',
-    },
-    userName: '阿爾敏',
-    createAt: '2022/1/10 16:00',
-    content: '各位我有一個作戰計畫',
-    likes: 10,
-    comments: [
-      {
-        _id: 'akjsdfkshdkd',
-        userName: '阿爾敏',
-        createAt: '2022/1/10 16:00',
-        content: '各位我有一個作戰計畫',
-      },
-      {
-        _id: 'akjsdfkshdkd',
-        userName: '阿爾敏',
-        createAt: '2022/1/10 16:00',
-        content: '各位我有一個作戰計畫',
-      },
-    ],
-  },
-];
+const axios = inject('axios'); // inject axios
 
 const route = useRoute();
 const id = ref(route.params.id);
-console.log(id);
+const posts = ref([]);
 
 const isFollow = ref(true);
+const getPosts = (sort = 1, searchKey) => {
+  // sort, searchKey -> PostFilter 傳來的參數
+  // sort=1 最新貼文, sort=2 最舊貼文
 
-onMounted(() => {});
+  let sortValue = 'desc'; // 預設 desc
+  if (sort?.value === 2) {
+    sortValue = 'asc';
+  }
+  const url = `http://localhost:3011/posts?timeSort=${sortValue}&search=${
+    searchKey ? searchKey.value : ''
+  }`;
+  axios
+    .get(url)
+    .then((res) => {
+      posts.value = res.data.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+// 當前 id 篩選全部貼文
+const userPosts = computed(() => {
+  return posts.value.filter((item) => item.userId._id === id.value);
+});
+
+onMounted(() => {
+  getPosts();
+});
 </script>
 
 <style scoped>
