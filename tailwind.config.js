@@ -14,6 +14,7 @@ module.exports = {
         warning: '#EEC32A',
         black: '#000400',
         subtitle: '#9B9893',
+        'disabled-color': '#A8B0B9',
       },
       boxShadow: {
         btn: '-2px 2px 0px #000400',
