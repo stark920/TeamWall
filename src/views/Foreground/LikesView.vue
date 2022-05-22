@@ -8,13 +8,14 @@ import { ref, onMounted, inject } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter();
 const axios = inject('axios'); // inject axios
+const baseUrl = 'http://127.0.0.1:3000';
 
-const userId = '62808a1b0e634d4c5982976c'; // 目前登入的使用者ID
+const userId = '6289cb654896923f8331bc15'; // 待調整:登入userId
 const likes = ref([]);
 
 const getLikes = () => {
   const data = { userId };
-  const url = `http://localhost:3011/likes`;
+  const url = `${baseUrl}/likes`;
   axios
     .post(url, data)
     .then((res) => {
@@ -27,7 +28,7 @@ const getLikes = () => {
 
 const canclePost = (postId) => {
   const data = { userId, posts: postId };
-  const url = `http://localhost:3011/likes/likePost`;
+  const url = `${baseUrl}/likes/likePost`;
   axios
     .post(url, data)
     .then(() => {
@@ -55,7 +56,8 @@ onMounted(() => {
       <div class="flex justify-between">
         <UserInfo
           :name="item.userId?.name"
-          :subTitle="$filters.dateTime(item.createAt)"
+          :subTitle="`發文時間：${$filters.dateTime(item.createAt)}`"
+          :userPageUrl="`/user/${item.userId?._id}`"
           :imgUrl="item.userId?.photo"
         />
         <ul class="flex gap-10">
@@ -73,7 +75,7 @@ onMounted(() => {
             <button
               type="button"
               class="flex flex-col items-center justify-center gap-1"
-              @click="router.push(`/user/${item.userId._id}`)"
+              @click="router.push(`/post/${item._id}`)"
             >
               <IconArrowRightVue class="h-5 w-5" />
               <span>查看</span>

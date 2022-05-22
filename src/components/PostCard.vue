@@ -1,7 +1,10 @@
 <script setup>
+import { ref } from 'vue';
 import UserInfo from './UserInfo.vue';
 import IconThumbsUpVue from '@/components/icons/IconThumbsUp.vue';
 import AvatarVue from './Avatar.vue';
+
+const id = ref('6289cb654896923f8331bc15'); // 登入 userId
 
 defineProps({
   post: {
@@ -31,7 +34,11 @@ defineProps({
     />
     <div>
       <button type="button" class="flex items-center justify-center py-5">
-        <IconThumbsUpVue class="mr-2 h-5 w-5 text-primary" />
+        <!-- 已按讚 icon, 改實心 -->
+        <IconThumbsUpVue
+          class="mr-2 h-5 w-5"
+          :class="post.likes?.includes(id) ? 'text-primary' : 'text-black'"
+        />
         <span> {{ post.likes?.length }}</span>
       </button>
     </div>
