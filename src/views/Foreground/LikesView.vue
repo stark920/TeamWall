@@ -6,7 +6,7 @@ import IconArrowRightVue from '@/components/icons/IconArrowRight.vue';
 
 import { ref, onMounted, inject } from 'vue';
 import { useRouter } from 'vue-router';
-import { API_URL } from '../global/constant';
+import { API_URL } from '@/global/constant';
 const router = useRouter();
 const axios = inject('axios'); // inject axios
 const userId = '62808a1b0e634d4c5982976c'; // 目前登入的使用者ID

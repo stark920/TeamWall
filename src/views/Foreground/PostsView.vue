@@ -3,7 +3,7 @@ import { ref, onMounted, inject } from 'vue';
 import PostCard from '@/components/PostCard.vue';
 import PostFilter from '@/components/PostFilter.vue';
 import PostNoneCard from '@/components/PostNoneCard.vue';
-import { API_URL } from '../global/constant';
+import { API_URL } from '@/global/constant';
 const axios = inject('axios'); // inject axios
 
 const posts = ref([]);

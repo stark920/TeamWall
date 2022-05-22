@@ -28,7 +28,7 @@ const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 
 app.use(VueAxios, axios);
-app.use(piniaPluginPersistedstate);
+app.use(pinia);
 app.use(router);
 app.use(Toast);
 app.provide('axios', app.config.globalProperties.axios); // provide 'axios'

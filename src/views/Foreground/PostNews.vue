@@ -1,7 +1,7 @@
 <script setup>
 import { ref, inject, reactive } from 'vue';
 import CardTitle from '@/components/CardTitle.vue';
-import { API_URL } from '../global/constant';
+import { API_URL } from '@/global/constant';
 const axios = inject('axios');
 
 const postContent = ref('');

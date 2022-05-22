@@ -6,7 +6,7 @@ import PostOption from '../components/home/PostOption.vue';
 import SideMenu from '../components/home/SideMenu.vue';
 import ChatContainer from '../components/ChatContainer.vue';
 import { useUserStore } from '@/stores';
-import { API_URL } from '../global/constant';
+import { API_URL } from '@/global/constant';
 const userStore = useUserStore();
 
 const axios = inject('axios');

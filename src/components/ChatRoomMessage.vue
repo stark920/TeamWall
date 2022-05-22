@@ -1,7 +1,7 @@
 <script setup>
 import { defineProps, toRefs, computed } from 'vue';
 import dayjs from 'dayjs';
-import { useUserStore } from '@/store';
+import { useUserStore } from '@/stores';
 import { storeToRefs } from 'pinia';
 const useStore = useUserStore();
 const { user: userInfo } = storeToRefs(useStore);

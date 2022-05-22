@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import eventBus from '../utils/eventBus';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
-import { useRoomStore } from '@/store';
+import { useRoomStore } from '@/stores';
 const roomStore = useRoomStore();
 const toast = useToast();
 const { room } = storeToRefs(roomStore);
