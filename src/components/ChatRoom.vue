@@ -1,223 +1,206 @@
 <script setup>
-import { reactive, onMounted, onBeforeUnmount } from 'vue';
+import { useToast } from 'vue-toastification';
+import { nextTick, reactive, onMounted, onBeforeUnmount, ref } from 'vue';
 import ChatRoomMessage from './ChatRoomMessage.vue';
 import ChatRoomInputBox from './ChatRoomInputBox.vue';
-import IconCross from './icons/IconCross.vue';
-import IconBack from './icons/IconBack.vue';
+import Close from '../icons/Close.vue';
+import Back from '../icons/Back.vue';
 import eventBus from '../utils/eventBus';
-import AvatarVue from './Avatar.vue';
+import { throttle } from '../utils/common';
+import { API_URL } from '../global/constant';
+import { storeToRefs } from 'pinia';
+import { useRoomStore, useUserStore } from '@/store';
 import { useRouter } from 'vue-router';
+import { io } from 'socket.io-client';
+const toast = useToast();
+const useStore = useUserStore();
+const roomStore = useRoomStore();
+const { room } = storeToRefs(roomStore);
+const { user } = storeToRefs(useStore);
 const router = useRouter();
-const messageList = reactive([
-  {
-    _id: 1,
-    user: {
-      userName: 'Dora',
-      _id: '2266',
-    },
-    userName: 'Dora',
-    content: '結果你的晚餐還在被延',
-    createdAt: '2022-05-05T12:28:19.793Z',
+const messageContainer = ref(null);
+const fetchAllFlag = ref(false);
+const newMsgFlag = ref(false);
+const flagHistory = ref(false);
+const scrollRecord = ref(0);
+const messageList = reactive([]);
+
+const token = localStorage.getItem('token');
+if (!token) {
+  router.push('/');
+}
+
+// socket初始化
+const socket = io(`${API_URL}/chat`, {
+  query: {
+    token: localStorage.getItem('token'),
+    room: room.value.roomId,
   },
-  {
-    _id: 2,
-    user: {
-      userName: 'Dora',
-      _id: '2266',
-    },
-    content: '原來新北市跟台北市一樣',
-    createdAt: '2022-05-05T12:28:19.813Z',
-  },
-  {
-    _id: 3,
-    user: {
-      userName: 'joe',
-      _id: '5566',
-    },
-    content: '等到我花都謝了',
-    createdAt: '2022-05-05T12:28:19.999Z',
-  },
-  {
-    _id: 4,
-    user: {
-      userName: 'Dora',
-      _id: '2266',
-    },
-    content: '點外送練習修身養性',
-    createdAt: '2022-05-05T12:29:19.793Z',
-  },
-  {
-    _id: 5,
-    user: {
-      userName: 'Dora',
-      _id: '2266',
-    },
-    content: '我在晚餐開店的第一分鐘就點餐了',
-    createdAt: '2022-05-05T12:30:19.793Z',
-  },
-  {
-    _id: 6,
-    user: {
-      userName: 'joe',
-      _id: '5566',
-    },
-    content: '雨越大等越久',
-    createdAt: '2022-05-05T12:30:19.899Z',
-  },
-  {
-    _id: 7,
-    user: {
-      userName: 'Dora',
-      _id: '2266',
-    },
-    content: '你的晚餐竟然被四延了',
-    createdAt: '2022-05-05T12:32:19.793Z',
-  },
-  {
-    _id: 8,
-    user: {
-      userName: 'joe',
-      _id: '5566',
-    },
-    content: '傻眼',
-    createdAt: '2022-05-05T12:33:19.793Z',
-  },
-  {
-    _id: 9,
-    user: {
-      userName: 'joe',
-      _id: '5566',
-    },
-    content: '等待時間直接變成一個半小時',
-    createdAt: '2022-05-05T12:33:19.793Z',
-  },
-  {
-    _id: 1,
-    user: {
-      userName: 'Dora',
-      _id: '2266',
-    },
-    userName: 'Dora',
-    content: '結果你的晚餐還在被延',
-    createdAt: '2022-05-05T12:28:19.793Z',
-  },
-  {
-    _id: 2,
-    user: {
-      userName: 'Dora',
-      _id: '2266',
-    },
-    content: '原來新北市跟台北市一樣',
-    createdAt: '2022-05-05T12:28:19.813Z',
-  },
-  {
-    _id: 3,
-    user: {
-      userName: 'joe',
-      _id: '5566',
-    },
-    content: '等到我花都謝了',
-    createdAt: '2022-05-05T12:28:19.999Z',
-  },
-  {
-    _id: 4,
-    user: {
-      userName: 'Dora',
-      _id: '2266',
-    },
-    content: '點外送練習修身養性',
-    createdAt: '2022-05-05T12:29:19.793Z',
-  },
-  {
-    _id: 5,
-    user: {
-      userName: 'Dora',
-      _id: '2266',
-    },
-    content: '我在晚餐開店的第一分鐘就點餐了',
-    createdAt: '2022-05-05T12:30:19.793Z',
-  },
-  {
-    _id: 6,
-    user: {
-      userName: 'joe',
-      _id: '5566',
-    },
-    content: '雨越大等越久',
-    createdAt: '2022-05-05T12:30:19.899Z',
-  },
-  {
-    _id: 7,
-    user: {
-      userName: 'Dora',
-      _id: '2266',
-    },
-    content: '你的晚餐竟然被四延了',
-    createdAt: '2022-05-05T12:32:19.793Z',
-  },
-  {
-    _id: 8,
-    user: {
-      userName: 'joe',
-      _id: '5566',
-    },
-    content: '傻眼',
-    createdAt: '2022-05-05T12:33:19.793Z',
-  },
-  {
-    _id: 9,
-    user: {
-      userName: 'joe',
-      _id: '5566',
-    },
-    content: '等待時間直接變成一個半小時',
-    createdAt: '2022-05-05T12:33:19.793Z',
-  },
-]);
+  // autoConnect: false,
+  forceNew: true,
+});
+// 建立連線
+socket.on('connect', () => {
+  console.log('connect----');
+  // TODO 不用setTimeout getHistory會偶發性失效
+  setTimeout(() => {
+    getHistory();
+  }, 200);
+});
+
+socket.emit('joinRoom', room.value.roomId);
+// 接收到別人傳的訊息
+socket.on('chatMessage', (msg) => {
+  console.log('接收到別人傳的訊息', msg);
+  messageList.push(msg);
+  if (
+    messageContainer.value.scrollHeight - messageContainer.value.scrollTop >
+    messageContainer.value.clientHeight
+  ) {
+    user.value._id !== msg.sender && (newMsgFlag.value = true);
+  } else {
+    scrollBottom();
+  }
+});
+
+// 接收歷史訊息
+socket.on('history', (msgList) => {
+  console.log('接收到歷史訊息', msgList);
+  const newArray = [...msgList, ...messageList];
+  Object.assign(messageList, newArray);
+  console.log('messageList', messageList);
+  msgList.length < 30 && (fetchAllFlag.value = true);
+  if (!flagHistory.value) {
+    scrollBottom();
+    flagHistory.value = true;
+  } else {
+    scrollToCorrect();
+  }
+  // 滾輪調整
+});
+
+const scrollToCorrect = async () => {
+  await nextTick();
+  messageContainer.value.scrollTop =
+    messageContainer.value.scrollHeight - scrollRecord.value;
+};
+// 接收錯誤
+socket.on('error', (error) => {
+  toast.error(error);
+  router.go('/');
+});
+
+const getHistory = () => {
+  console.log('getHistory', fetchAllFlag.value);
+  if (fetchAllFlag.value) return;
+  const info = {
+    lastTime: messageList[0]?.createdAt,
+  };
+  console.warn('emit!!!!!!!!!!!!!!');
+  console.warn('---', socket.connected);
+  socket.emit('history', info);
+};
+
+const sendMessage = (msg) => {
+  const sendMsg = {
+    message: msg,
+    sender: user.value._id,
+  };
+  socket.emit('chatMessage', sendMsg);
+};
+
+const scrollBottom = async () => {
+  console.log(nextTick);
+  await nextTick();
+  newMsgFlag.value = false;
+  messageContainer.value.scrollTop = messageContainer.value?.scrollHeight;
+};
+
 const closeRoom = () => {
   eventBus.emit('handleRoom', false);
+};
+
+const detectTop = () => {
+  messageContainer.value.addEventListener(
+    'scroll',
+    () => {
+      if (messageContainer.value.scrollTop === 0) {
+        scrollRecord.value = messageContainer.value.scrollHeight;
+        throttle(getHistory, 1000)();
+      }
+    },
+    false
+  );
 };
 
 const toPrevPage = () => {
   router.go(-1);
 };
 
+const isMobile = () => {
+  return document.body.clientWidth < 768;
+};
+
 onMounted(() => {
+  console.warn('mounted');
   // 鎖ios橡皮筋效果
-  document.body.style = 'overflow: hidden;position:fixed';
+  isMobile() && (document.body.style = 'overflow: hidden;position:fixed');
+  detectTop();
 });
 
 onBeforeUnmount(() => {
+  console.warn('onBeforeUnmount');
+  roomStore.updateRoom({});
+  socket.emit('leaveRoom', room.value.roomId);
+  socket.off();
+  socket.disconnect();
   document.body.style = '';
 });
 </script>
 
 <template>
   <div
-    class="bottom-0 right-10 h-screen w-screen rounded-tl-lg rounded-tr-lg border-black md:fixed md:h-[455px] md:w-[338px] md:border-2"
+    class="bottom-0 right-10 h-screen w-screen rounded-tl-lg rounded-tr-lg md:fixed md:h-[455px] md:w-[338px] md:border-2"
   >
     <div
-      class="flex h-14 items-center justify-between border-b-2 border-black px-2 py-2 md:px-4"
+      class="flex h-14 items-center justify-between border-b-2 px-2 py-2 md:px-4"
     >
       <div class="flex items-center">
-        <IconBack @click="toPrevPage" class="mr-2 block h-8 w-8 md:hidden" />
-        <AvatarVue size="40" :imgUrl="'https://i.pravatar.cc/150?img=19'" />
-        <span class="pl-4 font-bold">Dora</span>
+        <Back @click="toPrevPage" class="mr-2 block h-8 w-8 md:hidden" />
+        <img class="avatar h-10 w-10" :src="room.avatar" alt="" />
+        <span class="pl-4 font-bold">{{ room.name }}</span>
       </div>
-      <span @click="closeRoom" class="text-xs text-gray-600"
+      <span @click="closeRoom" class="text-gray text-xs"
         >對方正在輸入中...</span
       >
-      <IconCross
-        class="hidden h-6 w-6 cursor-pointer hover:opacity-50 md:block"
+      <Close
+        class="hidden cursor-pointer hover:opacity-50 md:block"
         @click="closeRoom"
       />
     </div>
-    <div class="inner overflow-y-auto bg-slate-100">
+    <div
+      id="messageContainer"
+      ref="messageContainer"
+      class="inner relative overflow-y-auto bg-slate-100"
+    >
+      <div v-if="fetchAllFlag" class="py-2 text-center text-sm">
+        已無聊天訊息
+      </div>
+      <div class="text-center" v-if="messageList.length === 0">
+        開始聊天吧！
+      </div>
       <template v-for="message in messageList" :key="message._id">
         <chat-room-message :message="message" />
       </template>
     </div>
-    <chat-room-input-box />
+    <div
+      v-if="newMsgFlag"
+      @click="scrollBottom"
+      class="absolute bottom-10 left-0 h-12 w-full bg-black bg-opacity-40 p-2 text-white"
+    >
+      您有新訊息
+    </div>
+    <chat-room-input-box @sendMessage="sendMessage" />
   </div>
 </template>
 

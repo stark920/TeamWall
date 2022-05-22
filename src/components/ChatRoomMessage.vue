@@ -1,8 +1,8 @@
 <script setup>
 import { defineProps, toRefs, computed } from 'vue';
-import { useUserStore } from '../stores';
+import dayjs from 'dayjs';
+import { useUserStore } from '@/store';
 import { storeToRefs } from 'pinia';
-import { formateTime as formateDate } from '../utils/formateTime';
 const useStore = useUserStore();
 const { user: userInfo } = storeToRefs(useStore);
 const props = defineProps({
@@ -12,23 +12,22 @@ const props = defineProps({
     default: () => {},
   },
 });
-const { content, user, createdAt } = toRefs(props.message);
+const { message: content, sender, createdAt } = toRefs(props.message);
 const isSelf = computed(() => {
-  return userInfo.value._id === user.value._id;
+  return userInfo?.value._id === sender.value;
 });
 
 const formateTime = (time) => {
-  return formateDate(time, 'HH:mm');
+  return dayjs(time).format('HH:mm');
 };
 </script>
 
 <template>
   <div class="m-4">
-    <!-- <div class="text-sm text-center pb-2">{{ formateTime(createdAt) }}</div> -->
     <div :class="['flex items-end', { 'flex-row-reverse': isSelf }]">
       <div
         :class="[
-          'm-h-[20px] inline-flex max-w-[300px] rounded-2xl p-2 text-slate-700',
+          'm-h-[20px] inline-flex max-w-[300px] rounded-2xl border-2 p-2',
           isSelf ? 'bg-slate-300' : 'bg-slate-200',
         ]"
       >
