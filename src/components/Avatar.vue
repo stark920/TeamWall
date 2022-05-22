@@ -18,7 +18,7 @@ function getImageUrl(url) {
 
 <template>
   <div
-    class="overflow-hidden rounded-full"
+    class="overflow-hidden rounded-full border-2 border-black"
     :style="`width: ${size}px; height: ${size}px;`"
   >
     <img

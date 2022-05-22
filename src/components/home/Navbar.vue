@@ -1,6 +1,9 @@
 <script setup>
 import { RouterLink } from 'vue-router';
 import Avatar from '../Avatar.vue';
+
+import { useUserStore } from '@/stores';
+const userStore = useUserStore();
 </script>
 
 <template>
@@ -11,7 +14,7 @@ import Avatar from '../Avatar.vue';
           <RouterLink to="/"> MetaWall </RouterLink>
         </h1>
         <div class="flex items-center">
-          <Avatar size="30" imgUrl="avatars/user.png" />
+          <Avatar size="30" :imgUrl="userStore.user?.avatar" />
           <h2
             class="ml-2.5 border-b-2 border-black font-azeret font-bold text-black"
           >
