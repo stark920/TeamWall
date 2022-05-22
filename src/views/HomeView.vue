@@ -1,9 +1,40 @@
 <script setup>
+import { ref, inject } from 'vue';
 import { RouterView } from 'vue-router';
 import Navbar from '../components/home/Navbar.vue';
 import PostOption from '../components/home/PostOption.vue';
 import SideMenu from '../components/home/SideMenu.vue';
 import ChatContainer from '../components/ChatContainer.vue';
+import { useUserStore } from '@/stores';
+const userStore = useUserStore();
+
+const axios = inject('axios');
+const baseUrl = 'http://127.0.0.1:3000';
+
+const checkLogin = () => {
+  // get localStorage JWT token
+  const token = localStorage.getItem('metaWall');
+  if (!token) {
+    console.log('尚未登入');
+    // router.push('/signin')
+    return;
+  }
+
+  // set axios token
+  axios.defaults.headers.common.Authorization = token;
+
+  axios
+    .get(`${baseUrl}/users/check`)
+    .then((res) => {
+      userStore.updateUser(res.data.data);
+    })
+    .catch(() => {
+      console.log('尚未登入');
+      // router.push('/signin')
+    });
+};
+
+checkLogin();
 </script>
 
 <template>
@@ -15,7 +46,11 @@ import ChatContainer from '../components/ChatContainer.vue';
           <RouterView></RouterView>
         </div>
         <div class="hidden md:block">
-          <SideMenu name="邊緣小杰" imgUrl="avatars/user.png" userPageUrl="/user/62808a1b0e634d4c5982976c" />
+          <SideMenu
+            :name="userStore.user?.name"
+            :imgUrl="userStore.user?.avatar"
+            userPageUrl="/user/6289cb654896923f8331bc15"
+          />
         </div>
       </div>
     </div>

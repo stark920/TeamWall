@@ -30,41 +30,41 @@
     </div>
   </div>
   <PostFilter @get-posts="getPosts" />
-  <ul>
+  <ul v-if="userPosts.length > 0">
     <li
       v-for="(item, index) in userPosts"
       :key="index"
-      :class="{ 'mb-4': index < posts.length - 1 }"
+      :class="{ 'mb-4': index < userPosts.length - 1 }"
     >
       <PostCard :post="item" />
     </li>
   </ul>
+  <PostNoneCard v-else />
 </template>
 
 <script setup>
 import PostFilter from '@/components/PostFilter.vue';
+import PostNoneCard from '@/components/PostNoneCard.vue';
 import PostCard from '@/components/PostCard.vue';
 
 import { ref, onMounted, inject, computed } from 'vue';
 import { useRoute } from 'vue-router';
 const axios = inject('axios'); // inject axios
+const baseUrl = 'http://127.0.0.1:3000';
 
 const route = useRoute();
 const id = ref(route.params.id);
 const posts = ref([]);
 
 const isFollow = ref(true);
-const getPosts = (sort = 1, searchKey) => {
-  // sort, searchKey -> PostFilter 傳來的參數
+const getPosts = (sort = 1, searchKey = '') => {
   // sort=1 最新貼文, sort=2 最舊貼文
 
   let sortValue = 'desc'; // 預設 desc
-  if (sort?.value === 2) {
+  if (sort === 2) {
     sortValue = 'asc';
   }
-  const url = `http://localhost:3011/posts?timeSort=${sortValue}&search=${
-    searchKey ? searchKey.value : ''
-  }`;
+  const url = `${baseUrl}/posts?timeSort=${sortValue}&search=${searchKey}`;
   axios
     .get(url)
     .then((res) => {
@@ -75,9 +75,9 @@ const getPosts = (sort = 1, searchKey) => {
     });
 };
 
-// 當前 id 篩選全部貼文
+// 篩選個人貼文 (註：後端出 個人貼文API 後移除)
 const userPosts = computed(() => {
-  return posts.value.filter((item) => item.userId._id === id.value);
+  return posts.value.filter((item) => item.userId?._id === id.value);
 });
 
 onMounted(() => {
