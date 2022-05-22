@@ -49,9 +49,8 @@ import PostCard from '@/components/PostCard.vue';
 
 import { ref, onMounted, inject, computed } from 'vue';
 import { useRoute } from 'vue-router';
+import { API_URL } from '../global/constant';
 const axios = inject('axios'); // inject axios
-const baseUrl = 'http://127.0.0.1:3000';
-
 const route = useRoute();
 const id = ref(route.params.id);
 const posts = ref([]);
@@ -64,7 +63,7 @@ const getPosts = (sort = 1, searchKey = '') => {
   if (sort === 2) {
     sortValue = 'asc';
   }
-  const url = `${baseUrl}/posts?timeSort=${sortValue}&search=${searchKey}`;
+  const url = `${API_URL}/posts?timeSort=${sortValue}&search=${searchKey}`;
   axios
     .get(url)
     .then((res) => {

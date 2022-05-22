@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, defineEmits } from 'vue';
-import Send from '@/icons/Send.vue';
+import Send from '@/components/icons/IconSend.vue';
 const inputBox = ref(null);
 
 const emit = defineEmits(['sendMessage']);

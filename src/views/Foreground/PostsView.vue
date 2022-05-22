@@ -3,9 +3,8 @@ import { ref, onMounted, inject } from 'vue';
 import PostCard from '@/components/PostCard.vue';
 import PostFilter from '@/components/PostFilter.vue';
 import PostNoneCard from '@/components/PostNoneCard.vue';
-
+import { API_URL } from '../global/constant';
 const axios = inject('axios'); // inject axios
-const baseUrl = 'http://127.0.0.1:3000';
 
 const posts = ref([]);
 
@@ -17,7 +16,7 @@ const getPosts = (sort = 1, searchKey = '') => {
     sortValue = 'asc';
   }
   axios
-    .get(`${baseUrl}/posts?timeSort=${sortValue}&search=${searchKey}`)
+    .get(`${API_URL}/posts?timeSort=${sortValue}&search=${searchKey}`)
     .then((res) => {
       posts.value = res.data.data;
     })
