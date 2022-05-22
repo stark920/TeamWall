@@ -1,9 +1,14 @@
 <script setup>
 import { defineProps, toRefs } from 'vue';
-import AvatarVue from './Avatar.vue';
+import { useToast } from 'vue-toastification';
+import dayjs from 'dayjs';
 import eventBus from '../utils/eventBus';
 import { useRouter } from 'vue-router';
-import { formateTime as formateDate } from '../utils/formateTime';
+import { storeToRefs } from 'pinia';
+import { useRoomStore } from '@/stores';
+const roomStore = useRoomStore();
+const toast = useToast();
+const { room } = storeToRefs(roomStore);
 const router = useRouter();
 const props = defineProps({
   room: {
@@ -12,17 +17,22 @@ const props = defineProps({
     default: () => {},
   },
 });
-const { receiver, channelId, message } = toRefs(props.room);
+const { name, message: msg, avatar, roomId, _id } = toRefs(props.room);
 const formateTime = (time) => {
-  return formateDate(time, 'YYYY/MM/DD');
+  return dayjs(time).format('YYYY/MM/DD ');
 };
 const isMobile = () => {
   return document.body.clientWidth < 768;
 };
 const goChatRoom = () => {
-  console.log('channelId', channelId.value);
+  console.log('channelId', roomId.value);
+  if (room.value.roomId && room.value.roomId !== roomId.value) {
+    toast.error('您一次只能跟一個人聊天');
+    return;
+  }
+  roomStore.updateRoom({ roomId, name, avatar, receiver: _id });
   if (isMobile()) {
-    router.push('/chat-room');
+    router.push('/chatroom');
     return;
   }
   eventBus.emit('handleRoom', true);
@@ -32,19 +42,21 @@ const goChatRoom = () => {
 <template>
   <li
     @click="goChatRoom"
-    class="mb-4 flex h-[77px] cursor-pointer items-baseline justify-between rounded-lg border-2 border-black bg-white p-4 shadow-post"
+    class="box-rounded mb-4 flex h-[77px] cursor-pointer items-baseline justify-between p-4"
   >
     <div class="flex">
-      <AvatarVue size="40" :imgUrl="receiver.avatar" />
+      <img class="avatar h-10 w-10" :src="avatar" alt="avatar" />
       <div class="flex-1 pl-2">
-        <p class="font-bold">{{ receiver.userName }}</p>
+        <p class="font-bold">{{ name }}</p>
         <p
-          class="h-10 w-[180px] overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-slate-700 md:w-[400px]"
+          class="h-10 w-[200px] overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-slate-700 md:w-80"
         >
-          {{ message.content }}
+          {{ msg?.[0]?.message }}
         </p>
       </div>
     </div>
-    <span class="text-gray text-xs">{{ formateTime(message.createdAt) }}</span>
+    <span class="text-gray text-xs">{{
+      formateTime(msg?.[0]?.createdAt)
+    }}</span>
   </li>
 </template>

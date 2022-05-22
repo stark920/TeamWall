@@ -6,10 +6,10 @@ import PostOption from '../components/home/PostOption.vue';
 import SideMenu from '../components/home/SideMenu.vue';
 import ChatContainer from '../components/ChatContainer.vue';
 import { useUserStore } from '@/stores';
+import { API_URL } from '@/global/constant';
 const userStore = useUserStore();
 
 const axios = inject('axios');
-const baseUrl = 'http://127.0.0.1:3000';
 
 const checkLogin = () => {
   // get localStorage JWT token
@@ -24,7 +24,7 @@ const checkLogin = () => {
   axios.defaults.headers.common.Authorization = token;
 
   axios
-    .get(`${baseUrl}/users/check`)
+    .get(`${API_URL}/users/check`)
     .then((res) => {
       userStore.updateUser(res.data.data);
     })

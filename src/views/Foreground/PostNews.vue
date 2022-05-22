@@ -1,7 +1,7 @@
 <script setup>
 import { ref, inject, reactive } from 'vue';
 import CardTitle from '@/components/CardTitle.vue';
-
+import { API_URL } from '@/global/constant';
 const axios = inject('axios');
 
 const postContent = ref('');
@@ -28,7 +28,7 @@ const previewImage = (event) => {
 const submitPost = () => {
   data.isWarnHint = true;
   axios
-    .post('https://teamwork02.herokuapp.com/posts', {
+    .post(`${API_URL}/posts`, {
       userName: 'aa',
       avatar:
         'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/377.jpg',

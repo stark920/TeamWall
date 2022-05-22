@@ -6,18 +6,18 @@ import IconArrowRightVue from '@/components/icons/IconArrowRight.vue';
 
 import { ref, onMounted, inject } from 'vue';
 import { useRouter } from 'vue-router';
+import { API_URL } from '@/global/constant';
 const router = useRouter();
 const axios = inject('axios'); // inject axios
-const baseUrl = 'http://127.0.0.1:3000';
+
 
 const userId = '6289cb654896923f8331bc15'; // 待調整:登入userId
 const likes = ref([]);
 
 const getLikes = () => {
   const data = { userId };
-  const url = `${baseUrl}/likes`;
   axios
-    .post(url, data)
+    .post(`${API_URL}/likes`, data)
     .then((res) => {
       likes.value = res.data.data;
     })
@@ -28,9 +28,8 @@ const getLikes = () => {
 
 const canclePost = (postId) => {
   const data = { userId, posts: postId };
-  const url = `${baseUrl}/likes/likePost`;
   axios
-    .post(url, data)
+    .post(`${API_URL}/likes/likePost`, data)
     .then(() => {
       getLikes();
     })

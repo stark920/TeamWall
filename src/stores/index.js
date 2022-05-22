@@ -1,2 +1,3 @@
 import useUserStore from './user';
-export { useUserStore };
+import useRoomStore from './room';
+export { useUserStore, useRoomStore };

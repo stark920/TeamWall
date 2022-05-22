@@ -1,48 +1,26 @@
 <script setup>
-import { reactive } from 'vue';
+import { reactive, onMounted, inject } from 'vue';
+import { API_URL } from '@/global/constant';
 import CardTitleVue from '../../components/CardTitle.vue';
 import ChatRoomListItem from '../../components/ChatRoomListItem.vue';
-const chatList = reactive([
-  {
-    roomId: 124234234,
-    receiver: {
-      _id: '2266',
-      userName: 'Dora',
-      avatar: 'https://i.pravatar.cc/150?img=19',
-    },
-    // 以下使用關聯
-    channelId: 1,
-    message: {
-      _id: 9,
-      user: {
-        userName: 'joe',
-        _id: '5566',
-      },
-      content: '等待時間直接變成一個半小時',
-      createdAt: '2022-05-05T12:33:19.793Z',
-    },
-  },
-  {
-    roomId: 124234238,
-    receiver: {
-      _id: '8866',
-      userName: 'May',
-      avatar: 'https://i.pravatar.cc/150?img=27',
-    },
-    // 以下使用關聯
-    channelId: 2,
-    message: {
-      _id: 10,
-      user: {
-        userName: 'joe',
-        _id: '5566',
-      },
-      content:
-        '我不想聽我不想聽我不想聽我不想聽我不想聽我不想聽我不想聽我不想聽我不想聽我不想聽我不想聽我不想聽我不想聽我不想聽我不想聽我不想聽',
-      createdAt: '2022-05-05T12:33:19.793Z',
-    },
-  },
-]);
+const axios = inject('axios');
+const chatList = reactive([]);
+const queryRoomList = async () => {
+  try {
+    const res = await axios.post(`${API_URL}/chat/chat-record`);
+    const { status, chatRecord } = res;
+    if (status === 'success') {
+      Object.assign(chatList, chatRecord);
+      console.log('chatList', chatList);
+    }
+  } catch (error) {
+    console.log('error', error);
+  }
+};
+
+onMounted(() => {
+  queryRoomList();
+});
 </script>
 
 <template>
