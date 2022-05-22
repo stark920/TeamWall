@@ -17,9 +17,9 @@ defineProps({
   <div class="rounded-lg border-2 border-black bg-white p-6">
     <UserInfo
       class="mb-4"
-      :imgUrl="post.userId.photo"
-      :name="post.userId.name"
-      userPageUrl="#"
+      :imgUrl="post.userId?.avatar"
+      :name="post.userId?.name"
+      :userPageUrl="`/user/${post.userId?._id}`"
       :subTitle="post.createAt"
     />
     <p class="mb-4 whitespace-pre">{{ post.content }}</p>

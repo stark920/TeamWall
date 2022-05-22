@@ -49,7 +49,7 @@ checkLogin();
           <SideMenu
             :name="userStore.user?.name"
             :imgUrl="userStore.user?.avatar"
-            userPageUrl="/user/62808a1b0e634d4c5982976c"
+            userPageUrl="/user/6289cb654896923f8331bc15"
           />
         </div>
       </div>
