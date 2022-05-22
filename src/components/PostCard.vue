@@ -14,7 +14,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="rounded-lg border-2 border-black bg-white p-6">
+  <div class="rounded-lg border-2 border-black bg-white p-6 shadow-post">
     <UserInfo
       class="mb-4"
       :imgUrl="post.userId?.avatar"

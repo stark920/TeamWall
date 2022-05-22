@@ -30,19 +30,21 @@
     </div>
   </div>
   <PostFilter @get-posts="getPosts" />
-  <ul>
+  <ul v-if="userPosts.length > 0">
     <li
       v-for="(item, index) in userPosts"
       :key="index"
-      :class="{ 'mb-4': index < posts.length - 1 }"
+      :class="{ 'mb-4': index < userPosts.length - 1 }"
     >
       <PostCard :post="item" />
     </li>
   </ul>
+  <PostNoneCard v-else />
 </template>
 
 <script setup>
 import PostFilter from '@/components/PostFilter.vue';
+import PostNoneCard from '@/components/PostNoneCard.vue';
 import PostCard from '@/components/PostCard.vue';
 
 import { ref, onMounted, inject, computed } from 'vue';
