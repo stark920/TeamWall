@@ -62,14 +62,34 @@ const userInfo = reactive({
 const signIn = async () => {
   const data = userInfo;
   try {
-    const res = await axios.post(`${API_URL}/sign-in`, data);
+    const res = await axios.post(`${API_URL}/user/sign-in`, data);
     if (res.data.data) {
       const token = res.headers.authorization.split(' ')[1];
-      localStorage.setItem('loginToken', token);
+      localStorage.setItem('signInToken', token);
       router.push('/');
     }
   } catch (error) {
     console.log(error);
   }
 };
+
+const checkSignIn = async () => {
+  const token = localStorage.getItem('signInToken');
+  if (token) {
+    const apiUrl = `${API_URL}/user/check`;
+    axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+    try {
+      const res = await axios.get(apiUrl);
+      if (res.data.status === 'success') {
+        router.push('/');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
+
+onMounted(() => {
+  checkSignIn();
+});
 </script>
