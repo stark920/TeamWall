@@ -1,7 +1,5 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import axios from 'axios';
-import VueAxios from 'vue-axios';
 import App from './App.vue';
 import router from './router';
 import { dateTime } from './utils/filter';
@@ -27,9 +25,7 @@ app.config.globalProperties.$filters = {
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 
-app.use(VueAxios, axios);
 app.use(pinia);
 app.use(router);
 app.use(Toast);
-app.provide('axios', app.config.globalProperties.axios); // provide 'axios'
 app.mount('#app');

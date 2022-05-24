@@ -1,13 +1,12 @@
 <script setup>
-import { reactive, onMounted, inject } from 'vue';
-import { API_URL } from '@/global/constant';
-import CardTitleVue from '../../components/CardTitle.vue';
-import ChatRoomListItem from '../../components/ChatRoomListItem.vue';
-const axios = inject('axios');
+import { reactive, onMounted } from 'vue';
+import CardTitleVue from '@/components/CardTitle.vue';
+import ChatRoomListItem from '@/components/ChatRoomListItem.vue';
+import { apiChat } from '@/utils/apiChat';
 const chatList = reactive([]);
 const queryRoomList = async () => {
   try {
-    const res = await axios.post(`${API_URL}/chat/chat-record`);
+    const res = await apiChat.record();
     const { status, chatRecord } = res;
     if (status === 'success') {
       Object.assign(chatList, chatRecord);

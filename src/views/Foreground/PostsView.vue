@@ -1,11 +1,12 @@
 <script setup>
-import { ref, onMounted, inject } from 'vue';
+import { ref, onMounted } from 'vue';
 import PostCard from '@/components/PostCard.vue';
 import PostFilter from '@/components/PostFilter.vue';
-import PostNoneCard from '@/components/PostNoneCard.vue';
-import { API_URL } from '@/global/constant';
-const axios = inject('axios'); // inject axios
+import PostEmptyCard from '@/components/PostEmptyCard.vue';
+import { apiPost } from '@/utils/apiPost';
+import PostLoadingCard from '@/components/PostLoadingCard.vue';
 
+const isLoading = ref(true);
 const posts = ref([]);
 
 const getPosts = (sort = 1, searchKey = '') => {
@@ -15,10 +16,12 @@ const getPosts = (sort = 1, searchKey = '') => {
   if (sort === 2) {
     sortValue = 'asc';
   }
-  axios
-    .get(`${API_URL}/posts?timeSort=${sortValue}&search=${searchKey}`)
+
+  apiPost
+    .getAll(`timeSort=${sortValue}&search=${searchKey}`)
     .then((res) => {
       posts.value = res.data.data;
+      isLoading.value = false;
     })
     .catch((err) => {
       console.log(err);
@@ -32,14 +35,28 @@ onMounted(() => {
 
 <template>
   <PostFilter @get-posts="getPosts" />
-  <ul v-if="posts.length > 0">
-    <li
-      v-for="(item, index) in posts"
-      :key="item.id"
-      :class="{ 'mb-4': index < posts.length - 1 }"
-    >
-      <PostCard :post="item" @get-posts="getPosts" />
+
+  <ul v-show="isLoading">
+    <li v-for="index in 3" :key="index" class="mb-4">
+      <PostLoadingCard></PostLoadingCard>
     </li>
   </ul>
-  <PostNoneCard v-else />
+
+  <div v-show="!isLoading">
+    <ul v-if="posts.length > 0">
+      <li
+        v-for="(item, index) in posts"
+        :key="item.id"
+        :class="{ 'mb-4': index < posts.length - 1 }"
+      >
+        <PostCard :post="item" />
+      </li>
+    </ul>
+
+    <PostEmptyCard v-else>
+      <p class="p-8 text-center text-subtitle">
+        目前尚無動態，新增一則貼文吧！
+      </p>
+    </PostEmptyCard>
+  </div>
 </template>

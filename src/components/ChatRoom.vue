@@ -7,7 +7,7 @@ import Close from '../components/icons/IconCross.vue';
 import Back from '../components/icons/IconBack.vue';
 import eventBus from '../utils/eventBus';
 import { throttle } from '../utils/common';
-import { API_URL } from '@/global/constant';
+import { API_URL } from '../global/constant';
 import { storeToRefs } from 'pinia';
 import { useRoomStore, useUserStore } from '@/stores';
 import { useRouter } from 'vue-router';

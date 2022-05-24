@@ -6,7 +6,7 @@ import IconBellVue from '../icons/IconBell.vue';
 import IconThumbsUpVue from '../icons/IconThumbsUp.vue';
 import IconChatVue from '../icons/IconChat.vue';
 defineProps({
-  imgUrl: {
+  avatar: {
     type: String,
   },
   name: {
@@ -22,15 +22,17 @@ defineProps({
 
 <template>
   <div class="flex flex-col border-2 border-black bg-white px-6 py-8">
-    <RouterLink to="/post-news"
-      class="mb-6 flex items-center justify-center rounded-lg border-2 border-black bg-primary py-2 text-lg text-white hover:bg-warning hover:text-black">
+    <RouterLink
+      to="/post-news"
+      class="mb-6 flex items-center justify-center rounded-lg border-2 border-black bg-primary py-2 text-lg text-white hover:bg-warning hover:text-black"
+    >
       張貼動態
     </RouterLink>
 
     <ul class="ml-2 flex flex-col">
       <li>
         <RouterLink :to="userPageUrl" class="mb-5 flex items-center">
-          <AvatarVue size="50" :imgUrl="imgUrl" class="cursor-pointer" />
+          <AvatarVue size="50" :imgUrl="avatar" class="cursor-pointer" />
           <h3 class="ml-4 font-bold">{{ name }}</h3>
         </RouterLink>
       </li>

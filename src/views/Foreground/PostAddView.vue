@@ -1,8 +1,7 @@
 <script setup>
-import { ref, inject, reactive } from 'vue';
+import { ref, reactive } from 'vue';
 import CardTitle from '@/components/CardTitle.vue';
-import { API_URL } from '@/global/constant';
-const axios = inject('axios');
+import { apiPost } from '@/utils/apiPost';
 
 const postContent = ref('');
 
@@ -27,11 +26,8 @@ const previewImage = (event) => {
 
 const submitPost = () => {
   data.isWarnHint = true;
-  axios
-    .post(`${API_URL}/posts`, {
-      userName: 'aa',
-      avatar:
-        'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/377.jpg',
+  apiPost
+    .upload({
       content: postContent.value,
       updateImage: data.preview,
     })

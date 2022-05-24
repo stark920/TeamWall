@@ -3,18 +3,16 @@ import CardTitle from '@/components/CardTitle.vue';
 import UserInfo from '@/components/UserInfo.vue';
 import IconThumbsUpVue from '@/components/icons/IconThumbsUp.vue';
 import IconArrowRightVue from '@/components/icons/IconArrowRight.vue';
-
-import { ref, onMounted, inject } from 'vue';
+import { ref, onMounted } from 'vue';
+import { apiLike } from '@/utils/apiLike';
 import { useRouter } from 'vue-router';
-import { API_URL } from '@/global/constant';
 const router = useRouter();
-const axios = inject('axios'); // inject axios
 
 const likes = ref([]);
 
 const getLikes = () => {
-  axios
-    .get(`${API_URL}/likes`)
+  apiLike
+    .getAll()
     .then((res) => {
       likes.value = res.data.data;
     })
@@ -23,12 +21,11 @@ const getLikes = () => {
     });
 };
 
-const canclePost = (postId) => {
-  const data = { posts: postId };
-  axios
-    .post(`${API_URL}/likes/likePost`, data)
-    .then(() => {
-      getLikes();
+const cancelPost = (postId) => {
+  apiLike
+    .cancel(postId)
+    .then((res) => {
+      likes.value = res.data.data;
     })
     .catch((err) => {
       console.log(err);
@@ -61,7 +58,7 @@ onMounted(() => {
             <button
               type="button"
               class="flex flex-col items-center justify-center gap-1"
-              @click="canclePost(item._id)"
+              @click="cancelPost(item._id)"
             >
               <IconThumbsUpVue class="h-5 w-5 text-primary" />
               <span>取消</span>

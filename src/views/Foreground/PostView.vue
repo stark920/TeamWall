@@ -1,18 +1,16 @@
 <script setup>
-import { ref, onMounted, inject } from 'vue';
+import { ref, onMounted } from 'vue';
+import { apiPost } from '@/utils/apiPost';
 import { useRoute } from 'vue-router';
-import { API_URL } from '@/global/constant';
 import PostCard from '@/components/PostCard.vue';
 const route = useRoute();
+
 const id = ref(route.params.id);
-
-const axios = inject('axios'); // inject axios
-
 const post = ref([]);
 
 const getPost = () => {
-  axios
-    .get(`${API_URL}/posts/${id.value}`)
+  apiPost
+    .getOne(id.value)
     .then((res) => {
       [post.value] = res.data.data;
     })

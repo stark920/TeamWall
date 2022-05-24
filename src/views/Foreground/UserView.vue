@@ -49,23 +49,53 @@
       <PostCard :post="item" @get-posts="getPosts" />
     </li>
   </ul>
-  <PostNoneCard v-else />
+  <PostEmptyCard v-else />
 </template>
 
 <script setup>
 import PostFilter from '@/components/PostFilter.vue';
-import PostNoneCard from '@/components/PostNoneCard.vue';
+import PostEmptyCard from '@/components/PostEmptyCard.vue';
 import PostCard from '@/components/PostCard.vue';
 import eventBus from '@/utils/eventBus';
+<<<<<<< HEAD
 import { useRoomStore, useUserStore } from '@/stores';
 import { ref, onMounted, inject, computed } from 'vue';
+=======
+import { useRoomStore } from '@/stores';
+import { ref, onMounted, computed } from 'vue';
+>>>>>>> 09db409 (refactor/integratedAxios)
 import { useRoute } from 'vue-router';
-import { API_URL } from '@/global/constant';
+import { apiPost } from '@/utils/apiPost';
+import { apiChat } from '@/utils/apiChat';
 const roomStore = useRoomStore();
+<<<<<<< HEAD
 const userStore = useUserStore(); // 登入者資料
 const axios = inject('axios'); // inject axios
 const route = useRoute();
 const { id } = route.params; // 個人頁 userId
+=======
+const route = useRoute();
+const id = ref(route.params.id);
+const posts = ref([]);
+
+const isFollow = ref(true);
+const getPosts = (sort = 1, searchKey = '') => {
+  // sort=1 最新貼文, sort=2 最舊貼文
+
+  let sortValue = 'desc'; // 預設 desc
+  if (sort === 2) {
+    sortValue = 'asc';
+  }
+  apiPost
+    .getAll(`timeSort=${sortValue}&search=${searchKey}`)
+    .then((res) => {
+      posts.value = res.data.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+>>>>>>> 09db409 (refactor/integratedAxios)
 
 //取得聊天室id並且開啟聊天視窗
 const sendMessage = async () => {
@@ -73,7 +103,7 @@ const sendMessage = async () => {
     receiver: '62834466572c43bf1eb3058b',
   };
   try {
-    const res = await axios.post(`${API_URL}/chat/room-info`, sendData);
+    const res = await apiChat.room(sendData);
     const { status, roomId, name, avatar, _id } = res;
     if (status === 'success') {
       roomStore.updateRoom({ roomId, name, avatar, receiver: _id });
