@@ -45,7 +45,7 @@ defineProps({
         </RouterLink>
       </li>
       <li>
-        <RouterLink to="#" class="mb-5 flex items-center">
+        <RouterLink to="/likes" class="mb-5 flex items-center">
           <IconButtonVue size="50">
             <IconThumbsUpVue class="h-6 w-6" />
           </IconButtonVue>

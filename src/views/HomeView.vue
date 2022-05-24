@@ -48,8 +48,8 @@ checkLogin();
         <div class="hidden md:block">
           <SideMenu
             :name="userStore.user?.name"
-            :imgUrl="userStore.user?.avatar"
-            userPageUrl="/user/6289cb654896923f8331bc15"
+            :imgUrl="userStore.user?.avatar?.url"
+            :userPageUrl="`/user/${userStore.user?.id}`"
           />
         </div>
       </div>
