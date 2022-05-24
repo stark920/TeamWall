@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted, inject } from 'vue';
+import { reactive, onMounted, onBeforeUnmount, inject } from 'vue';
 import { API_URL } from '@/global/constant';
 import CardTitleVue from '../../components/CardTitle.vue';
 import ChatRoomListItem from '../../components/ChatRoomListItem.vue';
@@ -26,6 +26,10 @@ const queryRoomList = async () => {
 
 onMounted(() => {
   queryRoomList();
+});
+
+onBeforeUnmount(() => {
+  eventBus.all.clear();
 });
 </script>
 

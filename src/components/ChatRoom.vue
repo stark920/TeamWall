@@ -6,7 +6,7 @@ import ChatRoomInputBox from './ChatRoomInputBox.vue';
 import Close from '../components/icons/IconCross.vue';
 import Back from '../components/icons/IconBack.vue';
 import eventBus from '../utils/eventBus';
-import { throttle } from '../utils/common';
+import { throttle, deviceType } from '../utils/common';
 import { API_URL } from '@/global/constant';
 import { storeToRefs } from 'pinia';
 import { useRoomStore, useUserStore } from '@/stores';
@@ -138,14 +138,11 @@ const toPrevPage = () => {
   router.go(-1);
 };
 
-const isMobile = () => {
-  return document.body.clientWidth < 768;
-};
-
 onMounted(() => {
   console.warn('mounted');
   // 鎖ios橡皮筋效果
-  isMobile() && (document.body.style = 'overflow: hidden;position:fixed');
+  deviceType() !== 'desktop' &&
+    (document.body.style = 'overflow: hidden;position:fixed');
   detectTop();
 });
 
