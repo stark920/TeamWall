@@ -12,6 +12,7 @@ import { storeToRefs } from 'pinia';
 import { useRoomStore, useUserStore } from '@/stores';
 import { useRouter } from 'vue-router';
 import { io } from 'socket.io-client';
+import { token } from '../utils/apiChat';
 const toast = useToast();
 const useStore = useUserStore();
 const roomStore = useRoomStore();
@@ -25,7 +26,6 @@ const flagHistory = ref(false);
 const scrollRecord = ref(0);
 const messageList = reactive([]);
 
-const token = localStorage.getItem('token');
 if (!token) {
   router.push('/');
 }

@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, toRefs, computed } from 'vue';
+import { toRefs, computed } from 'vue';
 import dayjs from 'dayjs';
 import { useUserStore } from '@/stores';
 import { storeToRefs } from 'pinia';
