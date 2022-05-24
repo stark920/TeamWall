@@ -1,5 +1,3 @@
-41 lines (36 sloc)  834 Bytes
-   
 import axios from 'axios';
 import { API_URL } from '../global/constant';
 

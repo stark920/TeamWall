@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import PostsView from '../views/Foreground/PostsView.vue';
-import RegisterView from '@/views/RegisterView.vue';
+import LoginView from '@/views/LoginView.vue';
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -53,19 +53,25 @@ const router = createRouter({
       ],
     },
     {
+      path: '/user',
+      component: LoginView,
+      children: [
+        {
+          path: '/sign-in',
+          name: 'sign-in',
+          component: () => import('../views/Foreground/SignInView.vue'),
+        },
+        {
+          path: '/sign-up',
+          name: 'sign-up',
+          component: () => import('../views/Foreground/SignUpView.vue'),
+        },
+      ],
+    },
+    {
       path: '/chat-room',
       name: 'chat-room',
       component: () => import('../views/Foreground/ChatRoomView.vue'),
-    },
-    {
-      path: '/register',
-      name: 'register',
-      component: RegisterView,
-    },
-    {
-      path: '/sign-in',
-      name: 'signIn',
-      component: () => import('../views/signIn.vue'),
     },
   ],
 });

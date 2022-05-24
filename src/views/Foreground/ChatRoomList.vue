@@ -2,7 +2,7 @@
 import { reactive, onMounted, onBeforeUnmount } from 'vue';
 import CardTitleVue from '../../components/CardTitle.vue';
 import ChatRoomListItem from '../../components/ChatRoomListItem.vue';
-import eventBus from '../utils/eventBus';
+import eventBus from '@/utils/eventBus';
 import { apiChat } from '@/utils/apiChat';
 const chatList = reactive([]);
 
