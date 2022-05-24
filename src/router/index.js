@@ -4,7 +4,7 @@ import PostsView from '../views/Foreground/PostsView.vue';
 import RegisterView from '@/views/RegisterView.vue';
 
 const router = createRouter({
-  history: createWebHashHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(),
   routes: [
     {
       path: '/',

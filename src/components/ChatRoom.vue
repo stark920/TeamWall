@@ -6,7 +6,7 @@ import ChatRoomInputBox from './ChatRoomInputBox.vue';
 import Close from '../components/icons/IconCross.vue';
 import Back from '../components/icons/IconBack.vue';
 import eventBus from '../utils/eventBus';
-import { throttle } from '../utils/common';
+import { throttle, deviceType } from '../utils/common';
 import { API_URL } from '@/global/constant';
 import { storeToRefs } from 'pinia';
 import { useRoomStore, useUserStore } from '@/stores';
@@ -53,6 +53,7 @@ socket.emit('joinRoom', room.value.roomId);
 socket.on('chatMessage', (msg) => {
   console.log('接收到別人傳的訊息', msg);
   messageList.push(msg);
+  eventBus.emit('updateChatRecord', { roomId: room.value.roomId, msg });
   if (
     messageContainer.value.scrollHeight - messageContainer.value.scrollTop >
     messageContainer.value.clientHeight
@@ -137,14 +138,11 @@ const toPrevPage = () => {
   router.go(-1);
 };
 
-const isMobile = () => {
-  return document.body.clientWidth < 768;
-};
-
 onMounted(() => {
   console.warn('mounted');
   // 鎖ios橡皮筋效果
-  isMobile() && (document.body.style = 'overflow: hidden;position:fixed');
+  deviceType() !== 'desktop' &&
+    (document.body.style = 'overflow: hidden;position:fixed');
   detectTop();
 });
 
@@ -160,10 +158,10 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    class="bottom-0 right-10 h-screen w-screen rounded-tl-lg rounded-tr-lg md:fixed md:h-[455px] md:w-[338px] md:border-2"
+    class="bottom-0 right-10 h-screen w-screen overflow-hidden rounded-tl-lg rounded-tr-lg md:fixed md:h-[455px] md:w-[338px] md:border-2"
   >
     <div
-      class="flex h-14 items-center justify-between border-b-2 px-2 py-2 md:px-4"
+      class="flex h-14 items-center justify-between border-b-2 bg-white px-2 py-2 md:px-4"
     >
       <div class="flex items-center">
         <Back @click="toPrevPage" class="mr-2 block h-8 w-8 md:hidden" />
@@ -183,9 +181,6 @@ onBeforeUnmount(() => {
       ref="messageContainer"
       class="inner relative overflow-y-auto bg-slate-100"
     >
-      <div v-if="fetchAllFlag" class="py-2 text-center text-sm">
-        已無聊天訊息
-      </div>
       <div class="text-center" v-if="messageList.length === 0">
         開始聊天吧！
       </div>

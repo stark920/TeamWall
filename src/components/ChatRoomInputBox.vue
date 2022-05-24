@@ -1,14 +1,18 @@
 <script setup>
+import { useToast } from 'vue-toastification';
 import { ref, onMounted, defineEmits } from 'vue';
 import Send from '@/components/icons/IconSend.vue';
 const inputBox = ref(null);
-
+const toast = useToast();
 const emit = defineEmits(['sendMessage']);
 const sendMessage = () => {
   const value = inputBox.value.innerText;
-  if (value === '') return;
+  if (value === '') {
+    toast.error('請輸入內容再送出訊息');
+    return;
+  }
   if (value.length > 100) {
-    console.log('輸入內容長度超過上限');
+    toast.error('輸入內容長度超過上限');
     return;
   }
   emit('sendMessage', value);
