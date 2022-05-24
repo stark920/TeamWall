@@ -1,10 +1,9 @@
 <script setup>
-import { reactive, onMounted, onBeforeUnmount, inject } from 'vue';
-import { API_URL } from '@/global/constant';
+import { reactive, onMounted, onBeforeUnmount } from 'vue';
 import CardTitleVue from '../../components/CardTitle.vue';
 import ChatRoomListItem from '../../components/ChatRoomListItem.vue';
 import eventBus from '../utils/eventBus';
-const axios = inject('axios');
+import { apiChat } from '@/utils/apiChat';
 const chatList = reactive([]);
 
 eventBus.on('updateChatRecord', ({ roomId, msg }) => {
@@ -13,7 +12,7 @@ eventBus.on('updateChatRecord', ({ roomId, msg }) => {
 });
 const queryRoomList = async () => {
   try {
-    const res = await axios.post(`${API_URL}/chat/chat-record`);
+    const res = await apiChat.record();
     const { status, chatRecord } = res;
     if (status === 'success') {
       Object.assign(chatList, chatRecord);

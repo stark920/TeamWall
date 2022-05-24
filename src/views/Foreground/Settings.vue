@@ -1,65 +1,63 @@
 <script setup>
-  import { ref, reactive } from 'vue';
-  import axios from 'axios';
-  import CardTitle from '@/components/CardTitle.vue';
-  import { useUserStore } from '@/stores';
-  import { API_URL } from '@/global/constant';
+import { ref, reactive } from 'vue';
+import CardTitle from '@/components/CardTitle.vue';
+import { useUserStore } from '@/stores';
+import { apiUser } from '@/utils/apiUser';
 
+const user = useUserStore();
 
-  const user = useUserStore();
+const tabName = ref('editNickName');
+const changeTab = (name) => {
+  tabName.value = name;
+};
 
-  const tabName = ref('editNickName');
-  const changeTab = (name) => {
-    tabName.value = name;
-  };
+// Profile
+const changeUserProfile = reactive({});
+const imageFile = ref(null);
+const updateUserProfile = () => {
+  const photos = Array.from(imageFile.value.files);
+  const form = new FormData();
+  photos.forEach((item) => {
+    form.append('photo', item);
+  });
+  form.append('name', changeUserProfile.name);
+  form.append('sex', changeUserProfile.sex);
 
-  const token = localStorage.getItem('metaWall');
-  if (token) axios.defaults.headers.common.Authorization = `Bearer ${token}` ;
-  
-  // Profile
-  const changeUserProfile = reactive({});
-  const imageFile = ref(null);
-  const updateUserProfile = () => {
-    const photos = Array.from(imageFile.value.files);
-    const form = new FormData();
-    photos.forEach((item) => {
-      form.append("photo", item);
-    })
-    form.append("name", changeUserProfile.name);
-    form.append("sex", changeUserProfile.sex);
+  apiUser.updateProfile(form).then((res) => {
+    if (res.data.status === 'success') {
+      console.log('更新成功');
+      user.updateUser(res.data.data);
+    } else {
+      // updateProfileMessage.value = 'failed';
+    }
+  });
+};
 
-    axios.patch(`${API_URL}/users/profile`).then((res) => {
-       if (res.data.status === 'success') {
-        console.log('更新成功');
-        user.updateUser(res.data.data);
-      } else {
-        updateProfileMessage.value = "failed";
-      }
-    })
-  }
-
-  // Password
-  const changePassword = reactive({});
-  const pwdErrorMessage = ref('');
-  const updateUserPwd = () => {
-    const {password, passwordConfirm} = changePassword
-    if (password === passwordConfirm) {
-      axios.patch(`${API_URL}/users/profile/pwd`, changePassword).then((res) => {
+// Password
+const changePassword = reactive({});
+const pwdErrorMessage = ref('');
+const updateUserPwd = () => {
+  const { password, passwordConfirm } = changePassword;
+  if (password === passwordConfirm) {
+    apiUser
+      .updatePassword(changePassword)
+      .then((res) => {
         console.log(res.data);
         if (res.data.status) {
           resetPwdForm();
           pwdErrorMessage.value = '';
         }
-      }).catch((err) => {
-        pwdErrorMessage.value = '請重新設定密碼'
       })
-    } else {
-      pwdErrorMessage.value = '密碼不一致';
-    }
+      .catch(() => {
+        pwdErrorMessage.value = '請重新設定密碼';
+      });
+  } else {
+    pwdErrorMessage.value = '密碼不一致';
   }
-  const resetPwdForm = () => {
-    Object.keys(changePassword).forEach((item) => changePassword[item] = '');
-  };
+};
+const resetPwdForm = () => {
+  Object.keys(changePassword).forEach((item) => (changePassword[item] = ''));
+};
 </script>
 
 <template>
@@ -93,19 +91,21 @@
       <img
         src="https://fakeimg.pl/107x107"
         alt="fakeimg"
-        class="mb-4 w-24 h-24 rounded-full border-2 border-black"
+        class="mb-4 h-24 w-24 rounded-full border-2 border-black"
       />
-      <input ref="imageFile"
+      <input
+        ref="imageFile"
         type="file"
         name="photos"
         accept="image/png, image/jpeg, image/jpg"
-        class="hidden btn btn-dark px-8 py-1 mb-4"
+        class="btn btn-dark mb-4 hidden px-8 py-1"
       />
-      <input 
+      <input
         type="button"
         value="上傳大頭照"
         class="mb-4 rounded border-black bg-black px-6 py-1 text-white"
-        @click="imageFile.click()">
+        @click="imageFile.click()"
+      />
       <form @submit.prevent="updateUserProfile" action="" class="">
         <div class="mb-4">
           <label for="nickName" class="mb-1 block">暱稱</label>
@@ -120,13 +120,14 @@
         </div>
         <div class="mb-8">
           <label for="male" class="mb-1 block">性別</label>
-          <input 
+          <input
             v-model="changeUserProfile.sex"
             type="radio"
             name="sex"
             id="male"
             value="male"
-            class="mr-3" />
+            class="mr-3"
+          />
           <label for="male" class="mr-7">男性</label>
           <input
             v-model="changeUserProfile.sex"
@@ -146,7 +147,11 @@
       </form>
     </template>
     <template v-else>
-      <form @submit.prevent="updateUserPwd" action="" class="flex-col items-center">
+      <form
+        @submit.prevent="updateUserPwd"
+        action=""
+        class="flex-col items-center"
+      >
         <div class="mb-1">
           <label for="newPassword" class="mb-1 block">輸入新密碼</label>
           <input
@@ -158,7 +163,9 @@
             required
           />
         </div>
-        <p v-if="pwdErrorMessage" class="mb-4 text-warning">{{pwdErrorMessage}}</p>
+        <p v-if="pwdErrorMessage" class="mb-4 text-warning">
+          {{ pwdErrorMessage }}
+        </p>
         <div class="mb-8">
           <label for="checkPassword" class="mb-1 block">再次輸入</label>
           <input
@@ -173,7 +180,7 @@
         <input
           type="submit"
           value="重設密碼"
-          class="w-full rounded border-2 border-black bg-subtitle py-4 text-white text-black"
+          class="w-full rounded border-2 border-black bg-subtitle py-4 text-black"
         />
       </form>
     </template>

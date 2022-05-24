@@ -58,36 +58,17 @@ import PostNoneCard from '@/components/PostNoneCard.vue';
 import PostCard from '@/components/PostCard.vue';
 import eventBus from '@/utils/eventBus';
 import { useRoomStore, useUserStore } from '@/stores';
-import { ref, onMounted, inject, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
-import { API_URL } from '@/global/constant';
+import { apiChat } from '@/utils/apiChat';
+import { apiPost } from '@/utils/apiPost';
+import { apiUser } from '@/utils/apiUser';
 const roomStore = useRoomStore();
 const userStore = useUserStore(); // 登入者資料
-const axios = inject('axios'); // inject axios
 const route = useRoute();
 const posts = ref([]);
 const pending = ref(false);
-const isFollow = ref(true);
 const { id } = route.params; // 個人頁 userId
-const getPosts = (sort = 1, searchKey = '') => {
-  // sort=1 最新貼文, sort=2 最舊貼文
-
-  let sortValue = 'desc'; // 預設 desc
-  if (sort === 2) {
-    sortValue = 'asc';
-  }
-  const url = `${API_URL}/posts?timeSort=${sortValue}&search=${searchKey}`;
-  axios
-    .get(url)
-    .then((res) => {
-      posts.value = res.data.data;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-};
-
-
 
 //取得聊天室id並且開啟聊天視窗
 const sendMessage = async () => {
@@ -97,7 +78,7 @@ const sendMessage = async () => {
   };
   try {
     pending.value = true;
-    const res = await axios.post(`${API_URL}/chat/room-info`, sendData);
+    const res = await apiChat.room(sendData);
     const { status, roomId, name, avatar, _id } = res;
     if (status === 'success') {
       roomStore.updateRoom({ roomId, name, avatar, receiver: _id });
@@ -111,7 +92,6 @@ const sendMessage = async () => {
 };
 
 // 所有貼文
-const posts = ref([]);
 const getPosts = (sort = 1, searchKey = '') => {
   // sort=1 最新貼文, sort=2 最舊貼文
 
@@ -119,9 +99,9 @@ const getPosts = (sort = 1, searchKey = '') => {
   if (sort === 2) {
     sortValue = 'asc';
   }
-  const url = `${API_URL}/posts?timeSort=${sortValue}&search=${searchKey}`;
-  axios
-    .get(url)
+
+  apiPost
+    .getAll(`timeSort=${sortValue}&search=${searchKey}`)
     .then((res) => {
       posts.value = res.data.data;
     })
@@ -129,6 +109,7 @@ const getPosts = (sort = 1, searchKey = '') => {
       console.log(err);
     });
 };
+
 // 篩選個人貼文 (註：後端出 個人貼文API 後移除)
 const userPosts = computed(() => {
   return posts.value.filter((item) => item.userId[0]?._id === id);
@@ -140,9 +121,8 @@ onMounted(() => {
 // 個人頁資料
 const userProfile = ref({});
 const getUserProfile = () => {
-  const url = `${API_URL}/users/${id}`;
-  axios
-    .get(url)
+  apiUser
+    .getProfile(id)
     .then((res) => {
       userProfile.value = res.data.data;
     })

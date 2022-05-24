@@ -1,5 +1,3 @@
-
-   
 import axios from 'axios';
 import { API_URL } from '../global/constant';
 
@@ -39,5 +37,5 @@ export const token = () => {
 
 export const apiLike = {
   getAll: () => likesRequest.post('', token()),
-  cancel: (id) => likesRequest.get(`/likePost/${id}`, token()),
+  toggle: (data) => likesRequest.get('/likePost', data, token()),
 };

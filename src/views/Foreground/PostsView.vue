@@ -1,10 +1,9 @@
 <script setup>
-import { ref, onMounted, inject } from 'vue';
+import { ref, onMounted } from 'vue';
 import PostCard from '@/components/PostCard.vue';
 import PostFilter from '@/components/PostFilter.vue';
 import PostNoneCard from '@/components/PostNoneCard.vue';
-import { API_URL } from '@/global/constant';
-const axios = inject('axios'); // inject axios
+import { apiPost } from '@/utils/apiPost';
 
 const posts = ref([]);
 
@@ -15,8 +14,8 @@ const getPosts = (sort = 1, searchKey = '') => {
   if (sort === 2) {
     sortValue = 'asc';
   }
-  axios
-    .get(`${API_URL}/posts?timeSort=${sortValue}&search=${searchKey}`)
+  apiPost
+    .getAll(`timeSort=${sortValue}&search=${searchKey}`)
     .then((res) => {
       posts.value = res.data.data;
     })
