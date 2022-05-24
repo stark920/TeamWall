@@ -38,7 +38,7 @@ onMounted(() => {
       :key="item.id"
       :class="{ 'mb-4': index < posts.length - 1 }"
     >
-      <PostCard :post="item" />
+      <PostCard :post="item" @get-posts="getPosts" />
     </li>
   </ul>
   <PostNoneCard v-else />
