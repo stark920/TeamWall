@@ -1,6 +1,6 @@
 <script setup>
 import { useToast } from 'vue-toastification';
-import { ref, onMounted, defineEmits } from 'vue';
+import { ref, onMounted } from 'vue';
 import Send from '@/components/icons/IconSend.vue';
 const inputBox = ref(null);
 const toast = useToast();

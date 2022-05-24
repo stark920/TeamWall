@@ -1,55 +1,52 @@
 <script setup>
-import { ref, inject } from 'vue';
-import { RouterView } from 'vue-router';
 import Navbar from '../components/home/Navbar.vue';
 import PostOption from '../components/home/PostOption.vue';
 import SideMenu from '../components/home/SideMenu.vue';
 import ChatContainer from '../components/ChatContainer.vue';
+import { RouterView, useRouter } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import { apiUser, token } from '../utils/apiUser';
 import { useUserStore } from '@/stores';
-import { API_URL } from '@/global/constant';
 const userStore = useUserStore();
-
-const axios = inject('axios');
-
-const checkLogin = () => {
-  // get localStorage JWT token
-  const token = localStorage.getItem('metaWall');
-  if (!token) {
-    console.log('尚未登入');
-    // router.push('/signin')
+const router = useRouter();
+const isLoading = ref(true);
+onMounted(() => {
+  if (userStore?.name) {
+    isLoading.value = !isLoading.value;
     return;
   }
-
-  // set axios token
-  axios.defaults.headers.common.Authorization = token;
-
-  axios
-    .get(`${API_URL}/users/check`)
+  if (!token()) {
+    return router.replace('/sign-in');
+  }
+  apiUser
+    .check()
     .then((res) => {
       userStore.updateUser(res.data.data);
+      isLoading.value = !isLoading.value;
     })
     .catch(() => {
-      console.log('尚未登入');
-      // router.push('/signin')
+      return router.replace('/sign-in');
     });
-};
-
-checkLogin();
+});
 </script>
-
 <template>
-  <div class="min-h-screen w-screen">
-    <Navbar class="mb-12" />
+  <div class="min-h-screen w-full">
+    <Navbar
+      :name="userStore.user?.name"
+      :avatar="userStore.user?.avatar"
+      :userPageUrl="'/profile/' + userStore.user?.id"
+      class="mb-12"
+    />
     <div class="container mx-auto w-11/12 px-3 sm:px-0 md:w-9/12 xl:w-7/12">
-      <div class="grid gap-6 md:grid-cols-3">
-        <div class="md:col-span-2">
+      <div class="grid gap-6 lg:grid-cols-3">
+        <div class="lg:col-span-2">
           <RouterView></RouterView>
         </div>
-        <div class="hidden md:block">
+        <div class="hidden lg:block">
           <SideMenu
             :name="userStore.user?.name"
-            :imgUrl="userStore.user?.avatar?.url"
-            :userPageUrl="`/user/${userStore.user?.id}`"
+            :avatar="userStore.user?.avatar"
+            :userPageUrl="'/profile/' + userStore.user?.id"
           />
         </div>
       </div>

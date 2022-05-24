@@ -9,7 +9,6 @@
       linear-gradient(90deg, #9b9893 1px, transparent 0px);
     background-size: 4em 4em;
     background-color: #efece7;
-    backdrop-filter: blur(1px);
   }
   img {
     width: 100%;

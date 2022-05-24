@@ -1,14 +1,11 @@
 <script setup>
-import { inject } from 'vue';
 import UserInfo from './UserInfo.vue';
 import IconThumbsUpVue from '@/components/icons/IconThumbsUp.vue';
 import IconThumbsUpFillVue from '@/components/icons/IconThumbsUpFill.vue';
 import AvatarVue from './Avatar.vue';
-
-import { API_URL } from '@/global/constant';
+import { apiLike } from '../utils/apiLike';
 import { useUserStore } from '@/stores';
 const userStore = useUserStore();
-const axios = inject('axios');
 
 defineProps({
   post: {
@@ -23,8 +20,8 @@ const emit = defineEmits(['get-posts']);
 
 const likePost = (postId) => {
   const data = { posts: postId };
-  axios
-    .post(`${API_URL}/likes/likePost`, data)
+  apiLike
+    .toggle(data)
     .then(() => {
       emit('get-posts');
     })
