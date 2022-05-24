@@ -57,7 +57,7 @@ const axios = inject('axios'); // inject axios
 const route = useRoute();
 const id = ref(route.params.id);
 const posts = ref([]);
-
+const pending = ref(false);
 const isFollow = ref(true);
 const getPosts = (sort = 1, searchKey = '') => {
   // sort=1 最新貼文, sort=2 最舊貼文
@@ -79,10 +79,12 @@ const getPosts = (sort = 1, searchKey = '') => {
 
 //取得聊天室id並且開啟聊天視窗
 const sendMessage = async () => {
+  if (pending.value) return;
   const sendData = {
     receiver: '62834466572c43bf1eb3058b',
   };
   try {
+    pending.value = true;
     const res = await axios.post(`${API_URL}/chat/room-info`, sendData);
     const { status, roomId, name, avatar, _id } = res;
     if (status === 'success') {
@@ -91,6 +93,8 @@ const sendMessage = async () => {
     }
   } catch (error) {
     console.log('error', error);
+  } finally {
+    pending.value = false;
   }
 };
 
