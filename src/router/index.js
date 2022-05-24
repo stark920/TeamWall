@@ -76,11 +76,6 @@ const router = createRouter({
       path: '/:catchAll(.*)',
       redirect: { name: 'sign-in' },
     },
-    {
-      path: '/sign-in',
-      name: 'signIn',
-      component: () => import('../views/signIn.vue'),
-    },
   ],
 });
 

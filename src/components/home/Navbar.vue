@@ -5,6 +5,22 @@ import Avatar from '../Avatar.vue';
 import { apiUser } from '@/utils/apiUser';
 const router = useRouter();
 
+defineProps({
+  avatar: {
+    type: String,
+  },
+  name: {
+    type: String,
+    default: 'Unknown',
+  },
+  userPageUrl: {
+    type: String,
+    default: '#',
+  },
+});
+
+const showMenu = ref(false);
+
 const signOut = () => {
   apiUser
     .signOut()
@@ -17,18 +33,6 @@ const signOut = () => {
       router.push({ name: 'sign-in' });
     });
 };
-
-defineProps({
-  avatar: {
-    type: String,
-  },
-  name: {
-    type: String,
-    default: 'Unknown',
-  },
-});
-
-const showMenu = ref(false);
 </script>
 
 <template>
@@ -54,11 +58,13 @@ const showMenu = ref(false);
             v-show="showMenu"
             class="absolute right-0 top-[calc(100%+0.5rem)] grid w-[180px] border-2 border-black text-center"
           >
-            <router-link to="/profile" class="bg-white py-2 hover:bg-secondary"
+            <router-link
+              :to="userPageUrl"
+              class="bg-white py-2 hover:bg-secondary"
               >我的貼文牆</router-link
             >
             <router-link
-              to="/home/profile/edit"
+              to="/profile/settings"
               class="border-t-2 border-b-2 border-black bg-white py-2 hover:bg-secondary"
               >修改個人資料</router-link
             >

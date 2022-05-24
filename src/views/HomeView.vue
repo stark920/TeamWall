@@ -39,6 +39,7 @@ onMounted(() => {
     <Navbar
       :name="userStore.user?.name"
       :avatar="userStore.user?.avatar"
+      :userPageUrl="'/profile/' + userStore.user?.id"
       class="mb-12"
     />
     <div class="container mx-auto w-11/12 px-3 sm:px-0 md:w-9/12 xl:w-7/12">
@@ -49,13 +50,8 @@ onMounted(() => {
         <div class="hidden lg:block">
           <SideMenu
             :name="userStore.user?.name"
-<<<<<<< HEAD
-            :imgUrl="userStore.user?.avatar?.url"
-            :userPageUrl="`/user/${userStore.user?.id}`"
-=======
             :avatar="userStore.user?.avatar"
             :userPageUrl="'/profile/' + userStore.user?.id"
->>>>>>> 09db409 (refactor/integratedAxios)
           />
         </div>
       </div>
