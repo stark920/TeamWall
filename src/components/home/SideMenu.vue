@@ -22,8 +22,10 @@ defineProps({
 
 <template>
   <div class="flex flex-col border-2 border-black bg-white px-6 py-8">
-    <RouterLink to="/post-news"
-      class="mb-6 flex items-center justify-center rounded-lg border-2 border-black bg-primary py-2 text-lg text-white hover:bg-warning hover:text-black">
+    <RouterLink
+      to="/post-create"
+      class="mb-6 flex items-center justify-center rounded-lg border-2 border-black bg-primary py-2 text-lg text-white hover:bg-warning hover:text-black"
+    >
       張貼動態
     </RouterLink>
 
@@ -35,7 +37,7 @@ defineProps({
         </RouterLink>
       </li>
       <li>
-        <RouterLink to="/track" class="mb-5 flex items-center">
+        <RouterLink to="/follow" class="mb-5 flex items-center">
           <IconButtonVue size="50">
             <IconBellVue class="h-6 w-6" />
           </IconButtonVue>

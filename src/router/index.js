@@ -20,8 +20,8 @@ const router = createRouter({
           component: () => import('../views/Foreground/PostView.vue'),
         },
         {
-          path: '/post-add',
-          name: 'post-add',
+          path: '/post-create',
+          name: 'post-create',
           component: () => import('../views/Foreground/PostCreateView.vue'),
         },
         {

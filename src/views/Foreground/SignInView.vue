@@ -64,7 +64,7 @@ const signIn = async () => {
         v-model="form.email"
         @blur="v$.email.$touch"
       />
-      <div v-if="v$.email.$errors.length > 0" class="text-alert font-azeret">
+      <div v-if="v$.email.$errors.length > 0" class="font-azeret text-alert">
         {{ v$.email.$errors[0].$message }}
       </div>
     </li>
@@ -76,11 +76,11 @@ const signIn = async () => {
         v-model="form.password"
         @blur="v$.password.$touch"
       />
-      <div v-if="v$.password.$errors.length > 0" class="text-alert font-azeret">
+      <div v-if="v$.password.$errors.length > 0" class="font-azeret text-alert">
         {{ v$.password.$errors[0].$message }}
       </div>
     </li>
-    <li class="text-alert mb-2 text-center">
+    <li class="mb-2 text-center text-alert">
       <p>{{ errorMessage }}</p>
     </li>
     <li class="mb-4 w-full">
