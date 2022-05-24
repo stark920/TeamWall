@@ -49,9 +49,11 @@
 <script setup>
 import { ref, reactive, watch, onMounted, inject } from 'vue';
 import { RouterLink } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { API_URL } from '@/global/constant';
 const axios = inject('axios');
 
+const router = useRouter();
 const userInfo = reactive({
   email: '',
   password: '',
@@ -61,8 +63,10 @@ const signIn = async () => {
   const data = userInfo;
   try {
     const res = await axios.post(`${API_URL}/sign-in`, data);
-    if (res.success) {
-      console.log(res);
+    if (res.data.data) {
+      const token = res.headers.authorization.split(' ')[1];
+      localStorage.setItem('loginToken', token);
+      router.push('/');
     }
   } catch (error) {
     console.log(error);
