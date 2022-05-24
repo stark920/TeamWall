@@ -20,7 +20,7 @@ import IconChat from '../icons/IconChat.vue';
       </RouterLink>
     </li>
     <li>
-      <RouterLink to="/track">
+      <RouterLink to="/follow">
         <ButtonIcon size="50"> <IconBell class="h-6 w-6" /> </ButtonIcon
       ></RouterLink>
     </li>
@@ -30,7 +30,7 @@ import IconChat from '../icons/IconChat.vue';
       ></RouterLink>
     </li>
     <li>
-      <RouterLink to="/post-news">
+      <RouterLink to="/post-add">
         <ButtonIcon size="50">
           <IconPlus class="h-6 w-6" />
         </ButtonIcon>

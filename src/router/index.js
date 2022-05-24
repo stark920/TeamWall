@@ -1,10 +1,9 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
-import HomeView from '../views/HomeView.vue';
-import PostsView from '../views/Foreground/PostsView.vue';
 import LoginView from '@/views/LoginView.vue';
+import HomeView from '@/views/HomeView.vue';
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
@@ -13,7 +12,7 @@ const router = createRouter({
         {
           path: '/',
           name: 'posts',
-          component: PostsView,
+          component: () => import('../views/Foreground/PostsView.vue'),
         },
         {
           path: '/post/:id',
@@ -21,14 +20,14 @@ const router = createRouter({
           component: () => import('../views/Foreground/PostView.vue'),
         },
         {
-          path: '/post-news',
-          name: 'post-news',
-          component: () => import('../views/Foreground/PostNews.vue'),
+          path: '/post-add',
+          name: 'post-add',
+          component: () => import('../views/Foreground/PostCreateView.vue'),
         },
         {
-          path: '/track',
-          name: 'track',
-          component: () => import('../views/Foreground/TrackList.vue'),
+          path: '/follow',
+          name: 'follow',
+          component: () => import('../views/Foreground/FollowListView.vue'),
         },
         {
           path: '/likes',
@@ -36,19 +35,19 @@ const router = createRouter({
           component: () => import('../views/Foreground/LikesView.vue'),
         },
         {
-          path: '/user/settings',
-          name: 'user-settings',
-          component: () => import('../views/Foreground/Settings.vue'),
+          path: '/profile/:id',
+          name: 'profile',
+          component: () => import('../views/Foreground/UserView.vue'),
         },
         {
-          path: '/user/:id',
-          name: 'user-profile',
-          component: () => import('../views/Foreground/UserView.vue'),
+          path: '/profile/settings',
+          name: 'profile-settings',
+          component: () => import('../views/Foreground/UserSettingsView.vue'),
         },
         {
           path: '/chat-room-list',
           name: 'chat-room-list',
-          component: () => import('../views/Foreground/ChatRoomList.vue'),
+          component: () => import('../views/Foreground/ChatRoomListView.vue'),
         },
       ],
     },
@@ -72,6 +71,10 @@ const router = createRouter({
       path: '/chat-room',
       name: 'chat-room',
       component: () => import('../views/Foreground/ChatRoomView.vue'),
+    },
+    {
+      path: '/:catchAll(.*)',
+      redirect: { name: 'sign-in' },
     },
   ],
 });

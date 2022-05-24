@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import PostCard from '@/components/PostCard.vue';
 import PostFilter from '@/components/PostFilter.vue';
-import PostNoneCard from '@/components/PostNoneCard.vue';
+import PostEmptyCard from '@/components/PostEmptyCard.vue';
 import { apiPost } from '@/utils/apiPost';
 
 const posts = ref([]);
@@ -40,5 +40,5 @@ onMounted(() => {
       <PostCard :post="item" @get-posts="getPosts" />
     </li>
   </ul>
-  <PostNoneCard v-else />
+  <PostEmptyCard v-else />
 </template>

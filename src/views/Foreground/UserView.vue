@@ -49,12 +49,12 @@
       <PostCard :post="item" @get-posts="getPosts" />
     </li>
   </ul>
-  <PostNoneCard v-else />
+  <PostEmptyCard v-else />
 </template>
 
 <script setup>
 import PostFilter from '@/components/PostFilter.vue';
-import PostNoneCard from '@/components/PostNoneCard.vue';
+import PostEmptyCard from '@/components/PostEmptyCard.vue';
 import PostCard from '@/components/PostCard.vue';
 import eventBus from '@/utils/eventBus';
 import { useRoomStore, useUserStore } from '@/stores';
