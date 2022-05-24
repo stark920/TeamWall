@@ -10,14 +10,11 @@ import { API_URL } from '@/global/constant';
 const router = useRouter();
 const axios = inject('axios'); // inject axios
 
-
-const userId = '6289cb654896923f8331bc15'; // 待調整:登入userId
 const likes = ref([]);
 
 const getLikes = () => {
-  const data = { userId };
   axios
-    .post(`${API_URL}/likes`, data)
+    .get(`${API_URL}/likes`)
     .then((res) => {
       likes.value = res.data.data;
     })
@@ -27,7 +24,7 @@ const getLikes = () => {
 };
 
 const canclePost = (postId) => {
-  const data = { userId, posts: postId };
+  const data = { posts: postId };
   axios
     .post(`${API_URL}/likes/likePost`, data)
     .then(() => {

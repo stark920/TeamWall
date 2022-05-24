@@ -1,10 +1,14 @@
 <script setup>
-import { ref } from 'vue';
+import { inject } from 'vue';
 import UserInfo from './UserInfo.vue';
 import IconThumbsUpVue from '@/components/icons/IconThumbsUp.vue';
+import IconThumbsUpFillVue from '@/components/icons/IconThumbsUpFill.vue';
 import AvatarVue from './Avatar.vue';
 
-const id = ref('6289cb654896923f8331bc15'); // 登入 userId
+import { API_URL } from '@/global/constant';
+import { useUserStore } from '@/stores';
+const userStore = useUserStore();
+const axios = inject('axios');
 
 defineProps({
   post: {
@@ -14,13 +18,27 @@ defineProps({
     },
   },
 });
+
+const emit = defineEmits(['get-posts']);
+
+const likePost = (postId) => {
+  const data = { posts: postId };
+  axios
+    .post(`${API_URL}/likes/likePost`, data)
+    .then(() => {
+      emit('get-posts');
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 </script>
 
 <template>
   <div class="rounded-lg border-2 border-black bg-white p-6 shadow-post">
     <UserInfo
       class="mb-4"
-      :imgUrl="post.userId?.avatar"
+      :imgUrl="post.userId?.avatar?.url"
       :name="post.userId?.name"
       :userPageUrl="`/user/${post.userId?._id}`"
       :subTitle="post.createAt"
@@ -33,12 +51,17 @@ defineProps({
       alt="貼文圖片"
     />
     <div>
-      <button type="button" class="flex items-center justify-center py-5">
+      <button
+        type="button"
+        class="flex items-center justify-center py-5"
+        @click="likePost(post._id)"
+      >
         <!-- 已按讚 icon, 改實心 -->
         <IconThumbsUpVue
-          class="mr-2 h-5 w-5"
-          :class="post.likes?.includes(id) ? 'text-primary' : 'text-black'"
+          v-if="!post.likes?.includes(userStore.user.id)"
+          class="mr-2 h-5 w-5 text-primary"
         />
+        <IconThumbsUpFillVue v-else class="mr-2 h-5 w-5 text-primary" />
         <span> {{ post.likes?.length }}</span>
       </button>
     </div>
