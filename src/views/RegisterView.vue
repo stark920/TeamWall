@@ -66,7 +66,9 @@
           </button>
         </li>
         <li>
-          <p>登入</p>
+          <router-link to="/sign-in" class="p-4 text-lg text-decoration-none">
+            登入
+          </router-link>
         </li>
       </ul>
     </div>
@@ -75,6 +77,7 @@
 
 <script setup>
 import useVuelidate from '@vuelidate/core';
+import { RouterLink } from 'vue-router';
 import {
   required,
   minLength,
