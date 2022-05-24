@@ -30,7 +30,7 @@ import IconChat from '../icons/IconChat.vue';
       ></RouterLink>
     </li>
     <li>
-      <RouterLink to="/post-add">
+      <RouterLink to="/post-create">
         <ButtonIcon size="50">
           <IconPlus class="h-6 w-6" />
         </ButtonIcon>

@@ -53,7 +53,7 @@ const signOut = () => {
           </div>
           <div
             v-show="showMenu"
-            class="absolute right-0 top-[calc(100%+0.5rem)] grid w-[180px] border-2 border-black text-center"
+            class="absolute right-0 top-[calc(100%+0.5rem)] z-50 grid w-[180px] border-2 border-black text-center"
           >
             <router-link
               :to="userPageUrl"
