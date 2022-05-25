@@ -58,7 +58,7 @@ import PostEmptyCard from '@/components/PostEmptyCard.vue';
 import PostCard from '@/components/PostCard.vue';
 import eventBus from '@/utils/eventBus';
 import { useRoomStore, useUserStore } from '@/stores';
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { apiChat } from '@/utils/apiChat';
 import { apiPost } from '@/utils/apiPost';
@@ -66,9 +66,8 @@ import { apiUser } from '@/utils/apiUser';
 const roomStore = useRoomStore();
 const userStore = useUserStore(); // 登入者資料
 const route = useRoute();
-const posts = ref([]);
+const id = ref(route.params.id); // 個人頁 userId
 const pending = ref(false);
-const { id } = route.params; // 個人頁 userId
 
 //取得聊天室id並且開啟聊天視窗
 const sendMessage = async () => {
@@ -94,6 +93,7 @@ const sendMessage = async () => {
 };
 
 // 所有貼文
+const posts = ref([]);
 const getPosts = (sort = 1, searchKey = '') => {
   // sort=1 最新貼文, sort=2 最舊貼文
 
@@ -114,7 +114,7 @@ const getPosts = (sort = 1, searchKey = '') => {
 
 // 篩選個人貼文 (註：後端出 個人貼文API 後移除)
 const userPosts = computed(() => {
-  return posts.value.filter((item) => item.userId[0]?._id === id);
+  return posts.value.filter((item) => item.userId?._id === id.value);
 });
 onMounted(() => {
   getPosts();
@@ -124,7 +124,7 @@ onMounted(() => {
 const userProfile = ref({});
 const getUserProfile = () => {
   apiUser
-    .getProfile(id)
+    .getProfile(id.value)
     .then((res) => {
       userProfile.value = res.data.data;
     })
@@ -138,6 +138,15 @@ const isFollow = computed(() => {
 });
 onMounted(() => {
   getUserProfile();
+});
+
+// 相同路由 /profile/:id, id 參數切換
+watch(route, (curr) => {
+  if (curr.name === 'profile' && curr.params.id) {
+    id.value = curr.params.id;
+    getPosts();
+    getUserProfile();
+  }
 });
 </script>
 
