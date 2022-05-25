@@ -15,7 +15,10 @@ eventBus.on('updateChatRecord', updateChatRecord);
 const queryRoomList = async () => {
   try {
     const res = await apiChat.record();
-    const { status, chatRecord } = res;
+    console.log('res', res);
+    const {
+      data: { status, chatRecord },
+    } = res;
     if (status) {
       Object.assign(chatList, chatRecord);
       console.log('chatList', chatList);
@@ -38,7 +41,7 @@ onBeforeUnmount(() => {
   <section>
     <CardTitleVue title="聊天室" />
     <ul>
-      <template v-for="room in chatList" :key="room._id">
+      <template v-for="room in chatList" :key="room?.roomId">
         <chat-room-list-item :room="room" />
       </template>
     </ul>
