@@ -1,34 +1,41 @@
 <script setup>
 import { ref, reactive } from 'vue';
 import CardTitle from '@/components/CardTitle.vue';
+import IconLoading from '@/components/icons/IconLoading.vue';
 import { useUserStore } from '@/stores';
 import { apiUser } from '@/utils/apiUser';
 
-const user = useUserStore();
+const userStore = useUserStore();
+const isSending = ref(false);
 
+// Change tab
 const tabName = ref('editNickName');
 const changeTab = (name) => {
   tabName.value = name;
 };
 
 // Profile
-const changeUserProfile = reactive({});
+const changeUserProfile = reactive({...userStore.user});
 const imageFile = ref(null);
 const updateUserProfile = () => {
   const photos = Array.from(imageFile.value.files);
   const form = new FormData();
+  isSending.value = true;
   photos.forEach((item) => {
-    form.append('photo', item);
+    form.append('avatar', item);
   });
-  form.append('name', changeUserProfile.name);
+  form.append('name', changeUserProfile.name.trim());
   form.append('sex', changeUserProfile.sex);
 
   apiUser.updateProfile(form).then((res) => {
-    if (res.data.status === 'success') {
-      console.log('更新成功');
-      user.updateUser(res.data.data);
+    if (res.data.status) {
+      isSending.value = false;
+      userStore.updateUser(res.data.data);
+      changeUserProfile.name = res.data.data.name;
+      changeUserProfile.avatar = res.data.data.avatar;
+      changeUserProfile.sex = res.data.data.sex;
     } else {
-      // updateProfileMessage.value = 'failed';
+      console.log('更新失敗，請洽系統管理員');
     }
   });
 };
@@ -38,19 +45,19 @@ const changePassword = reactive({});
 const pwdErrorMessage = ref('');
 const updateUserPwd = () => {
   const { password, passwordConfirm } = changePassword;
+  isSending.value = true;
   if (password === passwordConfirm) {
-    apiUser
-      .updatePassword(changePassword)
-      .then((res) => {
-        console.log(res.data);
-        if (res.data.status) {
-          resetPwdForm();
-          pwdErrorMessage.value = '';
-        }
-      })
-      .catch(() => {
-        pwdErrorMessage.value = '請重新設定密碼';
-      });
+    apiUser.updatePassword(changePassword).then((res) => {
+      isSending.value = false;
+      if (res.data.status) {
+        resetPwdForm();
+        pwdErrorMessage.value = '';
+      }
+    })
+    .catch(() => {
+      isSending.value = false;
+      pwdErrorMessage.value = '請重新設定密碼';
+    });
   } else {
     pwdErrorMessage.value = '密碼不一致';
   }
@@ -89,7 +96,7 @@ const resetPwdForm = () => {
   >
     <template v-if="tabName === 'editNickName'">
       <img
-        src="https://fakeimg.pl/107x107"
+        :src="changeUserProfile.avatar.url"
         alt="fakeimg"
         class="mb-4 h-24 w-24 rounded-full border-2 border-black"
       />
@@ -114,7 +121,7 @@ const resetPwdForm = () => {
             type="text"
             name=""
             id="nickName"
-            placeholder="邊緣小杰"
+            placeholder="請輸入暱稱"
             class="border-2 border-black"
           />
         </div>
@@ -139,11 +146,16 @@ const resetPwdForm = () => {
           />
           <label for="female" class="">女性</label>
         </div>
-        <input
+        <button
           type="submit"
-          value="送出更新"
-          class="w-full rounded border-2 border-black bg-warning py-4 text-center text-black"
-        />
+          class="flex w-full items-center justify-center rounded border-2 border-black bg-warning py-4 text-black"
+        >
+          <span v-show="!isSending">送出更新</span>
+          <IconLoading
+            v-show="isSending"
+            class="ml-1 h-4 w-4 animate-spin my-1"
+          ></IconLoading>
+        </button>
       </form>
     </template>
     <template v-else>
@@ -177,11 +189,16 @@ const resetPwdForm = () => {
             required
           />
         </div>
-        <input
+        <button
           type="submit"
-          value="重設密碼"
-          class="w-full rounded border-2 border-black bg-subtitle py-4 text-black"
-        />
+          class="flex w-full items-center justify-center rounded border-2 border-black bg-subtitle py-4 text-black"
+        >
+          <span v-show="!isSending">重設密碼</span>
+          <IconLoading
+            v-show="isSending"
+            class="ml-1 h-4 w-4 animate-spin my-1"
+          ></IconLoading>
+        </button>
       </form>
     </template>
   </div>
