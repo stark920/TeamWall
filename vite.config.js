@@ -12,7 +12,4 @@ export default defineConfig({
     },
   },
   base: '/TeamWall/',
-  server: {
-    port: 3007,
-  },
 });

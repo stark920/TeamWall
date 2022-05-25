@@ -6,15 +6,20 @@ import eventBus from '@/utils/eventBus';
 import { apiChat } from '@/utils/apiChat';
 const chatList = reactive([]);
 
-eventBus.on('updateChatRecord', ({ roomId, msg }) => {
+const updateChatRecord = ({ roomId, msg }) => {
   const targetIndex = chatList.findIndex((item) => item.roomId === roomId);
   targetIndex > -1 && (chatList[targetIndex].message = [msg]);
-});
+};
+
+eventBus.on('updateChatRecord', updateChatRecord);
 const queryRoomList = async () => {
   try {
     const res = await apiChat.record();
-    const { status, chatRecord } = res;
-    if (status === 'success') {
+    console.log('res', res);
+    const {
+      data: { status, chatRecord },
+    } = res;
+    if (status) {
       Object.assign(chatList, chatRecord);
       console.log('chatList', chatList);
     }
@@ -28,7 +33,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  eventBus.all.clear();
+  eventBus.off('updateChatRecord', updateChatRecord);
 });
 </script>
 
@@ -36,7 +41,7 @@ onBeforeUnmount(() => {
   <section>
     <CardTitleVue title="聊天室" />
     <ul>
-      <template v-for="room in chatList" :key="room._id">
+      <template v-for="room in chatList" :key="room?.roomId">
         <chat-room-list-item :room="room" />
       </template>
     </ul>

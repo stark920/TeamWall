@@ -74,13 +74,15 @@ const { id } = route.params; // 個人頁 userId
 const sendMessage = async () => {
   if (pending.value) return;
   const sendData = {
-    receiver: '62834466572c43bf1eb3058b',
+    receiver: '628e374ac1d659be9f498563',
   };
   try {
     pending.value = true;
     const res = await apiChat.room(sendData);
-    const { status, roomId, name, avatar, _id } = res;
-    if (status === 'success') {
+    const {
+      data: { status, roomId, name, avatar, _id },
+    } = res;
+    if (status) {
       roomStore.updateRoom({ roomId, name, avatar, receiver: _id });
       eventBus.emit('handleRoom', true);
     }

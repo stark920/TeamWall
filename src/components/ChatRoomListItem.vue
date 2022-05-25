@@ -24,6 +24,11 @@ const formateTime = (time) => {
 const isMobile = () => {
   return document.body.clientWidth < 768;
 };
+const provideDefault = () => {
+  return (
+    avatar ?? new URL('../assets/avatars/user_default.png', import.meta.url)
+  );
+};
 const goChatRoom = () => {
   console.log('channelId', roomId.value);
   if (room.value.roomId && room.value.roomId !== roomId.value) {
@@ -42,10 +47,10 @@ const goChatRoom = () => {
 <template>
   <li
     @click="goChatRoom"
-    class="box-rounded mb-4 flex h-[77px] cursor-pointer items-baseline justify-between p-4"
+    class="shadow-normal mb-4 flex h-[77px] cursor-pointer items-baseline justify-between rounded-lg border-2 border-black bg-white p-4"
   >
     <div class="flex">
-      <img class="avatar h-10 w-10" :src="avatar" alt="avatar" />
+      <img class="avatar h-10 w-10" :src="provideDefault()" alt="avatar" />
       <div class="flex-1 pl-2">
         <p class="font-bold">{{ name }}</p>
         <p
