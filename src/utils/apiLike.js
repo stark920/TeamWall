@@ -36,6 +36,6 @@ export const token = () => {
 // );
 
 export const apiLike = {
-  getAll: () => likesRequest.post('', token()),
-  toggle: (data) => likesRequest.get('/likePost', data, token()),
+  getAll: () => likesRequest.get('', token()),
+  toggle: (data) => likesRequest.post('/likePost', data, token()),
 };

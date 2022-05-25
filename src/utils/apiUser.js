@@ -43,5 +43,5 @@ export const apiUser = {
   check: () => usersRequest.get('/check', token()),
   updateProfile: (data) => usersRequest.patch('/profile', data, token()),
   updatePassword: (data) => usersRequest.patch('/profile/pwd', data, token()),
-  getProfile: (id) => usersRequest.get(`/profile/${id}`, token()),
+  getProfile: (id) => usersRequest.get(`/${id}`, token()),
 };
