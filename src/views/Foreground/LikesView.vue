@@ -54,7 +54,7 @@ onMounted(() => {
           :name="item.userId?.name"
           :subTitle="`發文時間：${$filters.dateTime(item.createAt)}`"
           :userPageUrl="`/profile/${item.userId?._id}`"
-          :imgUrl="item.userId?.photo"
+          :imgUrl="item.userId?.avatar?.url"
         />
         <ul class="flex gap-10">
           <li>
