@@ -80,7 +80,7 @@ const sendMessage = async () => {
     pending.value = true;
     const res = await apiChat.room(sendData);
     const { status, roomId, name, avatar, _id } = res;
-    if (status === 'success') {
+    if (status) {
       roomStore.updateRoom({ roomId, name, avatar, receiver: _id });
       eventBus.emit('handleRoom', true);
     }

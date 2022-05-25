@@ -16,7 +16,7 @@ const queryRoomList = async () => {
   try {
     const res = await apiChat.record();
     const { status, chatRecord } = res;
-    if (status === 'success') {
+    if (status) {
       Object.assign(chatList, chatRecord);
       console.log('chatList', chatList);
     }
