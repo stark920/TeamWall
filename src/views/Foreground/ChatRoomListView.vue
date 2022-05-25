@@ -6,10 +6,12 @@ import eventBus from '@/utils/eventBus';
 import { apiChat } from '@/utils/apiChat';
 const chatList = reactive([]);
 
-eventBus.on('updateChatRecord', ({ roomId, msg }) => {
+const updateChatRecord = ({ roomId, msg }) => {
   const targetIndex = chatList.findIndex((item) => item.roomId === roomId);
   targetIndex > -1 && (chatList[targetIndex].message = [msg]);
-});
+};
+
+eventBus.on('updateChatRecord', updateChatRecord);
 const queryRoomList = async () => {
   try {
     const res = await apiChat.record();
@@ -28,7 +30,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  eventBus.all.clear();
+  eventBus.off('updateChatRecord', updateChatRecord);
 });
 </script>
 
