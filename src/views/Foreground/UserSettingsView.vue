@@ -1,6 +1,7 @@
 <script setup>
 import { ref, reactive, computed } from 'vue';
 import CardTitle from '@/components/CardTitle.vue';
+import AvatarVue from '@/components/Avatar.vue';
 import IconLoading from '@/components/icons/IconLoading.vue';
 import useVuelidate from '@vuelidate/core';
 import { required, minLength, helpers, sameAs } from '@vuelidate/validators';
@@ -34,6 +35,14 @@ const tabName = ref('editNickName');
 const changeTab = (name) => {
   tabName.value = name;
 };
+
+const getImageUrl = (url) => {
+  if (url === undefined) {
+    return new URL(`../../assets/avatars/user_default.png`, import.meta.url).href;
+  } else if (url.startsWith('http')) {
+    return url;
+  }
+}
 
 // Profile
 const changeUserProfile = reactive({...userStore.user});
@@ -118,10 +127,10 @@ const updateUserPwd = async ($event) => {
     class="flex flex-col items-center rounded-xl border-2 border-black bg-white p-8 shadow-post"
   >
     <template v-if="tabName === 'editNickName'">
-      <img
-        :src="changeUserProfile.avatar.url"
-        alt="fakeimg"
-        class="mb-4 h-24 w-24 rounded-full border-2 border-black"
+      <AvatarVue 
+        size="107"
+        :imgUrl="changeUserProfile?.avatar?.url"
+        class="mb-4 rounded-full border-2 border-black"
       />
       <input
         ref="imageFile"
