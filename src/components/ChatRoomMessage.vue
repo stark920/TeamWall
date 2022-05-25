@@ -14,7 +14,7 @@ const props = defineProps({
 });
 const { message: content, sender, createdAt } = toRefs(props.message);
 const isSelf = computed(() => {
-  return userInfo?.value._id === sender.value;
+  return userInfo?.value.id === sender.value;
 });
 
 const formateTime = (time) => {
@@ -27,7 +27,7 @@ const formateTime = (time) => {
     <div :class="['flex items-end', { 'flex-row-reverse': isSelf }]">
       <div
         :class="[
-          'm-h-[20px] inline-flex max-w-[300px] rounded-2xl border-2 p-2',
+          'm-h-[20px] inline-flex max-w-[300px] rounded-2xl border-2 border-slate-800 p-2',
           isSelf ? 'bg-slate-300' : 'bg-slate-200',
         ]"
       >

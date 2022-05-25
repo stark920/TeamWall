@@ -12,7 +12,6 @@ import { storeToRefs } from 'pinia';
 import { useRoomStore, useUserStore } from '@/stores';
 import { useRouter } from 'vue-router';
 import { io } from 'socket.io-client';
-import { token } from '../utils/apiChat';
 const toast = useToast();
 const useStore = useUserStore();
 const roomStore = useRoomStore();
@@ -26,14 +25,17 @@ const flagHistory = ref(false);
 const scrollRecord = ref(0);
 const messageList = reactive([]);
 
+let token = localStorage.getItem('metaWall');
 if (!token) {
+  toast.error('請先登入喔！');
   router.push('/');
 }
+token.startsWith('Bearer') && (token = token.split(' ')[1]);
 
 // socket初始化
 const socket = io(`${API_URL}/chat`, {
   query: {
-    token: localStorage.getItem('token'),
+    token,
     room: room.value.roomId,
   },
   // autoConnect: false,
@@ -137,6 +139,12 @@ const detectTop = () => {
 const toPrevPage = () => {
   router.go(-1);
 };
+const provideDefault = () => {
+  return (
+    room.avatar ??
+    new URL('../assets/avatars/user_default.png', import.meta.url)
+  );
+};
 
 onMounted(() => {
   console.warn('mounted');
@@ -158,21 +166,21 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    class="bottom-0 right-10 h-screen w-screen overflow-hidden rounded-tl-lg rounded-tr-lg md:fixed md:h-[455px] md:w-[338px] md:border-2"
+    class="bottom-0 right-10 h-screen w-screen overflow-hidden rounded-tl-lg rounded-tr-lg border-black md:fixed md:h-[455px] md:w-[338px] md:border-2"
   >
     <div
-      class="flex h-14 items-center justify-between border-b-2 bg-white px-2 py-2 md:px-4"
+      class="flex h-14 items-center justify-between border-b-2 border-black bg-white px-2 py-2 md:px-4"
     >
       <div class="flex items-center">
         <Back @click="toPrevPage" class="mr-2 block h-8 w-8 md:hidden" />
-        <img class="avatar h-10 w-10" :src="room.avatar" alt="" />
+        <img class="avatar h-10 w-10" :src="provideDefault()" alt="" />
         <span class="pl-4 font-bold">{{ room.name }}</span>
       </div>
-      <span @click="closeRoom" class="text-gray text-xs"
+      <span @click="closeRoom" class="text-xs text-gray-500"
         >對方正在輸入中...</span
       >
       <Close
-        class="hidden cursor-pointer hover:opacity-50 md:block"
+        class="hidden h-6 w-6 cursor-pointer hover:opacity-50 md:block"
         @click="closeRoom"
       />
     </div>
