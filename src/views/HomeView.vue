@@ -33,7 +33,7 @@ onMounted(() => {
   <div class="min-h-screen w-full">
     <Navbar
       :name="userStore.user?.name"
-      :avatar="userStore.user?.avatar"
+      :avatar="userStore.user?.avatar?.url"
       :userPageUrl="'/profile/' + userStore.user?.id"
       class="mb-12"
     />
@@ -45,7 +45,7 @@ onMounted(() => {
         <div class="hidden lg:block">
           <SideMenu
             :name="userStore.user?.name"
-            :avatar="userStore.user?.avatar"
+            :avatar="userStore.user?.avatar?.url"
             :userPageUrl="'/profile/' + userStore.user?.id"
           />
         </div>

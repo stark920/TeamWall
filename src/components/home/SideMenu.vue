@@ -6,7 +6,7 @@ import IconBellVue from '../icons/IconBell.vue';
 import IconThumbsUpVue from '../icons/IconThumbsUp.vue';
 import IconChatVue from '../icons/IconChat.vue';
 defineProps({
-  imgUrl: {
+  avatar: {
     type: String,
   },
   name: {
@@ -32,7 +32,7 @@ defineProps({
     <ul class="ml-2 flex flex-col">
       <li>
         <RouterLink :to="userPageUrl" class="mb-5 flex items-center">
-          <AvatarVue size="50" :imgUrl="imgUrl" class="cursor-pointer" />
+          <AvatarVue size="50" :imgUrl="avatar" class="cursor-pointer" />
           <h3 class="ml-4 font-bold">{{ name }}</h3>
         </RouterLink>
       </li>

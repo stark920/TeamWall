@@ -1,62 +1,101 @@
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import CardTitle from '@/components/CardTitle.vue';
+import AvatarVue from '@/components/Avatar.vue';
+import IconLoading from '@/components/icons/IconLoading.vue';
+import useVuelidate from '@vuelidate/core';
+import { required, minLength, helpers, sameAs } from '@vuelidate/validators';
 import { useUserStore } from '@/stores';
 import { apiUser } from '@/utils/apiUser';
 
-const user = useUserStore();
+const userStore = useUserStore();
+const isSending = ref(false);
+const nameRules = computed(() => ({
+  name: {
+    required: helpers.withMessage('暱稱必填', required),
+    minLength: helpers.withMessage('暱稱至少 2 個字元以上', minLength(2)),
+  },
+}));
+const passwordRules = computed(() => ({
+  password: {
+    required: helpers.withMessage('密碼必填', required),
+    alphaNum: helpers.withMessage(
+      '密碼需至少 8 碼以上，並英數混合',
+      helpers.regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, /\d/)
+    ),
+  },
+  passwordConfirm: {
+    required: helpers.withMessage('密碼必填', required),
+    sameAsPassword: helpers.withMessage('密碼不一致', sameAs(changePassword.password))
+  }
+}));
 
+// Change tab
 const tabName = ref('editNickName');
 const changeTab = (name) => {
   tabName.value = name;
 };
 
+const getImageUrl = (url) => {
+  if (url === undefined) {
+    return new URL(`../../assets/avatars/user_default.png`, import.meta.url).href;
+  } else if (url.startsWith('http')) {
+    return url;
+  }
+}
+
 // Profile
-const changeUserProfile = reactive({});
+const changeUserProfile = reactive({...userStore.user});
+const vProfile$ = useVuelidate(nameRules, changeUserProfile);
 const imageFile = ref(null);
 const updateUserProfile = () => {
   const photos = Array.from(imageFile.value.files);
   const form = new FormData();
+  isSending.value = true;
   photos.forEach((item) => {
-    form.append('photo', item);
+    form.append('avatar', item);
   });
-  form.append('name', changeUserProfile.name);
+  form.append('name', changeUserProfile.name.trim());
   form.append('sex', changeUserProfile.sex);
 
-  apiUser.updateProfile(form).then((res) => {
-    if (res.data.status === 'success') {
-      console.log('更新成功');
-      user.updateUser(res.data.data);
-    } else {
-      // updateProfileMessage.value = 'failed';
-    }
-  });
+  apiUser.updateProfile(form)
+    .then((res) => {
+      if (res.data.status) {
+        isSending.value = false;
+        userStore.updateUser(res.data.data);
+        changeUserProfile.name = res.data.data.name;
+        changeUserProfile.avatar = res.data.data.avatar;
+        changeUserProfile.sex = res.data.data.sex;
+      } else {
+        isSending.value = false;
+        console.log('更新失敗，請洽系統管理員');
+      }
+    })
+    .catch(() => {
+      isSending.value = false;
+      console.log('更新失敗，請洽系統管理員');
+    });
 };
 
 // Password
 const changePassword = reactive({});
-const pwdErrorMessage = ref('');
-const updateUserPwd = () => {
-  const { password, passwordConfirm } = changePassword;
-  if (password === passwordConfirm) {
-    apiUser
-      .updatePassword(changePassword)
-      .then((res) => {
-        console.log(res.data);
-        if (res.data.status) {
-          resetPwdForm();
-          pwdErrorMessage.value = '';
-        }
-      })
-      .catch(() => {
-        pwdErrorMessage.value = '請重新設定密碼';
-      });
-  } else {
-    pwdErrorMessage.value = '密碼不一致';
-  }
-};
-const resetPwdForm = () => {
-  Object.keys(changePassword).forEach((item) => (changePassword[item] = ''));
+const vPassword$ = useVuelidate(passwordRules, changePassword);
+const updateUserPwd = async ($event) => {
+  isSending.value = true;
+  await apiUser.updatePassword(changePassword)
+    .then((res) => {
+      if (res.data.status) {
+        isSending.value = false;
+      } else {
+        isSending.value = false;
+        console.log('更新失敗，請洽系統管理員');
+      }
+    })
+    .catch(() => {
+      console.log('更新失敗，請洽系統管理員');
+      isSending.value = false;
+    });
+  $event.target.reset();
 };
 </script>
 
@@ -88,10 +127,10 @@ const resetPwdForm = () => {
     class="flex flex-col items-center rounded-xl border-2 border-black bg-white p-8 shadow-post"
   >
     <template v-if="tabName === 'editNickName'">
-      <img
-        src="https://fakeimg.pl/107x107"
-        alt="fakeimg"
-        class="mb-4 h-24 w-24 rounded-full border-2 border-black"
+      <AvatarVue 
+        size="107"
+        :imgUrl="changeUserProfile?.avatar?.url"
+        class="mb-4 rounded-full border-2 border-black"
       />
       <input
         ref="imageFile"
@@ -107,18 +146,22 @@ const resetPwdForm = () => {
         @click="imageFile.click()"
       />
       <form @submit.prevent="updateUserProfile" action="" class="">
-        <div class="mb-4">
+        <div class="mb-1">
           <label for="nickName" class="mb-1 block">暱稱</label>
           <input
             v-model="changeUserProfile.name"
             type="text"
             name=""
             id="nickName"
-            placeholder="邊緣小杰"
+            placeholder="請輸入暱稱"
             class="border-2 border-black"
+            @blur="vProfile$.name.$touch"
           />
         </div>
-        <div class="mb-8">
+        <div v-if="vProfile$.name.$errors.length > 0" class="font-azeret text-alert">
+          {{ vProfile$.name.$errors[0].$message }}
+        </div>
+        <div class="mt-4 mb-8">
           <label for="male" class="mb-1 block">性別</label>
           <input
             v-model="changeUserProfile.sex"
@@ -139,11 +182,17 @@ const resetPwdForm = () => {
           />
           <label for="female" class="">女性</label>
         </div>
-        <input
+        <button
           type="submit"
-          value="送出更新"
-          class="w-full rounded border-2 border-black bg-warning py-4 text-center text-black"
-        />
+          class="flex w-full items-center justify-center rounded border-2 border-black bg-warning py-4 text-black disabled:opacity-50"
+          :disabled="vProfile$.name.$errors.length > 0"
+        >
+          <span v-show="!isSending">送出更新</span>
+          <IconLoading
+            v-show="isSending"
+            class="ml-1 h-4 w-4 animate-spin my-1"
+          ></IconLoading>
+        </button>
       </form>
     </template>
     <template v-else>
@@ -159,29 +208,40 @@ const resetPwdForm = () => {
             type="password"
             id="newPassword"
             placeholder="請輸入新密碼"
-            class="border-2 border-black"
+            class="border-2 border-black w-full"
+            @blur="vPassword$.password.$touch"
             required
           />
         </div>
-        <p v-if="pwdErrorMessage" class="mb-4 text-warning">
-          {{ pwdErrorMessage }}
-        </p>
-        <div class="mb-8">
+        <div v-if="vPassword$.password.$errors.length > 0" class="font-azeret text-alert">
+          {{ vPassword$.password.$errors[0].$message }}
+        </div>
+        <div class="mb-1">
           <label for="checkPassword" class="mb-1 block">再次輸入</label>
           <input
             v-model="changePassword.passwordConfirm"
             type="password"
             id="checkPassword"
             placeholder="再次輸入新密碼"
-            class="border-2 border-black"
+            class="border-2 border-black w-full"
+            @blur="vPassword$.passwordConfirm.$touch"
             required
           />
         </div>
-        <input
+        <div v-if="vPassword$.passwordConfirm.$errors.length > 0" class="font-azeret text-alert">
+          {{ vPassword$.passwordConfirm.$errors[0].$message }}
+        </div>
+        <button
           type="submit"
-          value="重設密碼"
-          class="w-full rounded border-2 border-black bg-subtitle py-4 text-black"
-        />
+          class="flex w-full items-center justify-center rounded border-2 border-black bg-subtitle py-4 mt-8 text-black disabled:opacity-50"
+          :disabled="vPassword$.password.$errors.length > 0 || vPassword$.passwordConfirm.$errors.length > 0 || changePassword.password === undefined"
+        >
+          <span v-show="!isSending">重設密碼</span>
+          <IconLoading
+            v-show="isSending"
+            class="ml-1 h-4 w-4 animate-spin my-1"
+          ></IconLoading>
+        </button>
       </form>
     </template>
   </div>
