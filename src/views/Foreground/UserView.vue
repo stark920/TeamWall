@@ -114,7 +114,7 @@ const getPosts = (sort = 1, searchKey = '') => {
 
 // 篩選個人貼文 (註：後端出 個人貼文API 後移除)
 const userPosts = computed(() => {
-  return posts.value.filter((item) => item.userId[0]?._id === id);
+  return posts.value.filter((item) => item.userId?._id === id);
 });
 onMounted(() => {
   getPosts();

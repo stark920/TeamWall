@@ -37,7 +37,7 @@ const likePost = (postId) => {
       class="mb-4"
       :imgUrl="post.userId?.avatar?.url"
       :name="post.userId?.name"
-      :userPageUrl="`/user/${post.userId?._id}`"
+      :userPageUrl="`/profile/${post.userId?._id}`"
       :subTitle="post.createAt"
     />
     <p class="mb-4 whitespace-pre">{{ post.content }}</p>
