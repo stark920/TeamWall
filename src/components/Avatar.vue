@@ -11,7 +11,7 @@ defineProps({
 });
 
 function getImageUrl(url) {
-  if (url.startsWith('http')) return url;
+  if (url.startsWith('http') || url.includes('base64')) return url;
   return new URL(`../assets/${url}`, import.meta.url).href;
 }
 </script>
