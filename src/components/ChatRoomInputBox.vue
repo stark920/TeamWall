@@ -6,8 +6,9 @@ const inputBox = ref(null);
 const toast = useToast();
 const emit = defineEmits(['sendMessage']);
 const sendMessage = () => {
-  const value = inputBox.value.innerText;
-  if (value === '') {
+  let value = inputBox.value.innerText;
+  value = value.replace(/\n/g, '');
+  if (value.length === 0) {
     toast.error('請輸入內容再送出訊息');
     return;
   }
