@@ -36,18 +36,13 @@ const changeTab = (name) => {
   tabName.value = name;
 };
 
-const getImageUrl = (url) => {
-  if (url === undefined) {
-    return new URL(`../../assets/avatars/user_default.png`, import.meta.url).href;
-  } else if (url.startsWith('http')) {
-    return url;
-  }
-}
-
 // Profile
 const changeUserProfile = reactive({...userStore.user});
 const vProfile$ = useVuelidate(nameRules, changeUserProfile);
 const imageFile = ref(null);
+const avartarPreviewInfo = reactive({
+  base64: ''
+})
 const updateUserProfile = () => {
   const photos = Array.from(imageFile.value.files);
   const form = new FormData();
@@ -76,6 +71,15 @@ const updateUserProfile = () => {
       console.log('更新失敗，請洽系統管理員');
     });
 };
+
+const changeAvatar = ($event) => {
+  const currectImg = $event.target.files[0];
+  const reader = new FileReader();
+  reader.readAsDataURL(currectImg);
+  reader.onload = ($event) => {
+    avartarPreviewInfo.base64 = $event.target.result
+  }
+} 
 
 // Password
 const changePassword = reactive({});
@@ -127,7 +131,12 @@ const updateUserPwd = async ($event) => {
     class="flex flex-col items-center rounded-xl border-2 border-black bg-white p-8 shadow-post"
   >
     <template v-if="tabName === 'editNickName'">
-      <AvatarVue 
+      <AvatarVue v-if="avartarPreviewInfo.base64"
+        size="107"
+        :imgUrl="avartarPreviewInfo.base64"
+        class="mb-4 rounded-full border-2 border-black"
+      />
+      <AvatarVue v-else
         size="107"
         :imgUrl="changeUserProfile?.avatar?.url"
         class="mb-4 rounded-full border-2 border-black"
@@ -138,6 +147,7 @@ const updateUserPwd = async ($event) => {
         name="photos"
         accept="image/png, image/jpeg, image/jpg"
         class="btn btn-dark mb-4 hidden px-8 py-1"
+        @change="changeAvatar($event)"
       />
       <input
         type="button"
