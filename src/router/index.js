@@ -65,6 +65,11 @@ const router = createRouter({
           name: 'sign-up',
           component: () => import('../views/Foreground/SignUpView.vue'),
         },
+        {
+          path: '/callback',
+          name: 'callback',
+          component: () => import('../views/Foreground/SignInCallback.vue'),
+        },
       ],
     },
     {

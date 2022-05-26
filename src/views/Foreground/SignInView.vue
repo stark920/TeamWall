@@ -1,13 +1,17 @@
 <script setup>
 import useVuelidate from '@vuelidate/core';
+import ButtonIcon from '@/components/ButtonIcon.vue';
+import IconGoogle from '@/components/icons/IconGoogle.vue';
 import IconLoading from '@/components/icons/IconLoading.vue';
 import { required, email, helpers } from '@vuelidate/validators';
 import { ref, computed } from 'vue';
 import { apiUser } from '@/utils/apiUser';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores';
+import { API_URL } from '@/global/constant';
 const userStore = useUserStore();
 const router = useRouter();
+const googleUrl = `${API_URL}/users/google`;
 const form = ref({
   email: '',
   password: '',
@@ -98,6 +102,20 @@ const signIn = async () => {
     </li>
     <li class="text-center">
       <router-link to="sign-up">註冊</router-link>
+    </li>
+    <li>
+      <div
+        class="mt-8 mb-4 border-t-2 border-gray-300 text-center text-gray-500"
+      >
+        使用其他登入方式
+      </div>
+    </li>
+    <li>
+      <a :href="googleUrl">
+        <ButtonIcon>
+          <IconGoogle></IconGoogle>
+        </ButtonIcon>
+      </a>
     </li>
   </ul>
 </template>
