@@ -3,6 +3,7 @@ import UserInfo from './UserInfo.vue';
 import IconThumbsUpVue from '@/components/icons/IconThumbsUp.vue';
 import IconThumbsUpFillVue from '@/components/icons/IconThumbsUpFill.vue';
 import AvatarVue from './Avatar.vue';
+import PostImagesCardVue from './PostImagesCard.vue';
 import { apiLike } from '../utils/apiLike';
 import { useUserStore } from '@/stores';
 const userStore = useUserStore();
@@ -41,12 +42,7 @@ const likePost = (postId) => {
       :subTitle="post.createAt"
     />
     <p class="mb-4 whitespace-pre">{{ post.content }}</p>
-    <img
-      class="max-h-96 w-full rounded-lg border-2 border-black object-cover object-center"
-      v-if="post.updateImage"
-      :src="post.updateImage"
-      alt="貼文圖片"
-    />
+    <PostImagesCardVue :images="post.image" />
     <div>
       <button
         type="button"
