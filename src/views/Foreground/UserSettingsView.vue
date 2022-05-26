@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, watch } from 'vue';
 import CardTitle from '@/components/CardTitle.vue';
 import AvatarVue from '@/components/Avatar.vue';
 import IconLoading from '@/components/icons/IconLoading.vue';
@@ -10,6 +10,10 @@ import { apiUser } from '@/utils/apiUser';
 
 const userStore = useUserStore();
 const isSending = ref(false);
+const updateMessage = reactive({
+  profile: '送出更新',
+  password: '重設密碼'
+})
 const nameRules = computed(() => ({
   name: {
     required: helpers.withMessage('暱稱必填', required),
@@ -40,8 +44,13 @@ const changeTab = (name) => {
 const changeUserProfile = reactive({...userStore.user});
 const vProfile$ = useVuelidate(nameRules, changeUserProfile);
 const imageFile = ref(null);
+const avatarForm = ref(null);
 const avartarPreviewInfo = reactive({
-  base64: ''
+  base64: '',
+  errorMessage: {
+    size: '檔案需在 2 MB 以內'
+  },
+  hasError: false
 })
 const updateUserProfile = () => {
   const photos = Array.from(imageFile.value.files);
@@ -57,29 +66,44 @@ const updateUserProfile = () => {
     .then((res) => {
       if (res.data.status) {
         isSending.value = false;
+        updateMessage.profile = '更新完成';
         userStore.updateUser(res.data.data);
         changeUserProfile.name = res.data.data.name;
         changeUserProfile.avatar = res.data.data.avatar;
         changeUserProfile.sex = res.data.data.sex;
+        resetAvatar();
+        resetStatusMessage();
       } else {
         isSending.value = false;
-        console.log('更新失敗，請洽系統管理員');
+        updateMessage.profile = '更新失敗';
+        resetStatusMessage();
       }
     })
     .catch(() => {
       isSending.value = false;
-      console.log('更新失敗，請洽系統管理員');
+      updateMessage.profile = '更新失敗';
+      resetStatusMessage();
     });
 };
 
 const changeAvatar = ($event) => {
   const currectImg = $event.target.files[0];
+  if (currectImg.size >= 2*1024*1024) {
+    return avartarPreviewInfo.hasError = true;
+  }
   const reader = new FileReader();
   reader.readAsDataURL(currectImg);
   reader.onload = ($event) => {
+    avartarPreviewInfo.hasError = false;
     avartarPreviewInfo.base64 = $event.target.result
   }
 } 
+
+const resetAvatar = () => {
+  avatarForm.value.reset();
+  avartarPreviewInfo.base64 = '';  
+  avartarPreviewInfo.hasError = false;
+}
 
 // Password
 const changePassword = reactive({});
@@ -90,17 +114,29 @@ const updateUserPwd = async ($event) => {
     .then((res) => {
       if (res.data.status) {
         isSending.value = false;
+        updateMessage.password = '更新完成';
+        resetStatusMessage();
       } else {
         isSending.value = false;
-        console.log('更新失敗，請洽系統管理員');
+        updateMessage.password = '更新失敗';
+        resetStatusMessage();
       }
     })
     .catch(() => {
-      console.log('更新失敗，請洽系統管理員');
       isSending.value = false;
+      updateMessage.password = '更新失敗';
+      resetStatusMessage();
     });
   $event.target.reset();
 };
+
+const resetStatusMessage = () => {
+  setTimeout(() => {
+    updateMessage.profile = '送出更新';
+    updateMessage.password = '重設密碼';
+  }, 3000);
+}
+
 </script>
 
 <template>
@@ -141,20 +177,30 @@ const updateUserPwd = async ($event) => {
         :imgUrl="changeUserProfile?.avatar?.url"
         class="mb-4 rounded-full border-2 border-black"
       />
-      <input
-        ref="imageFile"
-        type="file"
-        name="photos"
-        accept="image/png, image/jpeg, image/jpg"
-        class="btn btn-dark mb-4 hidden px-8 py-1"
-        @change="changeAvatar($event)"
-      />
-      <input
-        type="button"
-        value="上傳大頭照"
-        class="mb-4 rounded border-black bg-black px-6 py-1 text-white"
-        @click="imageFile.click()"
-      />
+      <form ref="avatarForm" action="" class="text-center">
+        <input
+          ref="imageFile"
+          type="file"
+          name="photos"
+          accept="image/png, image/jpeg, image/jpg"
+          class="btn btn-dark mb-4 hidden px-8 py-1"
+          @change="changeAvatar($event)"
+        />
+        <input
+          v-show="avartarPreviewInfo.base64"
+          type="reset"
+          value="取消"
+          class="mb-4 mr-4 rounded border border-black bg-white px-10 py-1 text-black"
+          @click="resetAvatar"
+        />
+        <input
+          type="button"
+          :value="avartarPreviewInfo.base64 === ''? '上傳大頭照' : '再選一張'"
+          class="mb-4 rounded border border-black bg-black px-6 py-1 text-white"
+          @click="imageFile.click()"
+        />
+        <p v-if="avartarPreviewInfo.hasError" class="mb-4 text-alert">Tip: {{avartarPreviewInfo.errorMessage.size}}</p>
+      </form>
       <form @submit.prevent="updateUserProfile" action="" class="">
         <div class="mb-1">
           <label for="nickName" class="mb-1 block">暱稱</label>
@@ -197,7 +243,7 @@ const updateUserPwd = async ($event) => {
           class="flex w-full items-center justify-center rounded border-2 border-black bg-warning py-4 text-black disabled:opacity-50"
           :disabled="vProfile$.name.$errors.length > 0"
         >
-          <span v-show="!isSending">送出更新</span>
+          <span v-show="!isSending">{{updateMessage.profile}}</span>
           <IconLoading
             v-show="isSending"
             class="ml-1 h-4 w-4 animate-spin my-1"
@@ -246,7 +292,7 @@ const updateUserPwd = async ($event) => {
           class="flex w-full items-center justify-center rounded border-2 border-black bg-subtitle py-4 mt-8 text-black disabled:opacity-50"
           :disabled="vPassword$.password.$errors.length > 0 || vPassword$.passwordConfirm.$errors.length > 0 || changePassword.password === undefined"
         >
-          <span v-show="!isSending">重設密碼</span>
+          <span v-show="!isSending">{{updateMessage.password}}</span>
           <IconLoading
             v-show="isSending"
             class="ml-1 h-4 w-4 animate-spin my-1"
