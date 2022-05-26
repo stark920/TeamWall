@@ -5,7 +5,6 @@ export default defineStore('user', {
   state: () => ({
     user: {},
   }),
-  persist: true,
   actions: {
     updateUser(obj) {
       this.user = obj;
