@@ -1,52 +1,13 @@
 <template>
   <div class="overflow-hidden rounded-lg border-2 border-black">
-    <!-- 1 張圖 -->
-    <img
-      v-if="newImages.length == 1"
-      class="max-h-96 cursor-pointer object-center"
-      :src="newImages[0]"
-      @click="showImg(0)"
-    />
-
-    <!-- 2 張圖 -->
-    <div v-if="newImages.length == 2" class="grid grid-cols-1 gap-0">
-      <template v-for="(item, index) in newImages" :key="item.id">
-        <div @click="showImg(index)" class="cursor-pointer">
-          <img class="max-h-48 object-center" :src="item" />
-        </div>
-      </template>
-    </div>
-
-    <!-- 3 張圖 -->
-    <div v-if="newImages.length == 3" class="grid grid-cols-2 gap-0">
-      <template v-for="(item, index) in newImages" :key="item.id">
-        <div
-          @click="showImg(index)"
-          class="cursor-pointer"
-          :class="{ 'col-span-2': index == 0 }"
-        >
-          <img class="max-h-48 object-center" :src="item" />
-        </div>
-      </template>
-    </div>
-
-    <!-- 4 張圖 -->
-    <div v-if="newImages.length == 4" class="grid grid-cols-3 gap-0">
-      <template v-for="(item, index) in newImages" :key="item.id">
-        <div
-          @click="showImg(index)"
-          class="cursor-pointer"
-          :class="{ 'col-span-3': index == 0 }"
-        >
-          <img class="max-h-48 object-center" :src="item" />
-        </div>
-      </template>
-    </div>
-
-    <!-- 5 張圖以上 -->
     <div
-      v-if="newImages.length >= 5"
-      class="grid max-h-96 grid-flow-col grid-rows-6 gap-0"
+      class="grid gap-0"
+      :class="{
+        'grid-cols-1': newImages.length <= 2,
+        'grid-cols-2': newImages.length == 3,
+        'grid-cols-3': newImages.length == 4,
+        'max-h-96 grid-flow-col grid-rows-6': newImages.length >= 5,
+      }"
     >
       <template v-for="(item, index) in newImages" :key="item.id">
         <div
@@ -54,12 +15,24 @@
           @click="showImg(index)"
           class="cursor-pointer"
           :class="{
-            'row-span-3': index < 2,
-            'row-span-2': index >= 2,
+            'col-span-2': newImages.length == 3 && index == 0,
+            'col-span-3': newImages.length == 4 && index == 0,
+            'row-span-3': newImages.length >= 5 && index < 2,
+            'row-span-2': newImages.length >= 5 && index >= 2,
             relative: newImages.length > 5 && index == 4,
           }"
         >
-          <img class="object-center" :src="item" />
+          <img
+            :src="item"
+            class="object-center"
+            :class="{
+              'max-h-96': newImages.length == 1,
+              'max-h-48':
+                newImages.length == 2 ||
+                newImages.length == 3 ||
+                newImages.length == 4,
+            }"
+          />
           <!-- 剩餘圖片提示 -->
           <div
             v-if="newImages.length > 5 && index == 4"
@@ -73,6 +46,7 @@
       </template>
     </div>
   </div>
+
   <vue-easy-lightbox
     :visible="visible"
     :imgs="newImages"
