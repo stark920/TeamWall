@@ -33,7 +33,7 @@ onMounted(() => {
 
   <ul v-show="isLoading">
     <li v-for="index in 3" :key="index" class="mb-4">
-      <PostLoadingCard></PostLoadingCard>
+      <PostLoadingCard />
     </li>
   </ul>
 

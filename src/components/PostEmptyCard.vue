@@ -3,7 +3,8 @@
     <div class="border-b-2 border-black p-4">
       <span class="dot"></span>
     </div>
-    <p class="p-8 text-center text-subtitle">目前尚無動態，新增一則貼文吧！</p>
+    <slot></slot>
+    <!-- <p class="p-8 text-center text-subtitle">目前尚無動態，新增一則貼文吧！</p> -->
   </div>
 </template>
 
