@@ -42,7 +42,7 @@ const likePost = (postId) => {
       :subTitle="post.createAt"
     />
     <p class="mb-4 whitespace-pre">{{ post.content }}</p>
-    <PostImagesCardVue :images="post.image" />
+    <PostImagesCardVue v-if="post.image?.length > 0" :images="post.image" />
     <div>
       <button
         type="button"
