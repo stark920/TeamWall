@@ -1,34 +1,23 @@
 <script setup>
 import CardTitle from '@/components/CardTitle.vue';
-import UserInfo from '@/components/UserInfo.vue';
-import IconThumbsUpVue from '@/components/icons/IconThumbsUp.vue';
-import IconArrowRightVue from '@/components/icons/IconArrowRight.vue';
+import LikeCard from '@/components/LikeCard.vue';
+import LikeLoadingCard from '@/components/LikeLoadingCard.vue';
+import PostEmptyCard from '@/components/PostEmptyCard.vue';
 import { ref, onMounted } from 'vue';
 import { apiLike } from '@/utils/apiLike';
-import { useRouter } from 'vue-router';
-const router = useRouter();
+const isLoading = ref(false);
 
 const likePosts = ref([]);
 
 const getLikes = () => {
+  isLoading.value = true;
   apiLike
     .getAll()
     .then((res) => {
       if (res.data.data) {
+        isLoading.value = false;
         likePosts.value = res.data.data.posts;
       }
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-};
-
-const cancelLikePost = (postId) => {
-  const data = { posts: postId };
-  apiLike
-    .toggle(data)
-    .then(() => {
-      getLikes();
     })
     .catch((err) => {
       console.log(err);
@@ -42,43 +31,26 @@ onMounted(() => {
 
 <template>
   <CardTitle title="我按讚的貼文" />
-  <ul>
-    <li
-      v-for="(item, index) in likePosts"
-      :key="item._id"
-      class="rounded-lg border-2 border-black bg-white py-5 pl-4 pr-10 shadow-post"
-      :class="{ 'mb-2': index < likePosts.length - 1 }"
-    >
-      <div class="flex justify-between">
-        <UserInfo
-          :name="item.userId?.name"
-          :subTitle="`發文時間：${$filters.dateTime(item.createAt)}`"
-          :userPageUrl="`/profile/${item.userId?._id}`"
-          :imgUrl="item.userId?.avatar?.url"
-        />
-        <ul class="flex gap-10">
-          <li>
-            <button
-              type="button"
-              class="flex flex-col items-center justify-center gap-1"
-              @click="cancelLikePost(item._id)"
-            >
-              <IconThumbsUpVue class="h-5 w-5 text-primary" />
-              <span>取消</span>
-            </button>
-          </li>
-          <li>
-            <button
-              type="button"
-              class="flex flex-col items-center justify-center gap-1"
-              @click="router.push(`/post/${item._id}`)"
-            >
-              <IconArrowRightVue class="h-5 w-5" />
-              <span>查看</span>
-            </button>
-          </li>
-        </ul>
-      </div>
+
+  <ul v-show="isLoading">
+    <li v-for="index in 3" :key="index" class="mb-4">
+      <LikeLoadingCard />
     </li>
   </ul>
+  <div v-show="!isLoading">
+    <ul v-if="likePosts.length > 0">
+      <li
+        v-for="(item, index) in likePosts"
+        :key="item._id"
+        :class="{ 'mb-2': index < likePosts.length - 1 }"
+      >
+        <LikeCard :item="item" @get-likes="getLikes" />
+      </li>
+    </ul>
+    <PostEmptyCard v-else>
+      <p class="p-8 text-center text-subtitle">
+        目前尚無按讚文章，按讚一則貼文吧！
+      </p>
+    </PostEmptyCard>
+  </div>
 </template>

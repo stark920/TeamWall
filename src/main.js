@@ -15,6 +15,10 @@ import './index.css';
 //   worker.start();
 // }
 
+// vue-easy-lightbox
+import VueEasyLightbox from 'vue-easy-lightbox/dist/external-css/vue-easy-lightbox.esm.min.js';
+import 'vue-easy-lightbox/dist/external-css/vue-easy-lightbox.css';
+
 const app = createApp(App);
 
 // dateTime 日期時間
@@ -24,7 +28,7 @@ app.config.globalProperties.$filters = {
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
-
+app.use(VueEasyLightbox);
 app.use(pinia);
 app.use(router);
 app.use(Toast);

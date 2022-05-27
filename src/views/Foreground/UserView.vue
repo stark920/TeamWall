@@ -40,22 +40,35 @@
     </div>
   </div>
   <PostFilter @get-posts="getPosts" />
-  <ul v-if="userPosts.length > 0">
-    <li
-      v-for="(item, index) in userPosts"
-      :key="index"
-      :class="{ 'mb-4': index < userPosts.length - 1 }"
-    >
-      <PostCard :post="item" @get-posts="getPosts" />
+
+  <ul v-show="isLoading">
+    <li v-for="index in 3" :key="index" class="mb-4">
+      <PostLoadingCard />
     </li>
   </ul>
-  <PostEmptyCard v-else />
+  <div v-show="!isLoading">
+    <ul v-if="userPosts.length > 0">
+      <li
+        v-for="(item, index) in userPosts"
+        :key="index"
+        :class="{ 'mb-4': index < userPosts.length - 1 }"
+      >
+        <PostCard :post="item" @get-posts="getPosts" />
+      </li>
+    </ul>
+    <PostEmptyCard v-else>
+      <p class="p-8 text-center text-subtitle">
+        目前尚無動態，新增一則貼文吧！
+      </p>
+    </PostEmptyCard>
+  </div>
 </template>
 
 <script setup>
 import PostFilter from '@/components/PostFilter.vue';
 import PostEmptyCard from '@/components/PostEmptyCard.vue';
 import PostCard from '@/components/PostCard.vue';
+import PostLoadingCard from '@/components/PostLoadingCard.vue';
 import eventBus from '@/utils/eventBus';
 import { useRoomStore, useUserStore } from '@/stores';
 import { ref, onMounted, computed, watch } from 'vue';
@@ -68,6 +81,7 @@ const userStore = useUserStore(); // 登入者資料
 const route = useRoute();
 const id = ref(route.params.id); // 個人頁 userId
 const pending = ref(false);
+const isLoading = ref(false);
 
 //取得聊天室id並且開啟聊天視窗
 const sendMessage = async () => {
@@ -102,12 +116,15 @@ const getPosts = (sort = 1, searchKey = '') => {
     sortValue = 'asc';
   }
 
+  isLoading.value = true;
   apiPost
     .getAll(`timeSort=${sortValue}&search=${searchKey}`)
     .then((res) => {
+      isLoading.value = false;
       posts.value = res.data.data;
     })
     .catch((err) => {
+      isLoading.value = false;
       console.log(err);
     });
 };
@@ -123,12 +140,15 @@ onMounted(() => {
 // 個人頁資料
 const userProfile = ref({});
 const getUserProfile = () => {
+  isLoading.value = true;
   apiUser
     .getProfile(id.value)
     .then((res) => {
+      isLoading.value = false;
       userProfile.value = res.data.data;
     })
     .catch((err) => {
+      isLoading.value = false;
       console.log(err);
     });
 };

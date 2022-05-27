@@ -39,10 +39,10 @@ const likePost = (postId) => {
       :imgUrl="post.userId?.avatar?.url"
       :name="post.userId?.name"
       :userPageUrl="`/profile/${post.userId?._id}`"
-      :subTitle="post.createAt"
+      :subTitle="$filters.dateTime(post.createdAt)"
     />
     <p class="mb-4 whitespace-pre">{{ post.content }}</p>
-    <PostImagesCardVue :images="post.image" />
+    <PostImagesCardVue v-if="post.image?.length > 0" :images="post.image" />
     <div>
       <button
         type="button"
