@@ -87,7 +87,7 @@ const isLoading = ref(false);
 const sendMessage = async () => {
   if (pending.value) return;
   const sendData = {
-    receiver: '628e374ac1d659be9f498563',
+    receiver: id.value,
   };
   try {
     pending.value = true;

@@ -1,6 +1,7 @@
 <script setup>
 import { useToast } from 'vue-toastification';
 import { ref, onMounted } from 'vue';
+import { throttle } from '@/utils/common';
 import Send from '@/components/icons/IconSend.vue';
 const inputBox = ref(null);
 const toast = useToast();
@@ -18,6 +19,7 @@ const sendMessage = () => {
   }
   emit('sendMessage', value);
   inputBox.value.innerText = '';
+  inputBox.value.focus();
 };
 
 onMounted(() => {
@@ -27,10 +29,8 @@ onMounted(() => {
   inputBox.value.dispatchEvent(keyEvent);
   inputBox.value.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') {
-      sendMessage();
-      console.log('doSomething');
+      throttle(sendMessage, 500)();
     }
-    console.log('content', e.target.innerText);
   });
 });
 </script>
