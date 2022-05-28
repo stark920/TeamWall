@@ -2,18 +2,7 @@
   <div
     class="track relative mb-4 flex rounded-lg border-2 border-black bg-white"
   >
-    <div class="h-20 w-20">
-      <img
-        v-if="userProfile.avatar?.url"
-        :src="userProfile.avatar?.url"
-        class="h-full object-cover object-center"
-      />
-      <img
-        v-else
-        src="@/assets/avatars/user_default.png"
-        class="h-full object-cover object-center"
-      />
-    </div>
+    <div><Avatar :img-url="userProfile.avatar" size="80"></Avatar></div>
     <div class="flex w-full justify-between p-4">
       <div>
         <h2>{{ userProfile.name }}</h2>
@@ -81,6 +70,7 @@ import { apiChat } from '@/utils/apiChat';
 import { apiPost } from '@/utils/apiPost';
 import { apiUser } from '@/utils/apiUser';
 const router = useRouter();
+import Avatar from '../../components/Avatar.vue';
 const roomStore = useRoomStore();
 const userStore = useUserStore(); // 登入者資料
 const route = useRoute();

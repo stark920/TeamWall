@@ -9,7 +9,9 @@ import { apiUser, token } from '../utils/apiUser';
 import { useUserStore } from '@/stores';
 const userStore = useUserStore();
 const router = useRouter();
+
 const isLoading = ref(true);
+
 onMounted(() => {
   if (userStore?.name) {
     isLoading.value = !isLoading.value;
@@ -32,9 +34,9 @@ onMounted(() => {
 <template>
   <div class="min-h-screen w-full">
     <Navbar
-      :name="userStore.user?.name"
-      :avatar="userStore.user?.avatar?.url"
-      :userPageUrl="'/profile/' + userStore.user?.id"
+      :name="userStore.user.name"
+      :avatar="userStore.user.avatar"
+      :userPageUrl="'/profile/' + userStore.user.id"
       class="mb-12"
     />
     <div class="container mx-auto w-11/12 px-3 sm:px-0 md:w-9/12 xl:w-7/12">
@@ -44,9 +46,9 @@ onMounted(() => {
         </div>
         <div class="hidden lg:block">
           <SideMenu
-            :name="userStore.user?.name"
-            :avatar="userStore.user?.avatar?.url"
-            :userPageUrl="'/profile/' + userStore.user?.id"
+            :name="userStore.user.name"
+            :avatar="userStore.user.avatar"
+            :userPageUrl="'/profile/' + userStore.user.id"
           />
         </div>
       </div>

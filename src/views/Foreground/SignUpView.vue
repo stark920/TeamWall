@@ -42,9 +42,9 @@ const signUp = async () => {
   isSending.value = true;
   apiUser
     .signUp(form.value)
-    .then(() => {
+    .then((res) => {
       resetData();
-      alert('註冊成功，請再次登入');
+      alert(res.data.message);
       router.push({ name: 'sign-in' });
     })
     .catch((error) => {
