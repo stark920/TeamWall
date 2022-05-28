@@ -1,5 +1,6 @@
 <script setup>
 import { ref, reactive, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import CardTitle from '@/components/CardTitle.vue';
 import AvatarVue from '@/components/Avatar.vue';
 import IconLoading from '@/components/icons/IconLoading.vue';
@@ -37,10 +38,10 @@ const passwordRules = computed(() => ({
   },
 }));
 
-apiUser.check().then((res) => {
-  userStore.updateUser(res.data.data);
-  renderUserData();
-})
+// watch(userStore, (newValue) => {
+//   userStore.updateUser(newValue.user);
+// })
+
 
 // Change tab
 const tabName = ref('editNickName');
@@ -49,7 +50,8 @@ const changeTab = (name) => {
 };
 
 // Profile
-const changeUserProfile = reactive({});
+const { user } = storeToRefs(userStore);
+const changeUserProfile = ref(user);
 const vProfile$ = useVuelidate(nameRules, changeUserProfile);
 const imageFile = ref(null);
 const avatarForm = ref(null);
@@ -61,14 +63,12 @@ const avatarPreviewInfo = reactive({
   hasError: false,
 });
 const updateUserProfile = () => {
-  const photos = Array.from(imageFile.value.files);
+  const avatar = imageFile.value.files[0];
   const form = new FormData();
   isSending.value = true;
-  photos.forEach((item) => {
-    form.append('avatar', item);
-  });
-  form.append('name', changeUserProfile.name.trim());
-  form.append('gender', changeUserProfile.gender);
+  form.append('avatar', avatar);
+  form.append('name', changeUserProfile.value.name.trim());
+  form.append('gender', changeUserProfile.value.gender);
 
   apiUser
     .updateProfile(form)
@@ -151,9 +151,9 @@ const resetStatusMessage = () => {
 
 const renderUserData = () => {
   const {name, avatar, gender} = userStore.user;
-  changeUserProfile.name = name;
-  changeUserProfile.avatar = avatar;
-  changeUserProfile.gender = gender;
+  changeUserProfile.value.name = name;
+  changeUserProfile.value.avatar = avatar;
+  changeUserProfile.value.gender = gender;
 };
 
 </script>
