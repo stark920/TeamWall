@@ -69,7 +69,7 @@ const submitPost = () => {
       <img :src="data.preview" class="h-full" />
     </div>
     <div class="text-center">
-      <div v-show="isWarnHint" class="text-red_x -mt-2 mb-2 mb-1 text-sm">
+      <div v-show="isWarnHint" class="text-red_x -mt-2 mb-2 text-sm">
         圖片檔案過大，僅限 1mb 以下檔案<br />圖片格式錯誤，僅限 JPG、PNG 圖片
       </div>
       <button

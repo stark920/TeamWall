@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, watch } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import CardTitle from '@/components/CardTitle.vue';
 import AvatarVue from '@/components/Avatar.vue';
 import IconLoading from '@/components/icons/IconLoading.vue';
@@ -12,8 +12,8 @@ const userStore = useUserStore();
 const isSending = ref(false);
 const updateMessage = reactive({
   profile: '送出更新',
-  password: '重設密碼'
-})
+  password: '重設密碼',
+});
 const nameRules = computed(() => ({
   name: {
     required: helpers.withMessage('暱稱必填', required),
@@ -30,8 +30,11 @@ const passwordRules = computed(() => ({
   },
   passwordConfirm: {
     required: helpers.withMessage('密碼必填', required),
-    sameAsPassword: helpers.withMessage('密碼不一致', sameAs(changePassword.password))
-  }
+    sameAsPassword: helpers.withMessage(
+      '密碼不一致',
+      sameAs(changePassword.password)
+    ),
+  },
 }));
 
 // Change tab
@@ -41,17 +44,17 @@ const changeTab = (name) => {
 };
 
 // Profile
-const changeUserProfile = reactive({...userStore.user});
+const changeUserProfile = reactive({ ...userStore.user });
 const vProfile$ = useVuelidate(nameRules, changeUserProfile);
 const imageFile = ref(null);
 const avatarForm = ref(null);
-const avartarPreviewInfo = reactive({
+const avatarPreviewInfo = reactive({
   base64: '',
   errorMessage: {
-    size: '檔案需在 2 MB 以內'
+    size: '檔案需在 2 MB 以內',
   },
-  hasError: false
-})
+  hasError: false,
+});
 const updateUserProfile = () => {
   const photos = Array.from(imageFile.value.files);
   const form = new FormData();
@@ -60,9 +63,10 @@ const updateUserProfile = () => {
     form.append('avatar', item);
   });
   form.append('name', changeUserProfile.name.trim());
-  form.append('sex', changeUserProfile.sex);
+  form.append('gender', changeUserProfile.gender);
 
-  apiUser.updateProfile(form)
+  apiUser
+    .updateProfile(form)
     .then((res) => {
       if (res.data.status) {
         isSending.value = false;
@@ -70,7 +74,7 @@ const updateUserProfile = () => {
         userStore.updateUser(res.data.data);
         changeUserProfile.name = res.data.data.name;
         changeUserProfile.avatar = res.data.data.avatar;
-        changeUserProfile.sex = res.data.data.sex;
+        changeUserProfile.gender = res.data.data.gender;
         resetAvatar();
         resetStatusMessage();
       } else {
@@ -87,30 +91,31 @@ const updateUserProfile = () => {
 };
 
 const changeAvatar = ($event) => {
-  const currectImg = $event.target.files[0];
-  if (currectImg.size >= 2*1024*1024) {
-    return avartarPreviewInfo.hasError = true;
+  const currentImg = $event.target.files[0];
+  if (currentImg.size >= 2 * 1024 * 1024) {
+    return (avatarPreviewInfo.hasError = true);
   }
   const reader = new FileReader();
-  reader.readAsDataURL(currectImg);
+  reader.readAsDataURL(currentImg);
   reader.onload = ($event) => {
-    avartarPreviewInfo.hasError = false;
-    avartarPreviewInfo.base64 = $event.target.result
-  }
-} 
+    avatarPreviewInfo.hasError = false;
+    avatarPreviewInfo.base64 = $event.target.result;
+  };
+};
 
 const resetAvatar = () => {
   avatarForm.value.reset();
-  avartarPreviewInfo.base64 = '';  
-  avartarPreviewInfo.hasError = false;
-}
+  avatarPreviewInfo.base64 = '';
+  avatarPreviewInfo.hasError = false;
+};
 
 // Password
 const changePassword = reactive({});
 const vPassword$ = useVuelidate(passwordRules, changePassword);
 const updateUserPwd = async ($event) => {
   isSending.value = true;
-  await apiUser.updatePassword(changePassword)
+  await apiUser
+    .updatePassword(changePassword)
     .then((res) => {
       if (res.data.status) {
         isSending.value = false;
@@ -135,8 +140,7 @@ const resetStatusMessage = () => {
     updateMessage.profile = '送出更新';
     updateMessage.password = '重設密碼';
   }, 3000);
-}
-
+};
 </script>
 
 <template>
@@ -167,12 +171,14 @@ const resetStatusMessage = () => {
     class="flex flex-col items-center rounded-xl border-2 border-black bg-white p-8 shadow-post"
   >
     <template v-if="tabName === 'editNickName'">
-      <AvatarVue v-if="avartarPreviewInfo.base64"
+      <AvatarVue
+        v-if="avatarPreviewInfo.base64"
         size="107"
-        :imgUrl="avartarPreviewInfo.base64"
+        :imgUrl="avatarPreviewInfo.base64"
         class="mb-4 rounded-full border-2 border-black"
       />
-      <AvatarVue v-else
+      <AvatarVue
+        v-else
         size="107"
         :imgUrl="changeUserProfile?.avatar?.url"
         class="mb-4 rounded-full border-2 border-black"
@@ -187,7 +193,7 @@ const resetStatusMessage = () => {
           @change="changeAvatar($event)"
         />
         <input
-          v-show="avartarPreviewInfo.base64"
+          v-show="avatarPreviewInfo.base64"
           type="reset"
           value="取消"
           class="mb-4 mr-4 rounded border border-black bg-white px-10 py-1 text-black"
@@ -195,11 +201,13 @@ const resetStatusMessage = () => {
         />
         <input
           type="button"
-          :value="avartarPreviewInfo.base64 === ''? '上傳大頭照' : '再選一張'"
+          :value="avatarPreviewInfo.base64 === '' ? '上傳大頭照' : '再選一張'"
           class="mb-4 rounded border border-black bg-black px-6 py-1 text-white"
           @click="imageFile.click()"
         />
-        <p v-if="avartarPreviewInfo.hasError" class="mb-4 text-alert">Tip: {{avartarPreviewInfo.errorMessage.size}}</p>
+        <p v-if="avatarPreviewInfo.hasError" class="mb-4 text-alert">
+          Tip: {{ avatarPreviewInfo.errorMessage.size }}
+        </p>
       </form>
       <form @submit.prevent="updateUserProfile" action="" class="">
         <div class="mb-1">
@@ -214,24 +222,27 @@ const resetStatusMessage = () => {
             @blur="vProfile$.name.$touch"
           />
         </div>
-        <div v-if="vProfile$.name.$errors.length > 0" class="font-azeret text-alert">
+        <div
+          v-if="vProfile$.name.$errors.length > 0"
+          class="font-azeret text-alert"
+        >
           {{ vProfile$.name.$errors[0].$message }}
         </div>
         <div class="mt-4 mb-8">
           <label for="male" class="mb-1 block">性別</label>
           <input
-            v-model="changeUserProfile.sex"
+            v-model="changeUserProfile.gender"
             type="radio"
-            name="sex"
+            name="gender"
             id="male"
             value="male"
             class="mr-3"
           />
           <label for="male" class="mr-7">男性</label>
           <input
-            v-model="changeUserProfile.sex"
+            v-model="changeUserProfile.gender"
             type="radio"
-            name="sex"
+            name="gender"
             id="female"
             value="female"
             class="mr-3"
@@ -243,10 +254,10 @@ const resetStatusMessage = () => {
           class="flex w-full items-center justify-center rounded border-2 border-black bg-warning py-4 text-black disabled:opacity-50"
           :disabled="vProfile$.name.$errors.length > 0"
         >
-          <span v-show="!isSending">{{updateMessage.profile}}</span>
+          <span v-show="!isSending">{{ updateMessage.profile }}</span>
           <IconLoading
             v-show="isSending"
-            class="ml-1 h-4 w-4 animate-spin my-1"
+            class="my-1 ml-1 h-4 w-4 animate-spin"
           ></IconLoading>
         </button>
       </form>
@@ -264,12 +275,15 @@ const resetStatusMessage = () => {
             type="password"
             id="newPassword"
             placeholder="請輸入新密碼"
-            class="border-2 border-black w-full"
+            class="w-full border-2 border-black"
             @blur="vPassword$.password.$touch"
             required
           />
         </div>
-        <div v-if="vPassword$.password.$errors.length > 0" class="font-azeret text-alert">
+        <div
+          v-if="vPassword$.password.$errors.length > 0"
+          class="font-azeret text-alert"
+        >
           {{ vPassword$.password.$errors[0].$message }}
         </div>
         <div class="mb-1">
@@ -279,23 +293,30 @@ const resetStatusMessage = () => {
             type="password"
             id="checkPassword"
             placeholder="再次輸入新密碼"
-            class="border-2 border-black w-full"
+            class="w-full border-2 border-black"
             @blur="vPassword$.passwordConfirm.$touch"
             required
           />
         </div>
-        <div v-if="vPassword$.passwordConfirm.$errors.length > 0" class="font-azeret text-alert">
+        <div
+          v-if="vPassword$.passwordConfirm.$errors.length > 0"
+          class="font-azeret text-alert"
+        >
           {{ vPassword$.passwordConfirm.$errors[0].$message }}
         </div>
         <button
           type="submit"
-          class="flex w-full items-center justify-center rounded border-2 border-black bg-subtitle py-4 mt-8 text-black disabled:opacity-50"
-          :disabled="vPassword$.password.$errors.length > 0 || vPassword$.passwordConfirm.$errors.length > 0 || changePassword.password === undefined"
+          class="mt-8 flex w-full items-center justify-center rounded border-2 border-black bg-subtitle py-4 text-black disabled:opacity-50"
+          :disabled="
+            vPassword$.password.$errors.length > 0 ||
+            vPassword$.passwordConfirm.$errors.length > 0 ||
+            changePassword.password === undefined
+          "
         >
-          <span v-show="!isSending">{{updateMessage.password}}</span>
+          <span v-show="!isSending">{{ updateMessage.password }}</span>
           <IconLoading
             v-show="isSending"
-            class="ml-1 h-4 w-4 animate-spin my-1"
+            class="my-1 ml-1 h-4 w-4 animate-spin"
           ></IconLoading>
         </button>
       </form>
