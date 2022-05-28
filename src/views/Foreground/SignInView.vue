@@ -1,17 +1,24 @@
 <script setup>
 import useVuelidate from '@vuelidate/core';
-import ButtonIcon from '@/components/ButtonIcon.vue';
-import IconGoogle from '@/components/icons/IconGoogle.vue';
-import IconLoading from '@/components/icons/IconLoading.vue';
 import { required, email, helpers } from '@vuelidate/validators';
 import { ref, computed } from 'vue';
 import { apiUser } from '@/utils/apiUser';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores';
 import { API_URL } from '@/global/constant';
+import ButtonIcon from '@/components/ButtonIcon.vue';
+import IconGoogle from '@/components/icons/IconGoogle.vue';
+import IconLoading from '@/components/icons/IconLoading.vue';
+import IconFacebook from '@/components/icons/IconFacebook.vue';
+import IconApple from '@/components/icons/IconApple.vue';
+import IconHex from '../../components/icons/IconHex.vue';
 const userStore = useUserStore();
 const router = useRouter();
-const googleUrl = `${API_URL}/users/google`;
+const loginUrls = {
+  google: `${API_URL}/users/google`,
+  facebook: `${API_URL}/users/facebook`,
+  apple: `${API_URL}/users/apple`,
+};
 const form = ref({
   email: '',
   password: '',
@@ -110,12 +117,27 @@ const signIn = async () => {
         使用其他登入方式
       </div>
     </li>
-    <li>
-      <a :href="googleUrl">
+    <li class="flex justify-evenly">
+      <a :href="loginUrls.google">
         <ButtonIcon>
-          <IconGoogle></IconGoogle>
+          <IconGoogle class="h-5 w-5"></IconGoogle>
         </ButtonIcon>
       </a>
+      <a :href="loginUrls.facebook">
+        <ButtonIcon>
+          <IconFacebook class="h-10 w-10"></IconFacebook>
+        </ButtonIcon>
+      </a>
+      <a :href="loginUrls.apple">
+        <ButtonIcon>
+          <IconApple class="h-5 w-5"></IconApple>
+        </ButtonIcon>
+      </a>
+      <div
+        class="flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-black bg-white hover:brightness-110"
+      >
+        <IconHex class="h-10/12 w-10/12"></IconHex>
+      </div>
     </li>
   </ul>
 </template>
