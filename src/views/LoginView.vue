@@ -6,7 +6,9 @@ import { useUserStore } from '@/stores';
 import PageLoading from '../components/PageLoading.vue';
 const userStore = useUserStore();
 const router = useRouter();
+
 const isLoading = ref(true);
+
 onMounted(() => {
   if (userStore?.name) {
     return router.replace({ name: 'posts' });
