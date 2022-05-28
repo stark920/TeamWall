@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, watch } from 'vue';
 import CardTitle from '@/components/CardTitle.vue';
 import AvatarVue from '@/components/Avatar.vue';
 import IconLoading from '@/components/icons/IconLoading.vue';
@@ -44,7 +44,10 @@ const changeTab = (name) => {
 };
 
 // Profile
-const changeUserProfile = reactive({ ...userStore.user });
+const changeUserProfile = ref({ ...userStore.user });
+watch(userStore, (newValue) => {
+  changeUserProfile.value = newValue.user;
+});
 const vProfile$ = useVuelidate(nameRules, changeUserProfile);
 const imageFile = ref(null);
 const avatarForm = ref(null);
@@ -56,14 +59,12 @@ const avatarPreviewInfo = reactive({
   hasError: false,
 });
 const updateUserProfile = () => {
-  const photos = Array.from(imageFile.value.files);
+  const avatar = imageFile.value.files[0];
   const form = new FormData();
   isSending.value = true;
-  photos.forEach((item) => {
-    form.append('avatar', item);
-  });
-  form.append('name', changeUserProfile.name.trim());
-  form.append('gender', changeUserProfile.gender);
+  form.append('avatar', avatar);
+  form.append('name', changeUserProfile.value.name.trim());
+  form.append('gender', changeUserProfile.value.gender);
 
   apiUser
     .updateProfile(form)
@@ -72,9 +73,6 @@ const updateUserProfile = () => {
         isSending.value = false;
         updateMessage.profile = '更新完成';
         userStore.updateUser(res.data.data);
-        changeUserProfile.name = res.data.data.name;
-        changeUserProfile.avatar = res.data.data.avatar;
-        changeUserProfile.gender = res.data.data.gender;
         resetAvatar();
         resetStatusMessage();
       } else {
@@ -112,6 +110,7 @@ const resetAvatar = () => {
 // Password
 const changePassword = reactive({});
 const vPassword$ = useVuelidate(passwordRules, changePassword);
+const resetvPassword = ref(null);
 const updateUserPwd = async ($event) => {
   isSending.value = true;
   await apiUser
@@ -120,6 +119,8 @@ const updateUserPwd = async ($event) => {
       if (res.data.status) {
         isSending.value = false;
         updateMessage.password = '更新完成';
+        changePassword.password = '';
+        changePassword.passwordConfirm = '';
         resetStatusMessage();
       } else {
         isSending.value = false;
@@ -133,6 +134,7 @@ const updateUserPwd = async ($event) => {
       resetStatusMessage();
     });
   $event.target.reset();
+  resetvPassword.value.click();
 };
 
 const resetStatusMessage = () => {
@@ -180,7 +182,7 @@ const resetStatusMessage = () => {
       <AvatarVue
         v-else
         size="107"
-        :imgUrl="changeUserProfile?.avatar?.url"
+        :imgUrl="changeUserProfile?.avatar"
         class="mb-4 rounded-full border-2 border-black"
       />
       <form ref="avatarForm" action="" class="text-center">
@@ -318,6 +320,14 @@ const resetStatusMessage = () => {
             v-show="isSending"
             class="my-1 ml-1 h-4 w-4 animate-spin"
           ></IconLoading>
+        </button>
+        <button
+          ref="resetvPassword"
+          type="button"
+          class="hidden"
+          @click="vPassword$.$reset()"
+        >
+          reset
         </button>
       </form>
     </template>
