@@ -1,13 +1,15 @@
 <script setup>
 import { useToast } from 'vue-toastification';
 import { ref, onMounted } from 'vue';
+import { throttle } from '@/utils/common';
 import Send from '@/components/icons/IconSend.vue';
 const inputBox = ref(null);
 const toast = useToast();
-const emit = defineEmits(['sendMessage']);
+const emit = defineEmits(['sendMessage', 'userTyping']);
 const sendMessage = () => {
-  const value = inputBox.value.innerText;
-  if (value === '') {
+  let value = inputBox.value.innerText;
+  value = value.replace(/\n/g, '');
+  if (value.length === 0) {
     toast.error('請輸入內容再送出訊息');
     return;
   }
@@ -17,6 +19,7 @@ const sendMessage = () => {
   }
   emit('sendMessage', value);
   inputBox.value.innerText = '';
+  inputBox.value.focus();
 };
 
 onMounted(() => {
@@ -24,12 +27,11 @@ onMounted(() => {
     bubbles: true,
   });
   inputBox.value.dispatchEvent(keyEvent);
-  inputBox.value.addEventListener('keyup', (e) => {
+  inputBox.value.addEventListener('keypress', (e) => {
+    emit('userTyping', e.key);
     if (e.key === 'Enter') {
-      sendMessage();
-      console.log('doSomething');
+      throttle(sendMessage, 500)();
     }
-    console.log('content', e.target.innerText);
   });
 });
 </script>

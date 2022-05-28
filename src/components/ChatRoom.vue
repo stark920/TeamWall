@@ -5,6 +5,7 @@ import ChatRoomMessage from './ChatRoomMessage.vue';
 import ChatRoomInputBox from './ChatRoomInputBox.vue';
 import Close from '../components/icons/IconCross.vue';
 import Back from '../components/icons/IconBack.vue';
+import IconLoading from '@/components/icons/IconLoading.vue';
 import eventBus from '../utils/eventBus';
 import { throttle, deviceType } from '../utils/common';
 import { API_URL } from '@/global/constant';
@@ -18,12 +19,15 @@ const roomStore = useRoomStore();
 const { room } = storeToRefs(roomStore);
 const { user } = storeToRefs(useStore);
 const router = useRouter();
+const isLoading = ref(false);
+const typingFlag = ref(false);
 const messageContainer = ref(null);
 const fetchAllFlag = ref(false);
 const newMsgFlag = ref(false);
 const flagHistory = ref(false);
 const scrollRecord = ref(0);
 const messageList = reactive([]);
+let timer = null;
 
 let token = localStorage.getItem('metaWall');
 if (!token) {
@@ -68,6 +72,7 @@ socket.on('chatMessage', (msg) => {
 
 // 接收歷史訊息
 socket.on('history', (msgList) => {
+  isLoading.value = false;
   console.log('接收到歷史訊息', msgList);
   const newArray = [...msgList, ...messageList];
   Object.assign(messageList, newArray);
@@ -87,6 +92,11 @@ const scrollToCorrect = async () => {
   messageContainer.value.scrollTop =
     messageContainer.value.scrollHeight - scrollRecord.value;
 };
+
+socket.on('typing', (boolean) => {
+  typingFlag.value = boolean;
+});
+
 // 接收錯誤
 socket.on('error', (error) => {
   toast.error(error);
@@ -99,9 +109,25 @@ const getHistory = () => {
   const info = {
     lastTime: messageList[0]?.createdAt,
   };
-  console.warn('emit!!!!!!!!!!!!!!');
-  console.warn('---', socket.connected);
+  isLoading.value = true;
+  console.warn('getHistory---', socket.connected);
   socket.emit('history', info);
+};
+
+const endTyping = () => {
+  socket.emit('typing', false);
+};
+
+const userTyping = (key) => {
+  if (key === 'Enter') {
+    endTyping();
+    return;
+  }
+  socket.emit('typing', true);
+  clearTimeout(timer);
+  timer = setTimeout(() => {
+    endTyping();
+  }, 1500);
 };
 
 const sendMessage = (msg) => {
@@ -113,7 +139,6 @@ const sendMessage = (msg) => {
 };
 
 const scrollBottom = async () => {
-  console.log(nextTick);
   await nextTick();
   newMsgFlag.value = false;
   messageContainer.value.scrollTop = messageContainer.value?.scrollHeight;
@@ -161,6 +186,7 @@ onBeforeUnmount(() => {
   socket.off();
   socket.disconnect();
   document.body.style = '';
+  clearTimeout(timer);
 });
 </script>
 
@@ -176,7 +202,7 @@ onBeforeUnmount(() => {
         <img class="avatar h-10 w-10" :src="provideDefault()" alt="" />
         <span class="pl-4 font-bold">{{ room.name }}</span>
       </div>
-      <span @click="closeRoom" class="text-xs text-gray-500"
+      <span v-show="typingFlag" class="text-xs text-gray-500"
         >對方正在輸入中...</span
       >
       <Close
@@ -189,8 +215,14 @@ onBeforeUnmount(() => {
       ref="messageContainer"
       class="inner relative overflow-y-auto bg-slate-100"
     >
-      <div class="text-center" v-if="messageList.length === 0">
+      <div class="text-center" v-if="!isLoading && messageList.length === 0">
         開始聊天吧！
+      </div>
+      <div
+        class="flex items-center justify-center pt-2 text-slate-700"
+        v-if="isLoading"
+      >
+        載入中<IconLoading class="ml-1 h-4 w-4 animate-spin" />
       </div>
       <template v-for="message in messageList" :key="message._id">
         <chat-room-message :message="message" />
@@ -203,7 +235,7 @@ onBeforeUnmount(() => {
     >
       您有新訊息
     </div>
-    <chat-room-input-box @sendMessage="sendMessage" />
+    <chat-room-input-box @userTyping="userTyping" @sendMessage="sendMessage" />
   </div>
 </template>
 

@@ -1,11 +1,12 @@
 <script setup>
-import { reactive, onMounted, onBeforeUnmount } from 'vue';
+import { reactive, onMounted, onBeforeUnmount, ref } from 'vue';
+import IconLoading from '@/components/icons/IconLoading.vue';
 import CardTitleVue from '../../components/CardTitle.vue';
 import ChatRoomListItem from '../../components/ChatRoomListItem.vue';
 import eventBus from '@/utils/eventBus';
 import { apiChat } from '@/utils/apiChat';
 const chatList = reactive([]);
-
+const isLoading = ref(true);
 const updateChatRecord = ({ roomId, msg }) => {
   const targetIndex = chatList.findIndex((item) => item.roomId === roomId);
   targetIndex > -1 && (chatList[targetIndex].message = [msg]);
@@ -14,6 +15,7 @@ const updateChatRecord = ({ roomId, msg }) => {
 eventBus.on('updateChatRecord', updateChatRecord);
 const queryRoomList = async () => {
   try {
+    isLoading.value = true;
     const res = await apiChat.record();
     console.log('res', res);
     const {
@@ -25,6 +27,8 @@ const queryRoomList = async () => {
     }
   } catch (error) {
     console.log('error', error);
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -41,6 +45,11 @@ onBeforeUnmount(() => {
   <section>
     <CardTitleVue title="聊天室" />
     <ul>
+      <li class="text-center" v-show="!isLoading && chatList.length === 0">無聊天記錄</li>
+      <li class="flex items-center justify-center pt-8" v-show="isLoading">
+        載入中
+        <IconLoading class="ml-1 h-4 w-4 animate-spin" />
+      </li>
       <template v-for="room in chatList" :key="room?.roomId">
         <chat-room-list-item :room="room" />
       </template>

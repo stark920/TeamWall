@@ -21,9 +21,10 @@
         </button>
         <button
           @click="sendMessage"
-          class="ml-2 rounded-lg border-2 border-black px-8 py-1.5 shadow-post"
+          class="ml-2 flex items-center justify-center rounded-lg border-2 border-black px-6 py-1.5 shadow-post"
         >
-          傳送訊息
+          <span>傳送訊息</span>
+          <IconLoading v-show="pending" class="ml-1 h-4 w-4 animate-spin" />
         </button>
       </div>
     </div>
@@ -59,12 +60,16 @@ import PostEmptyCard from '@/components/PostEmptyCard.vue';
 import PostCard from '@/components/PostCard.vue';
 import PostLoadingCard from '@/components/PostLoadingCard.vue';
 import eventBus from '@/utils/eventBus';
+import IconLoading from '@/components/icons/IconLoading.vue';
+import { deviceType } from '@/utils/common';
+import { useRouter } from 'vue-router';
 import { useRoomStore, useUserStore } from '@/stores';
 import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { apiChat } from '@/utils/apiChat';
 import { apiPost } from '@/utils/apiPost';
 import { apiUser } from '@/utils/apiUser';
+const router = useRouter();
 import Avatar from '../../components/Avatar.vue';
 const roomStore = useRoomStore();
 const userStore = useUserStore(); // 登入者資料
@@ -77,7 +82,7 @@ const isLoading = ref(false);
 const sendMessage = async () => {
   if (pending.value) return;
   const sendData = {
-    receiver: '628e374ac1d659be9f498563',
+    receiver: id.value,
   };
   try {
     pending.value = true;
@@ -87,6 +92,10 @@ const sendMessage = async () => {
     } = res;
     if (status) {
       roomStore.updateRoom({ roomId, name, avatar, receiver: _id });
+      if (deviceType() !== 'desktop') {
+        router.push('/chat-room');
+        return;
+      }
       eventBus.emit('handleRoom', true);
     }
   } catch (error) {
