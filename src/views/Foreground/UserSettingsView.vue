@@ -49,11 +49,7 @@ const changeTab = (name) => {
 };
 
 // Profile
-<<<<<<< HEAD
 const changeUserProfile = reactive({});
-=======
-const changeUserProfile = reactive({ ...userStore.user });
->>>>>>> main
 const vProfile$ = useVuelidate(nameRules, changeUserProfile);
 const imageFile = ref(null);
 const avatarForm = ref(null);
@@ -73,24 +69,14 @@ const updateUserProfile = () => {
   });
   form.append('name', changeUserProfile.name.trim());
   form.append('gender', changeUserProfile.gender);
-<<<<<<< HEAD
-  apiUser.updateProfile(form)
-=======
 
   apiUser
     .updateProfile(form)
->>>>>>> main
     .then((res) => {
       if (res.data.status) {
         isSending.value = false;
         updateMessage.profile = '更新完成';
         userStore.updateUser(res.data.data);
-<<<<<<< HEAD
-=======
-        changeUserProfile.name = res.data.data.name;
-        changeUserProfile.avatar = res.data.data.avatar;
-        changeUserProfile.gender = res.data.data.gender;
->>>>>>> main
         resetAvatar();
         resetStatusMessage();
         renderUserData();
@@ -129,7 +115,10 @@ const resetAvatar = () => {
 // Password
 const changePassword = reactive({});
 const vPassword$ = useVuelidate(passwordRules, changePassword);
+const resetvPassword = ref(null);
 const updateUserPwd = async ($event) => {
+  changePassword.password = '';
+  changePassword.passwordConfirm = '';
   isSending.value = true;
   await apiUser
     .updatePassword(changePassword)
@@ -150,6 +139,7 @@ const updateUserPwd = async ($event) => {
       resetStatusMessage();
     });
   $event.target.reset();
+  resetvPassword.value.click();
 };
 
 const resetStatusMessage = () => {
@@ -157,7 +147,6 @@ const resetStatusMessage = () => {
     updateMessage.profile = '送出更新';
     updateMessage.password = '重設密碼';
   }, 3000);
-<<<<<<< HEAD
 }
 
 const renderUserData = () => {
@@ -167,9 +156,6 @@ const renderUserData = () => {
   changeUserProfile.gender = gender;
 };
 
-=======
-};
->>>>>>> main
 </script>
 
 <template>
@@ -348,6 +334,7 @@ const renderUserData = () => {
             class="my-1 ml-1 h-4 w-4 animate-spin"
           ></IconLoading>
         </button>
+        <button ref="resetvPassword" type="button" class="hidden" @click="vPassword$.$reset();">reset</button>
       </form>
     </template>
   </div>
