@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, watch } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import CardTitle from '@/components/CardTitle.vue';
 import AvatarVue from '@/components/Avatar.vue';
 import IconLoading from '@/components/icons/IconLoading.vue';
@@ -34,6 +34,11 @@ const passwordRules = computed(() => ({
   }
 }));
 
+apiUser.check().then((res) => {
+  userStore.updateUser(res.data.data);
+  renderUserData();
+})
+
 // Change tab
 const tabName = ref('editNickName');
 const changeTab = (name) => {
@@ -41,7 +46,7 @@ const changeTab = (name) => {
 };
 
 // Profile
-const changeUserProfile = reactive({...userStore.user});
+const changeUserProfile = reactive({});
 const vProfile$ = useVuelidate(nameRules, changeUserProfile);
 const imageFile = ref(null);
 const avatarForm = ref(null);
@@ -60,19 +65,16 @@ const updateUserProfile = () => {
     form.append('avatar', item);
   });
   form.append('name', changeUserProfile.name.trim());
-  form.append('sex', changeUserProfile.sex);
-
+  form.append('gender', changeUserProfile.gender);
   apiUser.updateProfile(form)
     .then((res) => {
       if (res.data.status) {
         isSending.value = false;
         updateMessage.profile = '更新完成';
         userStore.updateUser(res.data.data);
-        changeUserProfile.name = res.data.data.name;
-        changeUserProfile.avatar = res.data.data.avatar;
-        changeUserProfile.sex = res.data.data.sex;
         resetAvatar();
         resetStatusMessage();
+        renderUserData();
       } else {
         isSending.value = false;
         updateMessage.profile = '更新失敗';
@@ -137,6 +139,13 @@ const resetStatusMessage = () => {
   }, 3000);
 }
 
+const renderUserData = () => {
+  const {name, avatar, gender} = userStore.user;
+  changeUserProfile.name = name;
+  changeUserProfile.avatar = avatar;
+  changeUserProfile.gender = gender;
+};
+
 </script>
 
 <template>
@@ -174,7 +183,7 @@ const resetStatusMessage = () => {
       />
       <AvatarVue v-else
         size="107"
-        :imgUrl="changeUserProfile?.avatar?.url"
+        :imgUrl="changeUserProfile?.avatar"
         class="mb-4 rounded-full border-2 border-black"
       />
       <form ref="avatarForm" action="" class="text-center">
@@ -220,18 +229,18 @@ const resetStatusMessage = () => {
         <div class="mt-4 mb-8">
           <label for="male" class="mb-1 block">性別</label>
           <input
-            v-model="changeUserProfile.sex"
+            v-model="changeUserProfile.gender"
             type="radio"
-            name="sex"
+            name="gender"
             id="male"
             value="male"
             class="mr-3"
           />
           <label for="male" class="mr-7">男性</label>
           <input
-            v-model="changeUserProfile.sex"
+            v-model="changeUserProfile.gender"
             type="radio"
-            name="sex"
+            name="gender"
             id="female"
             value="female"
             class="mr-3"
