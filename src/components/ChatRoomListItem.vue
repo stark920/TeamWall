@@ -6,6 +6,7 @@ import eventBus from '../utils/eventBus';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useRoomStore } from '@/stores';
+import { deviceType } from '../utils/common';
 const roomStore = useRoomStore();
 const toast = useToast();
 const { room } = storeToRefs(roomStore);
@@ -21,23 +22,20 @@ const { name, message: msg, avatar, roomId, _id } = toRefs(props.room);
 const formateTime = (time) => {
   return dayjs(time).format('YYYY/MM/DD ');
 };
-const isMobile = () => {
-  return document.body.clientWidth < 768;
-};
 const provideDefault = () => {
   return (
     avatar ?? new URL('../assets/avatars/user_default.png', import.meta.url)
   );
 };
 const goChatRoom = () => {
-  console.log('channelId', roomId.value);
   if (room.value.roomId && room.value.roomId !== roomId.value) {
     toast.error('您一次只能跟一個人聊天');
     return;
   }
   roomStore.updateRoom({ roomId, name, avatar, receiver: _id });
-  if (isMobile()) {
-    router.push('/chatroom');
+  console.log('deviceType()', deviceType());
+  if (deviceType() !== 'desktop') {
+    router.push('/chat-room');
     return;
   }
   eventBus.emit('handleRoom', true);
