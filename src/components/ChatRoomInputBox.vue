@@ -1,7 +1,6 @@
 <script setup>
 import { useToast } from 'vue-toastification';
 import { ref, onMounted } from 'vue';
-import { throttle } from '@/utils/common';
 import Send from '@/components/icons/IconSend.vue';
 const inputBox = ref(null);
 const toast = useToast();
@@ -30,7 +29,7 @@ onMounted(() => {
   inputBox.value.addEventListener('keypress', (e) => {
     emit('userTyping', e.key);
     if (e.key === 'Enter') {
-      throttle(sendMessage, 500)();
+      sendMessage();
     }
   });
 });

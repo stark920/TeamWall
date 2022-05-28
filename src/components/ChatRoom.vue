@@ -6,8 +6,9 @@ import ChatRoomInputBox from './ChatRoomInputBox.vue';
 import Close from '../components/icons/IconCross.vue';
 import Back from '../components/icons/IconBack.vue';
 import IconLoading from '@/components/icons/IconLoading.vue';
+import AvatarVue from './Avatar.vue';
 import eventBus from '../utils/eventBus';
-import { throttle, deviceType } from '../utils/common';
+import { deviceType } from '../utils/common';
 import { API_URL } from '@/global/constant';
 import { storeToRefs } from 'pinia';
 import { useRoomStore, useUserStore } from '@/stores';
@@ -154,7 +155,7 @@ const detectTop = () => {
     () => {
       if (messageContainer.value.scrollTop === 0) {
         scrollRecord.value = messageContainer.value.scrollHeight;
-        throttle(getHistory, 1000)();
+        getHistory();
       }
     },
     false
@@ -165,8 +166,9 @@ const toPrevPage = () => {
   router.go(-1);
 };
 const provideDefault = () => {
+  console.log('room', room);
   return (
-    room.avatar ??
+    room.value.avatar?.url ??
     new URL('../assets/avatars/user_default.png', import.meta.url)
   );
 };
@@ -199,7 +201,7 @@ onBeforeUnmount(() => {
     >
       <div class="flex items-center">
         <Back @click="toPrevPage" class="mr-2 block h-8 w-8 md:hidden" />
-        <img class="avatar h-10 w-10" :src="provideDefault()" alt="" />
+        <AvatarVue size="40" :imgUrl="provideDefault()" />
         <span class="pl-4 font-bold">{{ room.name }}</span>
       </div>
       <span v-show="typingFlag" class="text-xs text-gray-500"
