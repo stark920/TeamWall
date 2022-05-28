@@ -9,9 +9,9 @@ const isLoading = ref(true);
 const posts = ref([]);
 const getPosts = (sort = 1, searchKey = '') => {
   // sort=1 最新貼文, sort=2 最舊貼文
-  let sortValue = 'desc'; // 預設 desc
+  let sortValue = 'new'; // 預設 desc
   if (sort === 2) {
-    sortValue = 'asc';
+    sortValue = 'old';
   }
   apiPost
     .getAll(`timeSort=${sortValue}&search=${searchKey}`)

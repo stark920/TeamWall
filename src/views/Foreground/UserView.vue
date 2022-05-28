@@ -16,6 +16,7 @@
           type="button"
           class="rounded-lg border-2 border-black px-8 py-1.5 shadow-post hover:bg-primary hover:text-white"
           :class="isFollow ? 'bg-secondary' : 'bg-warning'"
+          @click="followUser"
         >
           {{ isFollow ? '取消追蹤' : '追蹤' }}
         </button>
@@ -59,6 +60,7 @@ import PostFilter from '@/components/PostFilter.vue';
 import PostEmptyCard from '@/components/PostEmptyCard.vue';
 import PostCard from '@/components/PostCard.vue';
 import PostLoadingCard from '@/components/PostLoadingCard.vue';
+import Avatar from '../../components/Avatar.vue';
 import eventBus from '@/utils/eventBus';
 import IconLoading from '@/components/icons/IconLoading.vue';
 import { deviceType } from '@/utils/common';
@@ -70,7 +72,6 @@ import { apiChat } from '@/utils/apiChat';
 import { apiPost } from '@/utils/apiPost';
 import { apiUser } from '@/utils/apiUser';
 const router = useRouter();
-import Avatar from '../../components/Avatar.vue';
 const roomStore = useRoomStore();
 const userStore = useUserStore(); // 登入者資料
 const route = useRoute();
@@ -153,11 +154,40 @@ const getUserProfile = () => {
 };
 // 是否追蹤
 const isFollow = computed(() => {
-  return userProfile.value.followers?.includes(userStore.user?.id);
+  const followers = userProfile.value.followers
+    ? userProfile.value.followers
+    : [];
+  const followers_ID = followers.map((i) => i.user);
+  return followers_ID.includes(userStore.user?.id);
 });
 onMounted(() => {
   getUserProfile();
 });
+
+// 追蹤 & 取消追蹤
+const followUser = () => {
+  if (!isFollow.value) {
+    // 追蹤
+    apiUser
+      .follow(userProfile.value.id)
+      .then(() => {
+        getUserProfile();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    // 取消追蹤
+    apiUser
+      .deleteFollow(userProfile.value.id)
+      .then(() => {
+        getUserProfile();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+};
 
 // 相同路由 /profile/:id, id 參數切換
 watch(route, (curr) => {
