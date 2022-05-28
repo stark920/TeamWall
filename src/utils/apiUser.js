@@ -44,4 +44,6 @@ export const apiUser = {
   updateProfile: (data) => usersRequest.patch('/profile', data, token()),
   updatePassword: (data) => usersRequest.patch('/profile/pwd', data, token()),
   getProfile: (id) => usersRequest.get(`/${id}`, token()),
+  follow: (id, data) => usersRequest.post(`/${id}/follow`, {}, token()),
+  deleteFollow: (id) => usersRequest.delete(`/${id}/follow`, token()),
 };
