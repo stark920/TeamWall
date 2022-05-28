@@ -1,6 +1,5 @@
 <script setup>
-import { ref, reactive, computed } from 'vue';
-import { storeToRefs } from 'pinia';
+import { ref, reactive, computed, watch } from 'vue';
 import CardTitle from '@/components/CardTitle.vue';
 import AvatarVue from '@/components/Avatar.vue';
 import IconLoading from '@/components/icons/IconLoading.vue';
@@ -38,11 +37,6 @@ const passwordRules = computed(() => ({
   },
 }));
 
-// watch(userStore, (newValue) => {
-//   userStore.updateUser(newValue.user);
-// })
-
-
 // Change tab
 const tabName = ref('editNickName');
 const changeTab = (name) => {
@@ -50,8 +44,10 @@ const changeTab = (name) => {
 };
 
 // Profile
-const { user } = storeToRefs(userStore);
-const changeUserProfile = ref(user);
+const changeUserProfile = ref({ ...userStore.user });
+watch(userStore, (newValue) => {
+  changeUserProfile.value = newValue.user;
+});
 const vProfile$ = useVuelidate(nameRules, changeUserProfile);
 const imageFile = ref(null);
 const avatarForm = ref(null);
@@ -79,7 +75,6 @@ const updateUserProfile = () => {
         userStore.updateUser(res.data.data);
         resetAvatar();
         resetStatusMessage();
-        renderUserData();
       } else {
         isSending.value = false;
         updateMessage.profile = '更新失敗';
@@ -147,15 +142,7 @@ const resetStatusMessage = () => {
     updateMessage.profile = '送出更新';
     updateMessage.password = '重設密碼';
   }, 3000);
-}
-
-const renderUserData = () => {
-  const {name, avatar, gender} = userStore.user;
-  changeUserProfile.value.name = name;
-  changeUserProfile.value.avatar = avatar;
-  changeUserProfile.value.gender = gender;
 };
-
 </script>
 
 <template>
@@ -334,7 +321,14 @@ const renderUserData = () => {
             class="my-1 ml-1 h-4 w-4 animate-spin"
           ></IconLoading>
         </button>
-        <button ref="resetvPassword" type="button" class="hidden" @click="vPassword$.$reset();">reset</button>
+        <button
+          ref="resetvPassword"
+          type="button"
+          class="hidden"
+          @click="vPassword$.$reset()"
+        >
+          reset
+        </button>
       </form>
     </template>
   </div>
