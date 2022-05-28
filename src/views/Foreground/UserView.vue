@@ -72,7 +72,7 @@ import PostCard from '@/components/PostCard.vue';
 import PostLoadingCard from '@/components/PostLoadingCard.vue';
 import eventBus from '@/utils/eventBus';
 import IconLoading from '@/components/icons/IconLoading.vue';
-import { deviceType } from '../utils/common';
+import { deviceType } from '@/utils/common';
 import { useRouter } from 'vue-router';
 import { useRoomStore, useUserStore } from '@/stores';
 import { ref, onMounted, computed, watch } from 'vue';
