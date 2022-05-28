@@ -110,7 +110,6 @@ const getPosts = (sort = 1, searchKey = '') => {
   apiPost
     .getAll(`timeSort=${sortValue}&search=${searchKey}`)
     .then((res) => {
-      console.log(res.data);
       isLoading.value = false;
       posts.value = res.data.data;
     })
