@@ -5,6 +5,7 @@ import ChatRoomMessage from './ChatRoomMessage.vue';
 import ChatRoomInputBox from './ChatRoomInputBox.vue';
 import Close from '../components/icons/IconCross.vue';
 import Back from '../components/icons/IconBack.vue';
+import IconLoading from '@/components/icons/IconLoading.vue';
 import eventBus from '../utils/eventBus';
 import { throttle, deviceType } from '../utils/common';
 import { API_URL } from '@/global/constant';
@@ -18,6 +19,7 @@ const roomStore = useRoomStore();
 const { room } = storeToRefs(roomStore);
 const { user } = storeToRefs(useStore);
 const router = useRouter();
+const isLoading = ref(false);
 const messageContainer = ref(null);
 const fetchAllFlag = ref(false);
 const newMsgFlag = ref(false);
@@ -68,6 +70,7 @@ socket.on('chatMessage', (msg) => {
 
 // 接收歷史訊息
 socket.on('history', (msgList) => {
+  isLoading.value = false;
   console.log('接收到歷史訊息', msgList);
   const newArray = [...msgList, ...messageList];
   Object.assign(messageList, newArray);
@@ -99,6 +102,7 @@ const getHistory = () => {
   const info = {
     lastTime: messageList[0]?.createdAt,
   };
+  isLoading.value = true;
   console.warn('emit!!!!!!!!!!!!!!');
   console.warn('---', socket.connected);
   socket.emit('history', info);
@@ -189,8 +193,14 @@ onBeforeUnmount(() => {
       ref="messageContainer"
       class="inner relative overflow-y-auto bg-slate-100"
     >
-      <div class="text-center" v-if="messageList.length === 0">
+      <div class="text-center" v-if="!isLoading && messageList.length === 0">
         開始聊天吧！
+      </div>
+      <div
+        class="flex items-center justify-center pt-2 text-slate-700"
+        v-if="isLoading"
+      >
+        載入中<IconLoading class="ml-1 h-4 w-4 animate-spin" />
       </div>
       <template v-for="message in messageList" :key="message._id">
         <chat-room-message :message="message" />

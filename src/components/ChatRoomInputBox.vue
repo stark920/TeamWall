@@ -27,7 +27,7 @@ onMounted(() => {
     bubbles: true,
   });
   inputBox.value.dispatchEvent(keyEvent);
-  inputBox.value.addEventListener('keyup', (e) => {
+  inputBox.value.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
       throttle(sendMessage, 500)();
     }

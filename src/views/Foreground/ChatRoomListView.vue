@@ -45,7 +45,7 @@ onBeforeUnmount(() => {
   <section>
     <CardTitleVue title="聊天室" />
     <ul>
-      <li v-show="!isLoading && chatList.length === 0">無聊天記錄</li>
+      <li class="text-center" v-show="!isLoading && chatList.length === 0">無聊天記錄</li>
       <li class="flex items-center justify-center pt-8" v-show="isLoading">
         載入中
         <IconLoading class="ml-1 h-4 w-4 animate-spin" />
