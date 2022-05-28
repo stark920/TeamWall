@@ -1,0 +1,1 @@
+import{z as e,A as r}from"./index.c53ac51d.js";const t=e.create({baseURL:`${r}/chat`,timeout:2e4}),o=()=>localStorage.getItem("metaWall")?{headers:{Authorization:localStorage.getItem("metaWall")}}:!1,c={record:()=>t.post("/chat-record",{},o()),room:a=>t.post("/room-info",a,o())};export{c as a};
