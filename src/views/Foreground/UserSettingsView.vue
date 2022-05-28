@@ -117,8 +117,6 @@ const changePassword = reactive({});
 const vPassword$ = useVuelidate(passwordRules, changePassword);
 const resetvPassword = ref(null);
 const updateUserPwd = async ($event) => {
-  changePassword.password = '';
-  changePassword.passwordConfirm = '';
   isSending.value = true;
   await apiUser
     .updatePassword(changePassword)
@@ -126,6 +124,8 @@ const updateUserPwd = async ($event) => {
       if (res.data.status) {
         isSending.value = false;
         updateMessage.password = '更新完成';
+        changePassword.password = '';
+        changePassword.passwordConfirm = '';
         resetStatusMessage();
       } else {
         isSending.value = false;
