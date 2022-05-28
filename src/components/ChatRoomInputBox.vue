@@ -5,7 +5,7 @@ import { throttle } from '@/utils/common';
 import Send from '@/components/icons/IconSend.vue';
 const inputBox = ref(null);
 const toast = useToast();
-const emit = defineEmits(['sendMessage']);
+const emit = defineEmits(['sendMessage', 'userTyping']);
 const sendMessage = () => {
   let value = inputBox.value.innerText;
   value = value.replace(/\n/g, '');
@@ -28,6 +28,7 @@ onMounted(() => {
   });
   inputBox.value.dispatchEvent(keyEvent);
   inputBox.value.addEventListener('keypress', (e) => {
+    emit('userTyping', e.key);
     if (e.key === 'Enter') {
       throttle(sendMessage, 500)();
     }

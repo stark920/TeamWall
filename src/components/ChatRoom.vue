@@ -20,12 +20,14 @@ const { room } = storeToRefs(roomStore);
 const { user } = storeToRefs(useStore);
 const router = useRouter();
 const isLoading = ref(false);
+const typingFlag = ref(false);
 const messageContainer = ref(null);
 const fetchAllFlag = ref(false);
 const newMsgFlag = ref(false);
 const flagHistory = ref(false);
 const scrollRecord = ref(0);
 const messageList = reactive([]);
+let timer = null;
 
 let token = localStorage.getItem('metaWall');
 if (!token) {
@@ -90,6 +92,11 @@ const scrollToCorrect = async () => {
   messageContainer.value.scrollTop =
     messageContainer.value.scrollHeight - scrollRecord.value;
 };
+
+socket.on('typing', (boolean) => {
+  typingFlag.value = boolean;
+});
+
 // 接收錯誤
 socket.on('error', (error) => {
   toast.error(error);
@@ -103,9 +110,24 @@ const getHistory = () => {
     lastTime: messageList[0]?.createdAt,
   };
   isLoading.value = true;
-  console.warn('emit!!!!!!!!!!!!!!');
-  console.warn('---', socket.connected);
+  console.warn('getHistory---', socket.connected);
   socket.emit('history', info);
+};
+
+const endTyping = () => {
+  socket.emit('typing', false);
+};
+
+const userTyping = (key) => {
+  if (key === 'Enter') {
+    endTyping();
+    return;
+  }
+  socket.emit('typing', true);
+  clearTimeout(timer);
+  timer = setTimeout(() => {
+    endTyping();
+  }, 1500);
 };
 
 const sendMessage = (msg) => {
@@ -117,7 +139,6 @@ const sendMessage = (msg) => {
 };
 
 const scrollBottom = async () => {
-  console.log(nextTick);
   await nextTick();
   newMsgFlag.value = false;
   messageContainer.value.scrollTop = messageContainer.value?.scrollHeight;
@@ -165,6 +186,7 @@ onBeforeUnmount(() => {
   socket.off();
   socket.disconnect();
   document.body.style = '';
+  clearTimeout(timer);
 });
 </script>
 
@@ -180,7 +202,7 @@ onBeforeUnmount(() => {
         <img class="avatar h-10 w-10" :src="provideDefault()" alt="" />
         <span class="pl-4 font-bold">{{ room.name }}</span>
       </div>
-      <span @click="closeRoom" class="text-xs text-gray-500"
+      <span v-show="typingFlag" class="text-xs text-gray-500"
         >對方正在輸入中...</span
       >
       <Close
@@ -213,7 +235,7 @@ onBeforeUnmount(() => {
     >
       您有新訊息
     </div>
-    <chat-room-input-box @sendMessage="sendMessage" />
+    <chat-room-input-box @userTyping="userTyping" @sendMessage="sendMessage" />
   </div>
 </template>
 
