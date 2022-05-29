@@ -38,7 +38,7 @@ defineProps({
         <button
           @click="$emit('closeDialog')"
           type="button"
-          class="text-underline text-sm text-disabled-color"
+          class="text-underline text-sm text-disabled"
         >
           [ 關閉視窗 ]
         </button>
