@@ -30,7 +30,7 @@
       </div>
     </div>
   </div>
-  <PostFilter @get-posts="getPosts" />
+  <PostFilter @set-params="setSearchParams" />
 
   <ul v-show="isLoading">
     <li v-for="index in 3" :key="index" class="mb-4">
@@ -106,19 +106,27 @@ const sendMessage = async () => {
   }
 };
 
+// 取得搜尋條件
+let sort = 1; // sort: 1 最新, 2 最舊, 3 熱門
+let searchKey = ''; // 關鍵字
+const setSearchParams = (_sort = 1, _searchKey = '') => {
+  sort = _sort;
+  searchKey = _searchKey;
+  getPosts();
+};
+
 // 所有貼文
 const posts = ref([]);
-const getPosts = (sort = 1, searchKey = '') => {
-  // sort=1 最新貼文, sort=2 最舊貼文
+const getPosts = () => {
+  // sort: 1 最新, 2 最舊, 3 熱門
+  let sortValue = 'new'; // 時間排序, 預設 最新
+  let likesValue = ''; // 熱門排序, 預設 無
 
-  let sortValue = 'desc'; // 預設 desc
-  if (sort === 2) {
-    sortValue = 'asc';
-  }
+  if (sort === 2) sortValue = 'old';
+  if (sort === 3) likesValue = 'hot';
 
-  isLoading.value = true;
   apiPost
-    .getAll(`timeSort=${sortValue}&search=${searchKey}`)
+    .getAll(`timeSort=${sortValue}&likesSort=${likesValue}&search=${searchKey}`)
     .then((res) => {
       isLoading.value = false;
       posts.value = res.data.data;

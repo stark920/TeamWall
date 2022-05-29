@@ -60,9 +60,7 @@ import { ref, watch } from 'vue';
 const props = defineProps({
   images: {
     type: Array,
-    default() {
-      return [];
-    },
+    default: () => [],
   },
 });
 
