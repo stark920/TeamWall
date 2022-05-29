@@ -100,7 +100,7 @@ const signUp = async () => {
     </li>
     <li class="mb-4 w-full">
       <button
-        class="flex w-full items-center justify-center rounded-lg border-2 border-black bg-primary py-2 text-lg text-white hover:bg-warning hover:text-black disabled:bg-disabled-color"
+        class="flex w-full items-center justify-center rounded-lg border-2 border-black bg-primary py-2 text-lg text-white hover:bg-warning hover:text-black disabled:bg-disabled"
         @click="signUp"
         :disabled="isSending"
       >

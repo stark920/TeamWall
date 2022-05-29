@@ -17,7 +17,7 @@ module.exports = {
         alert: '#F57375',
         black: '#000400',
         subtitle: '#9B9893',
-        'disabled-color': '#A8B0B9',
+        disabled: '#A8B0B9',
         apple: {
           red: '#DE4B63',
           yellow: '#FAA722',
