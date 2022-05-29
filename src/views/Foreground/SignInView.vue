@@ -12,6 +12,7 @@ import IconLoading from '@/components/icons/IconLoading.vue';
 import IconFacebook from '@/components/icons/IconFacebook.vue';
 import IconHex from '@/components/icons/IconHex.vue';
 import IconDiscord from '@/components/icons/IconDiscord.vue';
+import HexSchool from '../../components/HexSchool.vue';
 const userStore = useUserStore();
 const router = useRouter();
 const loginUrls = {
@@ -63,6 +64,7 @@ const signIn = async () => {
       }, 2000);
     });
 };
+const displayHexSchoolDialog = ref(false);
 </script>
 
 <template>
@@ -133,11 +135,17 @@ const signIn = async () => {
           <IconDiscord class="h-8 w-8"></IconDiscord>
         </ButtonIcon>
       </a>
-      <a>
+      <a @click.prevent="displayHexSchoolDialog = true">
         <ButtonIcon size="50">
           <IconHex class="h-8 w-8"></IconHex>
         </ButtonIcon>
       </a>
     </li>
   </ul>
+  <teleport to="body">
+    <HexSchool
+      :display-dialog="displayHexSchoolDialog"
+      @close-dialog="displayHexSchoolDialog = false"
+    ></HexSchool>
+  </teleport>
 </template>
