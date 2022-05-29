@@ -10,14 +10,14 @@ import ButtonIcon from '@/components/ButtonIcon.vue';
 import IconGoogle from '@/components/icons/IconGoogle.vue';
 import IconLoading from '@/components/icons/IconLoading.vue';
 import IconFacebook from '@/components/icons/IconFacebook.vue';
-import IconApple from '@/components/icons/IconApple.vue';
-import IconHex from '../../components/icons/IconHex.vue';
+import IconHex from '@/components/icons/IconHex.vue';
+import IconDiscord from '@/components/icons/IconDiscord.vue';
 const userStore = useUserStore();
 const router = useRouter();
 const loginUrls = {
   google: `${API_URL}/users/google`,
   facebook: `${API_URL}/users/facebook`,
-  apple: `${API_URL}/users/apple`,
+  discord: `${API_URL}/users/discord`,
 };
 const form = ref({
   email: '',
@@ -128,16 +128,16 @@ const signIn = async () => {
           <IconFacebook class="h-10 w-10"></IconFacebook>
         </ButtonIcon>
       </a>
-      <a :href="loginUrls.apple">
+      <a :href="loginUrls.discord">
         <ButtonIcon>
-          <IconApple class="h-5 w-5"></IconApple>
+          <IconDiscord class="h-6 w-6"></IconDiscord>
         </ButtonIcon>
       </a>
-      <div
-        class="flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-black bg-white hover:brightness-110"
-      >
-        <IconHex class="h-10/12 w-10/12"></IconHex>
-      </div>
+      <a>
+        <ButtonIcon>
+          <IconHex class="h-6 w-6"></IconHex>
+        </ButtonIcon>
+      </a>
     </li>
   </ul>
 </template>
