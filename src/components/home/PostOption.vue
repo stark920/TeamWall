@@ -10,7 +10,7 @@ import IconChat from '../icons/IconChat.vue';
 
 <template>
   <ul
-    class="flex h-16 w-96 items-center justify-evenly rounded-full border-2 border-black bg-secondary"
+    class="flex h-16 w-11/12 max-w-[400px] items-center justify-evenly rounded-full border-2 border-black bg-secondary"
   >
     <li>
       <RouterLink to="/">
