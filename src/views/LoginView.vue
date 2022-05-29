@@ -36,7 +36,7 @@ onMounted(() => {
     class="box-border flex h-screen w-full items-center justify-center"
   >
     <div
-      class="mx-2 flex items-center border-2 border-black bg-secondary px-3 py-5 shadow-login md:px-12 md:py-20"
+      class="mx-2 flex items-center border-2 border-black bg-secondary px-4 py-6 shadow-login md:px-8 md:py-12"
     >
       <div class="mr-12 hidden md:block">
         <img src="@/assets/images/login-image.svg" alt="login-image" />
