@@ -6,7 +6,6 @@ import AvatarVue from './Avatar.vue';
 import PostImagesCardVue from './PostImagesCard.vue';
 import { ref, toRaw, watch } from 'vue';
 import { apiLike } from '../utils/apiLike';
-import { apiPost } from '@/utils/apiPost';
 import { useUserStore } from '@/stores';
 const userStore = useUserStore();
 const isLoading = ref(false);
@@ -24,47 +23,35 @@ watch(props, (curr) => {
 });
 
 // 按讚貼文
-const likes = ref();
-const likePost = () => {
-  const data = { posts: innerPost.value._id };
+const likePost = (id) => {
+  const data = { posts: id };
   isLoading.value = true;
   apiLike
     .toggle(data)
-    .then((res) => {
-      likes.value = res.data.data;
+    .then(() => {
+      isLoading.value = false;
+      updateInnerPostLikes(userStore.user.id);
     })
     .catch((err) => {
       isLoading.value = false;
       console.log(err);
     });
 };
-watch(likes, () => {
-  // 更新貼文
-  getPost();
-});
 
-// 取得單筆貼文(更新貼文)
-const getPost = () => {
-  isLoading.value = true;
-  apiPost
-    .getOne(innerPost.value._id)
-    .then((res) => {
-      const [post] = res.data.data; // 回傳是陣列
-      innerPost.value = post;
-      isLoading.value = false;
-    })
-    .catch((err) => {
-      isLoading.value = false;
-      console.log(err);
-    });
+// 更新內部資料 innerPost.likes
+const updateInnerPostLikes = (id) => {
+  const isLike = innerPost.value.likes.includes(id); // 是否按讚
+  if (isLike) {
+    const index = innerPost.value.likes.findIndex((i) => i === id);
+    innerPost.value.likes.splice(index, 1); // 移除 id
+  } else {
+    innerPost.value.likes.push(id); // 加入 id
+  }
 };
 </script>
 
 <template>
-  <div
-    class="rounded-lg border-2 border-black bg-white p-6 shadow-post"
-    :class="{ 'animate-pulse': isLoading }"
-  >
+  <div class="rounded-lg border-2 border-black bg-white p-6 shadow-post">
     <UserInfo
       class="mb-4"
       :imgUrl="innerPost.userId?.avatar?.url"
@@ -81,7 +68,7 @@ const getPost = () => {
       <button
         type="button"
         class="flex items-center justify-center py-5"
-        @click="likePost"
+        @click="likePost(innerPost._id)"
         :disabled="isLoading"
         :class="{ 'cursor-not-allowed': isLoading }"
       >
