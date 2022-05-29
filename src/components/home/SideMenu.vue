@@ -30,34 +30,63 @@ defineProps({
     </RouterLink>
 
     <ul class="ml-2 flex flex-col">
-      <li>
+      <li class="group">
         <RouterLink :to="userPageUrl" class="mb-5 flex items-center">
-          <AvatarVue size="50" :imgUrl="avatar" class="cursor-pointer" />
-          <h3 class="ml-4 font-bold">{{ name }}</h3>
+          <AvatarVue
+            size="50"
+            :imgUrl="avatar"
+            class="cursor-pointer group-hover:brightness-110"
+          />
+          <h3
+            class="ml-4 font-bold group-hover:text-primary group-hover:underline"
+          >
+            {{ name }}
+          </h3>
         </RouterLink>
       </li>
-      <li>
+      <li class="group">
         <RouterLink to="/follow" class="mb-5 flex items-center">
-          <IconButtonVue size="50">
+          <IconButtonVue
+            size="50"
+            class="group-hover:bg-primary group-hover:text-white"
+          >
             <IconBellVue class="h-6 w-6" />
           </IconButtonVue>
-          <h3 class="ml-4 font-bold">追蹤名單</h3>
+          <h3
+            class="ml-4 font-bold group-hover:text-primary group-hover:underline"
+          >
+            追蹤名單
+          </h3>
         </RouterLink>
       </li>
-      <li>
+      <li class="group">
         <RouterLink to="/likes" class="mb-5 flex items-center">
-          <IconButtonVue size="50">
+          <IconButtonVue
+            size="50"
+            class="group-hover:bg-primary group-hover:text-white"
+          >
             <IconThumbsUpVue class="h-6 w-6" />
           </IconButtonVue>
-          <h3 class="ml-4 font-bold">我按讚的文章</h3>
+          <h3
+            class="ml-4 font-bold group-hover:text-primary group-hover:underline"
+          >
+            我按讚的文章
+          </h3>
         </RouterLink>
       </li>
-      <li>
+      <li class="group">
         <RouterLink to="/chat-room-list" class="flex items-center">
-          <IconButtonVue size="50">
+          <IconButtonVue
+            size="50"
+            class="group-hover:bg-primary group-hover:text-white"
+          >
             <IconChatVue class="h-6 w-6" />
           </IconButtonVue>
-          <h3 class="ml-4 font-bold">聊天室</h3>
+          <h3
+            class="ml-4 font-bold group-hover:text-primary group-hover:underline"
+          >
+            聊天室
+          </h3>
         </RouterLink>
       </li>
     </ul>

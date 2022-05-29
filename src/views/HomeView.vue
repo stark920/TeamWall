@@ -54,6 +54,6 @@ onMounted(() => {
       </div>
     </div>
     <ChatContainer />
-    <PostOption class="fixed left-1/2 bottom-12 -translate-x-1/2 md:hidden" />
+    <PostOption class="fixed left-1/2 bottom-4 -translate-x-1/2 lg:hidden" />
   </div>
 </template>

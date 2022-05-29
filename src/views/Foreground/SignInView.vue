@@ -119,23 +119,23 @@ const signIn = async () => {
     </li>
     <li class="flex justify-evenly">
       <a :href="loginUrls.google">
-        <ButtonIcon>
-          <IconGoogle class="h-5 w-5"></IconGoogle>
+        <ButtonIcon size="50">
+          <IconGoogle class="h-6 w-6"></IconGoogle>
         </ButtonIcon>
       </a>
       <a :href="loginUrls.facebook">
-        <ButtonIcon>
-          <IconFacebook class="h-10 w-10"></IconFacebook>
+        <ButtonIcon size="50">
+          <IconFacebook class="h-full w-full"></IconFacebook>
         </ButtonIcon>
       </a>
       <a :href="loginUrls.discord">
-        <ButtonIcon>
-          <IconDiscord class="h-6 w-6"></IconDiscord>
+        <ButtonIcon size="50">
+          <IconDiscord class="h-8 w-8"></IconDiscord>
         </ButtonIcon>
       </a>
       <a>
-        <ButtonIcon>
-          <IconHex class="h-6 w-6"></IconHex>
+        <ButtonIcon size="50">
+          <IconHex class="h-8 w-8"></IconHex>
         </ButtonIcon>
       </a>
     </li>
