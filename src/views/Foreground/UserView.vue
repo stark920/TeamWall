@@ -77,7 +77,7 @@ const userStore = useUserStore(); // 登入者資料
 const route = useRoute();
 const id = ref(route.params.id); // 個人頁 userId
 const pending = ref(false);
-const isLoading = ref(false);
+const isLoading = ref(true);
 
 //取得聊天室id並且開啟聊天視窗
 const sendMessage = async () => {
@@ -116,9 +116,10 @@ const getPosts = (sort = 1, searchKey = '') => {
   if (sort === 2) sortValue = 'old';
   if (sort === 3) likesValue = 'hot';
 
-  isLoading.value = true;
   apiPost
-    .getAll(`timeSort=${sortValue}&search=${searchKey}&likesSort=${likesValue}`)
+    .getAll(
+      `timeSort=${sortValue}&search=${searchKey}&likesSort=${likesValue}&limit=9999`
+    )
     .then((res) => {
       isLoading.value = false;
       posts.value = res.data.data;

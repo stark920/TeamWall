@@ -16,7 +16,9 @@ const getPosts = (sort = 1, searchKey = '') => {
   if (sort === 3) likesValue = 'hot';
 
   apiPost
-    .getAll(`timeSort=${sortValue}&search=${searchKey}&likesSort=${likesValue}`)
+    .getAll(
+      `timeSort=${sortValue}&search=${searchKey}&likesSort=${likesValue}&limit=9999`
+    )
     .then((res) => {
       posts.value = res.data.data;
       isLoading.value = false;

@@ -14,9 +14,7 @@ const isLoading = ref(false);
 const props = defineProps({
   post: {
     type: Object,
-    default() {
-      return {};
-    },
+    default: () => {},
   },
 });
 
@@ -26,28 +24,32 @@ watch(props, (curr) => {
 });
 
 // 按讚貼文
-const likePost = (postId) => {
-  const data = { posts: postId };
+const likes = ref();
+const likePost = () => {
+  const data = { posts: innerPost.value._id };
   isLoading.value = true;
   apiLike
     .toggle(data)
-    .then(() => {
-      getPost(postId); // 更新貼文
+    .then((res) => {
+      likes.value = res.data.data;
     })
     .catch((err) => {
       isLoading.value = false;
       console.log(err);
     });
 };
+watch(likes, () => {
+  // 更新貼文
+  getPost();
+});
 
 // 取得單筆貼文(更新貼文)
-const getPost = (postId) => {
+const getPost = () => {
   isLoading.value = true;
   apiPost
-    .getOne(postId)
+    .getOne(innerPost.value._id)
     .then((res) => {
       const [post] = res.data.data; // 回傳是陣列
-      console.log('更新的post:', post);
       innerPost.value = post;
       isLoading.value = false;
     })
@@ -79,7 +81,7 @@ const getPost = (postId) => {
       <button
         type="button"
         class="flex items-center justify-center py-5"
-        @click="likePost(innerPost._id)"
+        @click="likePost"
         :disabled="isLoading"
         :class="{ 'cursor-not-allowed': isLoading }"
       >
@@ -93,11 +95,7 @@ const getPost = (postId) => {
     </div>
     <!--留言-->
     <div class="mb-5 flex items-center">
-      <AvatarVue
-        class="mx-2"
-        size="40"
-        :imgUrl="'https://i.pravatar.cc/150?img=19'"
-      />
+      <AvatarVue class="mx-2" size="40" :imgUrl="userStore.user.avatar" />
       <div class="flex w-full">
         <input class="w-full border-2 border-black" type="text" />
         <button
