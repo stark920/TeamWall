@@ -8,13 +8,17 @@ import PostLoadingCard from '@/components/PostLoadingCard.vue';
 const isLoading = ref(true);
 const posts = ref([]);
 const getPosts = (sort = 1, searchKey = '') => {
-  // sort=1 最新貼文, sort=2 最舊貼文
-  let sortValue = 'new'; // 預設 desc
-  if (sort === 2) {
-    sortValue = 'old';
-  }
+  // sort: 1 最新, 2 最舊, 3 熱門
+  let sortValue = 'new'; // 時間排序, 預設 最新
+  let likesValue = ''; // 熱門排序, 預設 無
+
+  if (sort === 2) sortValue = 'old';
+  if (sort === 3) likesValue = 'hot';
+
   apiPost
-    .getAll(`timeSort=${sortValue}&search=${searchKey}`)
+    .getAll(
+      `timeSort=${sortValue}&search=${searchKey}&likesSort=${likesValue}&limit=9999`
+    )
     .then((res) => {
       posts.value = res.data.data;
       isLoading.value = false;
@@ -44,7 +48,7 @@ onMounted(() => {
         :key="item.id"
         :class="{ 'mb-4': index < posts.length - 1 }"
       >
-        <PostCard :post="item" @get-posts="getPosts" />
+        <PostCard :post="item" />
       </li>
     </ul>
 

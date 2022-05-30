@@ -9,6 +9,7 @@
       >
         <option value="1" selected>最新貼文</option>
         <option value="2">最舊貼文</option>
+        <option value="3">熱門貼文</option>
       </select>
     </div>
     <div class="md:col-span-2">

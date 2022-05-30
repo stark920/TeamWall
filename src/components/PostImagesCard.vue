@@ -56,7 +56,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, toRaw } from 'vue';
 const props = defineProps({
   images: {
     type: Array,
@@ -68,10 +68,15 @@ const props = defineProps({
 
 const visible = ref(false);
 const index = ref(0);
-const newImages = ref(props.images.map((item) => item.url));
-watch(props.images, (curr) => {
+const newImages = ref(toRaw(props.images).map((item) => item.url)); // images url array
+watch(props, (curr) => {
   // 若 images 改變, 重新取得
-  newImages.value = curr.map((item) => item.url);
+  newImages.value = toRaw(curr.images).map((item) => item.url);
+});
+
+const innerPost = ref(toRaw(props.post));
+watch(props, (curr) => {
+  innerPost.value = toRaw(curr.post);
 });
 
 const showImg = (i) => {

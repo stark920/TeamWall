@@ -44,7 +44,7 @@
         :key="index"
         :class="{ 'mb-4': index < userPosts.length - 1 }"
       >
-        <PostCard :post="item" @get-posts="getPosts" />
+        <PostCard :post="item" />
       </li>
     </ul>
     <PostEmptyCard v-else>
@@ -77,7 +77,7 @@ const userStore = useUserStore(); // 登入者資料
 const route = useRoute();
 const id = ref(route.params.id); // 個人頁 userId
 const pending = ref(false);
-const isLoading = ref(false);
+const isLoading = ref(true);
 
 //取得聊天室id並且開啟聊天視窗
 const sendMessage = async () => {
@@ -109,16 +109,17 @@ const sendMessage = async () => {
 // 所有貼文
 const posts = ref([]);
 const getPosts = (sort = 1, searchKey = '') => {
-  // sort=1 最新貼文, sort=2 最舊貼文
+  // sort: 1 最新, 2 最舊, 3 熱門
+  let sortValue = 'new'; // 時間排序, 預設 最新
+  let likesValue = ''; // 熱門排序, 預設 無
 
-  let sortValue = 'desc'; // 預設 desc
-  if (sort === 2) {
-    sortValue = 'asc';
-  }
+  if (sort === 2) sortValue = 'old';
+  if (sort === 3) likesValue = 'hot';
 
-  isLoading.value = true;
   apiPost
-    .getAll(`timeSort=${sortValue}&search=${searchKey}`)
+    .getAll(
+      `timeSort=${sortValue}&search=${searchKey}&likesSort=${likesValue}&limit=9999`
+    )
     .then((res) => {
       isLoading.value = false;
       posts.value = res.data.data;

@@ -4,31 +4,49 @@ import IconThumbsUpVue from '@/components/icons/IconThumbsUp.vue';
 import IconThumbsUpFillVue from '@/components/icons/IconThumbsUpFill.vue';
 import AvatarVue from './Avatar.vue';
 import PostImagesCardVue from './PostImagesCard.vue';
+import { ref, toRaw, watch } from 'vue';
 import { apiLike } from '../utils/apiLike';
 import { useUserStore } from '@/stores';
 const userStore = useUserStore();
+const isLoading = ref(false);
 
-defineProps({
+const props = defineProps({
   post: {
     type: Object,
-    default() {
-      return {};
-    },
+    default: () => {},
   },
 });
 
-const emit = defineEmits(['get-posts']);
+const innerPost = ref(toRaw(props.post));
+watch(props, (curr) => {
+  innerPost.value = toRaw(curr.post);
+});
 
-const likePost = (postId) => {
-  const data = { posts: postId };
+// 按讚貼文
+const likePost = (id) => {
+  const data = { posts: id };
+  isLoading.value = true;
   apiLike
     .toggle(data)
     .then(() => {
-      emit('get-posts');
+      isLoading.value = false;
+      updateInnerPostLikes(userStore.user.id);
     })
     .catch((err) => {
+      isLoading.value = false;
       console.log(err);
     });
+};
+
+// 更新內部資料 innerPost.likes
+const updateInnerPostLikes = (id) => {
+  const isLike = innerPost.value.likes.includes(id); // 是否按讚
+  if (isLike) {
+    const index = innerPost.value.likes.findIndex((i) => i === id);
+    innerPost.value.likes.splice(index, 1); // 移除 id
+  } else {
+    innerPost.value.likes.push(id); // 加入 id
+  }
 };
 </script>
 
@@ -36,35 +54,35 @@ const likePost = (postId) => {
   <div class="rounded-lg border-2 border-black bg-white p-6 shadow-post">
     <UserInfo
       class="mb-4"
-      :imgUrl="post.userId?.avatar?.url"
-      :name="post.userId?.name"
-      :userPageUrl="`/profile/${post.userId?._id}`"
-      :subTitle="$filters.dateTime(post.createdAt)"
+      :imgUrl="innerPost.userId?.avatar?.url"
+      :name="innerPost.userId?.name"
+      :userPageUrl="`/profile/${innerPost.userId?._id}`"
+      :subTitle="$filters.dateTime(innerPost.createdAt)"
     />
-    <p class="mb-4 whitespace-pre">{{ post.content }}</p>
-    <PostImagesCardVue v-if="post.image?.length > 0" :images="post.image" />
+    <p class="mb-4 whitespace-pre">{{ innerPost.content }}</p>
+    <PostImagesCardVue
+      v-if="innerPost.image?.length > 0"
+      :images="innerPost.image"
+    />
     <div>
       <button
         type="button"
         class="flex items-center justify-center py-5"
-        @click="likePost(post._id)"
+        @click="likePost(innerPost._id)"
+        :disabled="isLoading"
+        :class="{ 'cursor-not-allowed': isLoading }"
       >
-        <!-- 已按讚 icon, 改實心 -->
         <IconThumbsUpVue
-          v-if="!post.likes?.includes(userStore.user.id)"
+          v-if="!innerPost.likes?.includes(userStore.user.id)"
           class="mr-2 h-5 w-5 text-primary"
         />
         <IconThumbsUpFillVue v-else class="mr-2 h-5 w-5 text-primary" />
-        <span> {{ post.likes?.length }}</span>
+        <span> {{ innerPost.likes?.length }}</span>
       </button>
     </div>
     <!--留言-->
     <div class="mb-5 flex items-center">
-      <AvatarVue
-        class="mx-2"
-        size="40"
-        :imgUrl="'https://i.pravatar.cc/150?img=19'"
-      />
+      <AvatarVue class="mx-2" size="40" :imgUrl="userStore.user.avatar" />
       <div class="flex w-full">
         <input class="w-full border-2 border-black" type="text" />
         <button
@@ -76,7 +94,7 @@ const likePost = (postId) => {
     </div>
     <div
       class="mb-4 rounded-lg bg-secondary px-4 py-5"
-      v-for="(comment, index) in post.comments"
+      v-for="(comment, index) in innerPost.comments"
       :key="index"
     >
       <UserInfo
