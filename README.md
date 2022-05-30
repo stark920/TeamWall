@@ -47,4 +47,4 @@ npm run lint
 - **Vue Plugins**: light-box effects using [vue-easy-lightbox](https://github.com/XiongAmao/vue-easy-lightbox), pop-out messages using [vue-toastification](https://github.com/Maronato/vue-toastification)
 - **Tailwind Plugins**: prettier class name with [prettier-plugin-tailwindcss](https://github.com/tailwindlabs/prettier-plugin-tailwindcss), reset form styles using [@tailwindcss/forms](https://github.com/tailwindlabs/tailwindcss-forms)
 - **Linting**: with [ESLint](https://eslint.org) and [Prettier](https://prettier.io)
-- **Socket**: realtime chat using [socket.io-client]([https://socket.io/](https://socket.io/docs/v4/client-api/))
+- **Socket**: realtime chat using [socket.io-client](https://socket.io/docs/v4/client-api/)
