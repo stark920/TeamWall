@@ -17,7 +17,6 @@ const queryRoomList = async () => {
   try {
     isLoading.value = true;
     const res = await apiChat.record();
-    console.log('res', res);
     const {
       data: { status, chatRecord },
     } = res;

@@ -1,17 +1,19 @@
 <script setup>
-import { onBeforeUnmount, ref } from 'vue';
+import { onBeforeUnmount } from 'vue';
 import ChatRoom from './ChatRoom.vue';
-import eventBus from '../utils/eventBus';
-const showRoom = ref(false);
-const handleRoom = (isOpen) => {
-  showRoom.value = isOpen;
-};
-eventBus.on('handleRoom', handleRoom);
+import { storeToRefs } from 'pinia';
+import { useRoomStore } from '@/store';
+const roomStore = useRoomStore();
+const { room } = storeToRefs(roomStore);
 onBeforeUnmount(() => {
-  eventBus.off('handleRoom', handleRoom);
+  roomStore.updateRoom([]);
 });
 </script>
 
 <template>
-  <chat-room v-if="showRoom" />
+  <div class="fixed bottom-0 flex w-4/5 justify-end">
+    <template v-for="item in room" :key="item.roomId">
+      <chat-room :roomInfo="item" />
+    </template>
+  </div>
 </template>

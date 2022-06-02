@@ -1,6 +1,14 @@
 <script setup>
 import { useToast } from 'vue-toastification';
-import { nextTick, reactive, onMounted, onBeforeUnmount, ref } from 'vue';
+import {
+  defineProps,
+  nextTick,
+  reactive,
+  onMounted,
+  onBeforeUnmount,
+  toRefs,
+  ref,
+} from 'vue';
 import ChatRoomMessage from './ChatRoomMessage.vue';
 import ChatRoomInputBox from './ChatRoomInputBox.vue';
 import Close from '../components/icons/IconCross.vue';
@@ -30,6 +38,16 @@ const scrollRecord = ref(0);
 const messageList = reactive([]);
 let timer = null;
 
+const props = defineProps({
+  roomInfo: {
+    type: Object,
+    required: true,
+    default: () => {},
+  },
+});
+
+const { roomInfo } = toRefs(props);
+
 let token = localStorage.getItem('metaWall');
 if (!token) {
   toast.error('請先登入喔！');
@@ -41,7 +59,7 @@ token.startsWith('Bearer') && (token = token.split(' ')[1]);
 const socket = io(`${API_URL}/chat`, {
   query: {
     token,
-    room: room.value.roomId,
+    room: roomInfo.value?.roomId,
   },
   // autoConnect: false,
   forceNew: true,
@@ -55,12 +73,12 @@ socket.on('connect', () => {
   }, 200);
 });
 
-socket.emit('joinRoom', room.value.roomId);
+socket.emit('joinRoom', roomInfo.value?.roomId);
 // 接收到別人傳的訊息
 socket.on('chatMessage', (msg) => {
   console.log('接收到別人傳的訊息', msg);
   messageList.push(msg);
-  eventBus.emit('updateChatRecord', { roomId: room.value.roomId, msg });
+  eventBus.emit('updateChatRecord', { roomId: roomInfo.value?.roomId, msg });
   if (
     messageContainer.value.scrollHeight - messageContainer.value.scrollTop >
     messageContainer.value.clientHeight
@@ -146,7 +164,10 @@ const scrollBottom = async () => {
 };
 
 const closeRoom = () => {
-  eventBus.emit('handleRoom', false);
+  const keepRoom = room.value.filter(
+    (room) => room.roomId !== roomInfo.value?.roomId
+  );
+  roomStore.updateRoom(keepRoom);
 };
 
 const detectTop = () => {
@@ -168,7 +189,7 @@ const toPrevPage = () => {
 const provideDefault = () => {
   console.log('room', room);
   return (
-    room.value.avatar?.url ??
+    roomInfo.value?.avatar ??
     new URL('../assets/avatars/user_default.png', import.meta.url)
   );
 };
@@ -184,7 +205,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   console.warn('onBeforeUnmount');
   roomStore.updateRoom({});
-  socket.emit('leaveRoom', room.value.roomId);
+  socket.emit('leaveRoom', roomInfo.value?.roomId);
   socket.off();
   socket.disconnect();
   document.body.style = '';
@@ -194,7 +215,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    class="bottom-0 right-10 h-screen w-screen overflow-hidden rounded-tl-lg rounded-tr-lg border-black md:fixed md:h-[455px] md:w-[338px] md:border-2"
+    class="relative h-screen overflow-hidden rounded-tl-lg rounded-tr-lg md:ml-4 md:h-[455px] md:w-[338px] md:border-2"
   >
     <div
       class="flex h-14 items-center justify-between border-b-2 border-black bg-white px-2 py-2 md:px-4"
@@ -202,7 +223,7 @@ onBeforeUnmount(() => {
       <div class="flex items-center">
         <Back @click="toPrevPage" class="mr-2 block h-8 w-8 md:hidden" />
         <AvatarVue size="40" :imgUrl="provideDefault()" />
-        <span class="pl-4 font-bold">{{ room.name }}</span>
+        <span class="pl-4 font-bold">{{ roomInfo.name }}</span>
       </div>
       <span v-show="typingFlag" class="text-xs text-gray-500"
         >對方正在輸入中...</span
