@@ -63,16 +63,18 @@ const submitPost = () => {
       class="relative my-4 w-32 gap-y-8 rounded bg-black py-1 px-8 text-white"
     >
       <input
+        id="customFileInput"
         ref="inputDOM"
         type="file"
         accept="image/*"
         class="absolute left-0 z-10 w-full cursor-pointer opacity-0"
         @change="previewImage"
       />
-      <span>上傳圖片</span>
+      <label for="customFileInput" class="cursor-pointer">上傳圖片</label>
     </div>
     <div class="mb-6 h-40 w-full rounded-lg border-2 border-black">
-      <img :src="data.preview" class="h-full" />
+      <img v-if="data.preview" :src="data.preview" />
+      <span v-else class="text-gray block px-4 py-3">尚未上傳圖片</span>
     </div>
     <div class="text-center">
       <div v-show="isWarnHint" class="text-red_x -mt-2 mb-2 text-sm">
@@ -87,3 +89,12 @@ const submitPost = () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+input {
+  font-size: 0;
+}
+.text-gray {
+  color: #6b7280;
+}
+</style>
