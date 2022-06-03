@@ -2,7 +2,7 @@
 import { onBeforeUnmount } from 'vue';
 import ChatRoom from './ChatRoom.vue';
 import { storeToRefs } from 'pinia';
-import { useRoomStore } from '@/store';
+import { useRoomStore } from '@/stores';
 const roomStore = useRoomStore();
 const { room } = storeToRefs(roomStore);
 onBeforeUnmount(() => {
