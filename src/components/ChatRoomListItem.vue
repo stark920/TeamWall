@@ -12,7 +12,7 @@ const props = defineProps({
 });
 const { name, message: msg, avatar } = toRefs(props.room);
 const formateTime = (time) => {
-  return new Date(time).toLocaleString();
+  return time ? new Date(time).toLocaleString() : '尚未開始對話';
 };
 const goChatRoom = () => {
   handleRoom(props.room);
