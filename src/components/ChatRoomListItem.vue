@@ -23,14 +23,14 @@ const goChatRoom = () => {
 <template>
   <li
     @click="goChatRoom"
-    class="shadow-normal mb-4 flex h-[77px] cursor-pointer items-baseline justify-between rounded-lg border-2 border-black bg-white p-4"
+    class="shadow-normal mb-4 flex h-[77px] cursor-pointer items-center justify-between rounded-lg border-2 border-black bg-white px-4"
   >
-    <div class="flex">
+    <div class="flex items-center">
       <AvatarVue size="40" :imgUrl="avatar?.url" />
-      <div class="flex-1 pl-2">
+      <div class="flex-1 pl-3">
         <p class="font-bold">{{ name }}</p>
         <p
-          class="h-10 w-[200px] overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-slate-500 md:w-80"
+          class="w-[200px] overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-slate-500 md:w-80"
         >
           {{ msg?.[0]?.message }}
         </p>

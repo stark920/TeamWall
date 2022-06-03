@@ -1,7 +1,6 @@
 <script setup>
 import { useToast } from 'vue-toastification';
 import {
-  defineProps,
   nextTick,
   reactive,
   onMounted,
@@ -197,7 +196,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    class="relative h-screen overflow-hidden rounded-tl-lg rounded-tr-lg border-2 border-black lg:ml-4 lg:h-[455px] lg:w-[338px] lg:border-2"
+    class="relative h-screen overflow-hidden rounded-tl-lg rounded-tr-lg border-black lg:ml-4 lg:h-[455px] lg:w-[338px] lg:border-2"
   >
     <div
       class="flex h-14 items-center justify-between border-b-2 border-black bg-white px-2 py-2 lg:px-4"
@@ -218,7 +217,7 @@ onBeforeUnmount(() => {
     <div
       id="messageContainer"
       ref="messageContainer"
-      class="inner relative overflow-y-auto bg-slate-100"
+      class="relative h-[calc(100vh-56px-48px)] overflow-y-auto bg-slate-100 lg:h-[350px]"
     >
       <div class="text-center" v-if="!isLoading && messageList.length === 0">
         開始聊天吧！
@@ -245,14 +244,6 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.inner {
-  height: 350px;
-}
-@media only screen and (max-width: 1024px) {
-  .inner {
-    height: calc(100vh - 56px - 48px);
-  }
-}
 @supports (-webkit-touch-callout: none) {
   .h-screen {
     height: -webkit-fill-available;
