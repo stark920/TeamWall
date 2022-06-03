@@ -52,7 +52,7 @@ const checkPostData = {
   },
 };
 
-const handleImageUpload = () => {
+const handleImageUpload = (e) => {
   if (!uploadImages.value.files) {
     return;
   }
@@ -65,6 +65,7 @@ const handleImageUpload = () => {
       `一則貼文最多可以上傳 ${postValidates.fileNum} 張圖片`
     );
     uploadImages.value = null;
+    e.target.value = null;
     return;
   }
 
@@ -82,7 +83,10 @@ const handleImageUpload = () => {
       postData.images.push(file);
     }
   }
+
   uploadImages.value = null;
+  e.target.value = null;
+
   if (errorMessage.length > 0) {
     postData.warnHint = errorMessage;
   }
