@@ -61,24 +61,22 @@ import PostEmptyCard from '@/components/PostEmptyCard.vue';
 import PostCard from '@/components/PostCard.vue';
 import PostLoadingCard from '@/components/PostLoadingCard.vue';
 import Avatar from '../../components/Avatar.vue';
-import eventBus from '@/utils/eventBus';
 import IconLoading from '@/components/icons/IconLoading.vue';
-import { deviceType } from '@/utils/common';
-import { useRouter } from 'vue-router';
-import { useRoomStore, useUserStore } from '@/stores';
+import { useUserStore } from '@/stores';
 import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { apiChat } from '@/utils/apiChat';
 import { apiPost } from '@/utils/apiPost';
 import { apiUser } from '@/utils/apiUser';
-const router = useRouter();
-const roomStore = useRoomStore();
+import { useToast } from 'vue-toastification';
+import useChat from '@/use/useChat';
+const toast = useToast();
 const userStore = useUserStore(); // 登入者資料
 const route = useRoute();
 const id = ref(route.params.id); // 個人頁 userId
 const pending = ref(false);
 const isLoading = ref(true);
-
+const { handleRoom } = useChat();
 //取得聊天室id並且開啟聊天視窗
 const sendMessage = async () => {
   if (pending.value) return;
@@ -88,19 +86,11 @@ const sendMessage = async () => {
   try {
     pending.value = true;
     const res = await apiChat.room(sendData);
-    const {
-      data: { status, roomId, name, avatar, _id },
-    } = res;
-    if (status) {
-      roomStore.updateRoom({ roomId, name, avatar, receiver: _id });
-      if (deviceType() !== 'desktop') {
-        router.push('/chat-room');
-        return;
-      }
-      eventBus.emit('handleRoom', true);
-    }
+    if (!res?.status) return;
+    handleRoom(res?.data);
   } catch (error) {
-    console.log('error', error);
+    const msg = error.response.data?.message;
+    msg && toast.error(msg);
   } finally {
     pending.value = false;
   }

@@ -1,17 +1,8 @@
 <script setup>
 import { toRefs } from 'vue';
-import { useToast } from 'vue-toastification';
-import dayjs from 'dayjs';
-import eventBus from '../utils/eventBus';
-import { useRouter } from 'vue-router';
-import { storeToRefs } from 'pinia';
 import AvatarVue from './Avatar.vue';
-import { useRoomStore } from '@/stores';
-import { deviceType } from '../utils/common';
-const roomStore = useRoomStore();
-const toast = useToast();
-const { room } = storeToRefs(roomStore);
-const router = useRouter();
+import useChat from '@/use/useChat';
+const { handleRoom } = useChat();
 const props = defineProps({
   room: {
     type: Object,
@@ -19,43 +10,26 @@ const props = defineProps({
     default: () => {},
   },
 });
-const { name, message: msg, avatar, roomId, _id } = toRefs(props.room);
+const { name, message: msg, avatar } = toRefs(props.room);
 const formateTime = (time) => {
-  return dayjs(time).format('YYYY/MM/DD HH:MM');
-};
-const provideDefault = () => {
-  console.log('avatar', avatar);
-  return (
-    avatar.value.url ??
-    new URL('../assets/avatars/user_default.png', import.meta.url)
-  );
+  return time ? new Date(time).toLocaleString() : '尚未開始對話';
 };
 const goChatRoom = () => {
-  if (room.value.roomId && room.value.roomId !== roomId.value) {
-    toast.error('您一次只能跟一個人聊天');
-    return;
-  }
-  roomStore.updateRoom({ roomId, name, avatar, receiver: _id });
-  console.log('deviceType()', deviceType());
-  if (deviceType() !== 'desktop') {
-    router.push('/chat-room');
-    return;
-  }
-  eventBus.emit('handleRoom', true);
+  handleRoom(props.room);
 };
 </script>
 
 <template>
   <li
     @click="goChatRoom"
-    class="shadow-normal mb-4 flex h-[77px] cursor-pointer items-baseline justify-between rounded-lg border-2 border-black bg-white p-4"
+    class="shadow-normal mb-4 flex h-[77px] cursor-pointer items-center justify-between rounded-lg border-2 border-black bg-white px-4"
   >
-    <div class="flex">
-      <AvatarVue size="40" :imgUrl="provideDefault()" />
-      <div class="flex-1 pl-2">
+    <div class="flex items-center">
+      <AvatarVue size="40" :imgUrl="avatar?.url" />
+      <div class="flex-1 pl-3">
         <p class="font-bold">{{ name }}</p>
         <p
-          class="h-10 w-[200px] overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-slate-500 md:w-80"
+          class="w-[200px] overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-slate-500 md:w-80"
         >
           {{ msg?.[0]?.message }}
         </p>

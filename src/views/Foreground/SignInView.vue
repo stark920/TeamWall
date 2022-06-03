@@ -4,7 +4,7 @@ import { required, email, helpers } from '@vuelidate/validators';
 import { ref, computed } from 'vue';
 import { apiUser } from '@/utils/apiUser';
 import { useRouter } from 'vue-router';
-import { useUserStore } from '@/stores';
+import { useUserStore, useRoomStore } from '@/stores';
 import { API_URL } from '@/global/constant';
 import ButtonIcon from '@/components/ButtonIcon.vue';
 import IconGoogle from '@/components/icons/IconGoogle.vue';
@@ -14,6 +14,7 @@ import IconHex from '@/components/icons/IconHex.vue';
 import IconDiscord from '@/components/icons/IconDiscord.vue';
 import HexSchool from '../../components/HexSchool.vue';
 const userStore = useUserStore();
+const roomStore = useRoomStore();
 const router = useRouter();
 const loginUrls = {
   google: `${API_URL}/users/google`,
@@ -52,6 +53,7 @@ const signIn = async () => {
     .signIn(form.value)
     .then((res) => {
       userStore.updateUser(res.data.data);
+      roomStore.updateRoom([]);
       localStorage.setItem('metaWall', res.headers.authorization);
       resetData();
       router.push({ name: 'posts' });
