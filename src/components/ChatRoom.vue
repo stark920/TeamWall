@@ -196,7 +196,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    class="relative h-screen overflow-hidden rounded-tl-lg rounded-tr-lg border-black lg:ml-4 lg:h-[455px] lg:w-[338px] lg:border-2"
+    class="pointer-events-auto relative h-screen overflow-hidden rounded-tl-lg rounded-tr-lg border-black lg:ml-4 lg:h-[455px] lg:w-[338px] lg:border-2"
   >
     <div
       class="flex h-14 items-center justify-between border-b-2 border-black bg-white px-2 py-2 lg:px-4"
