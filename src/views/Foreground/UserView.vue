@@ -89,7 +89,7 @@ const sendMessage = async () => {
     if (!res?.status) return;
     handleRoom(res?.data);
   } catch (error) {
-    const msg = error.response.data.message;
+    const msg = error.response.data?.message;
     msg && toast.error(msg);
   } finally {
     pending.value = false;

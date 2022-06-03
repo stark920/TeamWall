@@ -26,8 +26,10 @@ onMounted(() => {
     bubbles: true,
   });
   inputBox.value.dispatchEvent(keyEvent);
-  inputBox.value.addEventListener('keypress', (e) => {
+  inputBox.value.addEventListener('keyup', (e) => {
     emit('userTyping', e.key);
+  });
+  inputBox.value.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
       sendMessage();
     }

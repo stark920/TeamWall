@@ -16,7 +16,6 @@ import Back from '../components/icons/IconBack.vue';
 import IconLoading from '@/components/icons/IconLoading.vue';
 import AvatarVue from './Avatar.vue';
 import eventBus from '../utils/eventBus';
-import { deviceType } from '../utils/common';
 import { API_URL } from '@/global/constant';
 import { storeToRefs } from 'pinia';
 import { useRoomStore, useUserStore } from '@/stores';
@@ -48,8 +47,6 @@ const props = defineProps({
 
 const { roomId, name, avatar } = toRefs(props.roomInfo);
 
-console.log('roomId', roomId.value);
-console.log('avatar', avatar.value);
 let token = localStorage.getItem('metaWall');
 if (!token) {
   toast.error('請先登入喔！');
@@ -63,19 +60,15 @@ const socket = io(`${API_URL}/chat`, {
     token,
     room: roomId.value,
   },
-  // autoConnect: false,
-  forceNew: true,
+  auth: {
+    token,
+  },
 });
 // 建立連線
 socket.on('connect', () => {
-  console.log('connect----');
-  // TODO 不用setTimeout getHistory會偶發性失效
-  setTimeout(() => {
-    getHistory();
-  }, 200);
+  getHistory();
 });
 
-socket.emit('joinRoom', roomId.value);
 // 接收到別人傳的訊息
 socket.on('chatMessage', (msg) => {
   console.log('接收到別人傳的訊息', msg);
@@ -166,11 +159,7 @@ const scrollBottom = async () => {
 };
 
 const closeRoom = () => {
-  console.log('roomId', roomId.value);
-  console.log('room.value', room.value);
-  room.value.forEach((room) => console.log('room.roomId', room.roomId));
   const keepRoom = room.value.filter((room) => room.roomId !== roomId.value);
-  console.log('[keepRoom]', keepRoom.length);
   roomStore.updateRoom(keepRoom);
 };
 
@@ -189,13 +178,11 @@ const detectTop = () => {
 
 const toPrevPage = () => {
   router.go(-1);
+  roomStore.updateRoom([]);
 };
 
 onMounted(() => {
   console.warn('mounted');
-  // 鎖ios橡皮筋效果
-  deviceType() !== 'desktop' &&
-    (document.body.style = 'overflow: hidden;position:fixed');
   detectTop();
 });
 
@@ -204,7 +191,6 @@ onBeforeUnmount(() => {
   socket.emit('leaveRoom', roomId.value);
   socket.off();
   socket.disconnect();
-  document.body.style = '';
   clearTimeout(timer);
 });
 </script>
@@ -262,7 +248,7 @@ onBeforeUnmount(() => {
 .inner {
   height: 350px;
 }
-@media only screen and (max-width: 640px) {
+@media only screen and (max-width: 1024px) {
   .inner {
     height: calc(100vh - 56px - 48px);
   }

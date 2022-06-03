@@ -27,7 +27,7 @@ const queryRoomList = async () => {
       console.log('chatList', chatList);
     }
   } catch (error) {
-    const msg = error.response.data.message;
+    const msg = error.response.data?.message;
     msg && toast.error(msg);
   } finally {
     isLoading.value = false;

@@ -12,7 +12,6 @@ const props = defineProps({
   },
 });
 const { name, message: msg, avatar } = toRefs(props.room);
-console.log('avatar', avatar.value.url);
 const formateTime = (time) => {
   return dayjs(time).format('MM/DD HH:MM');
 };
