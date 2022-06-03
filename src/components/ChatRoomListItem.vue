@@ -1,6 +1,5 @@
 <script setup>
 import { toRefs } from 'vue';
-import dayjs from 'dayjs';
 import AvatarVue from './Avatar.vue';
 import useChat from '@/use/useChat';
 const { handleRoom } = useChat();
@@ -13,7 +12,7 @@ const props = defineProps({
 });
 const { name, message: msg, avatar } = toRefs(props.room);
 const formateTime = (time) => {
-  return dayjs(time).format('MM/DD HH:MM');
+  return new Date(time).toLocaleString();
 };
 const goChatRoom = () => {
   handleRoom(props.room);
