@@ -2,7 +2,8 @@
 import { ref, reactive } from 'vue';
 import CardTitle from '@/components/CardTitle.vue';
 import { apiPost } from '@/utils/apiPost';
-
+import { useRouter } from 'vue-router';
+const router = useRouter();
 const postContent = ref('');
 
 const data = reactive({
@@ -18,7 +19,6 @@ const previewImage = (event) => {
     reader.onload = (e) => {
       data.preview = e.target.result;
     };
-    console.log(input.files[0]);
     data.image = input.files[0];
     reader.readAsDataURL(input.files[0]);
   }
@@ -26,16 +26,22 @@ const previewImage = (event) => {
 
 const submitPost = () => {
   data.isWarnHint = true;
+  const form = new FormData();
+  form.append('content', postContent.value);
+  form.append('photos', data.image);
   apiPost
-    .upload({
-      content: postContent.value,
-      updateImage: data.preview,
-    })
+    .upload(form)
     .then((res) => {
-      console.log(res);
+      const userId = res.data.data.userId;
+      if (userId) {
+        router.push(`/profile/${userId}`);
+      } else {
+        alert('新增失敗, 請洽管理員');
+      }
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
+      alert('新增失敗, 請洽管理員');
     });
 };
 </script>
