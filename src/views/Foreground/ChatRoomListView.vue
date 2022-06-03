@@ -1,10 +1,12 @@
 <script setup>
 import { reactive, onMounted, onBeforeUnmount, ref } from 'vue';
+import { useToast } from 'vue-toastification';
 import IconLoading from '@/components/icons/IconLoading.vue';
 import CardTitleVue from '../../components/CardTitle.vue';
 import ChatRoomListItem from '../../components/ChatRoomListItem.vue';
 import eventBus from '@/utils/eventBus';
 import { apiChat } from '@/utils/apiChat';
+const toast = useToast();
 const chatList = reactive([]);
 const isLoading = ref(true);
 const updateChatRecord = ({ roomId, msg }) => {
@@ -25,7 +27,8 @@ const queryRoomList = async () => {
       console.log('chatList', chatList);
     }
   } catch (error) {
-    console.log('error', error);
+    const msg = error.response.data.message;
+    msg && toast.error(msg);
   } finally {
     isLoading.value = false;
   }

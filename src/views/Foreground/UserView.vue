@@ -107,7 +107,8 @@ const sendMessage = async () => {
       }
     }
   } catch (error) {
-    console.log('error', error);
+    const msg = error.response.data.message;
+    msg && toast.error(msg);
   } finally {
     pending.value = false;
   }

@@ -46,8 +46,10 @@ const props = defineProps({
   },
 });
 
-const { roomInfo } = toRefs(props);
+const { roomId, name, avatar } = toRefs(props.roomInfo);
 
+console.log('roomId', roomId.value);
+console.log('avatar', avatar.value);
 let token = localStorage.getItem('metaWall');
 if (!token) {
   toast.error('請先登入喔！');
@@ -59,7 +61,7 @@ token.startsWith('Bearer') && (token = token.split(' ')[1]);
 const socket = io(`${API_URL}/chat`, {
   query: {
     token,
-    room: roomInfo.value?.roomId,
+    room: roomId.value,
   },
   // autoConnect: false,
   forceNew: true,
@@ -73,12 +75,12 @@ socket.on('connect', () => {
   }, 200);
 });
 
-socket.emit('joinRoom', roomInfo.value?.roomId);
+socket.emit('joinRoom', roomId.value);
 // 接收到別人傳的訊息
 socket.on('chatMessage', (msg) => {
   console.log('接收到別人傳的訊息', msg);
   messageList.push(msg);
-  eventBus.emit('updateChatRecord', { roomId: roomInfo.value?.roomId, msg });
+  eventBus.emit('updateChatRecord', { roomId: roomId.value, msg });
   if (
     messageContainer.value.scrollHeight - messageContainer.value.scrollTop >
     messageContainer.value.clientHeight
@@ -164,9 +166,7 @@ const scrollBottom = async () => {
 };
 
 const closeRoom = () => {
-  const keepRoom = room.value.filter(
-    (room) => room.roomId !== roomInfo.value?.roomId
-  );
+  const keepRoom = room.value.filter((room) => room.roomId !== roomId.value);
   roomStore.updateRoom(keepRoom);
 };
 
@@ -186,13 +186,6 @@ const detectTop = () => {
 const toPrevPage = () => {
   router.go(-1);
 };
-const provideDefault = () => {
-  console.log('room', room);
-  return (
-    roomInfo.value?.avatar ??
-    new URL('../assets/avatars/user_default.png', import.meta.url)
-  );
-};
 
 onMounted(() => {
   console.warn('mounted');
@@ -204,8 +197,8 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   console.warn('onBeforeUnmount');
-  roomStore.updateRoom({});
-  socket.emit('leaveRoom', roomInfo.value?.roomId);
+  roomStore.updateRoom([]);
+  socket.emit('leaveRoom', roomId.value);
   socket.off();
   socket.disconnect();
   document.body.style = '';
@@ -215,21 +208,21 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    class="relative h-screen overflow-hidden rounded-tl-lg rounded-tr-lg md:ml-4 md:h-[455px] md:w-[338px] md:border-2"
+    class="relative h-screen overflow-hidden rounded-tl-lg rounded-tr-lg border-2 border-black lg:ml-4 lg:h-[455px] lg:w-[338px] lg:border-2"
   >
     <div
-      class="flex h-14 items-center justify-between border-b-2 border-black bg-white px-2 py-2 md:px-4"
+      class="flex h-14 items-center justify-between border-b-2 border-black bg-white px-2 py-2 lg:px-4"
     >
       <div class="flex items-center">
-        <Back @click="toPrevPage" class="mr-2 block h-8 w-8 md:hidden" />
-        <AvatarVue size="40" :imgUrl="provideDefault()" />
-        <span class="pl-4 font-bold">{{ roomInfo.name }}</span>
+        <Back @click="toPrevPage" class="mr-2 block h-8 w-8 lg:hidden" />
+        <AvatarVue size="40" :imgUrl="avatar.url" />
+        <span class="pl-4 font-bold">{{ name }}</span>
       </div>
       <span v-show="typingFlag" class="text-xs text-gray-500"
         >對方正在輸入中...</span
       >
       <Close
-        class="hidden h-6 w-6 cursor-pointer hover:opacity-50 md:block"
+        class="hidden h-6 w-6 cursor-pointer hover:opacity-50 lg:block"
         @click="closeRoom"
       />
     </div>

@@ -11,7 +11,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="fixed bottom-0 flex w-4/5 justify-end">
+  <div class="fixed bottom-0 right-10 flex w-4/5 justify-end">
     <template v-for="item in room" :key="item.roomId">
       <chat-room :roomInfo="item" />
     </template>

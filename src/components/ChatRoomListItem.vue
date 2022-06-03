@@ -10,7 +10,7 @@ import { useRoomStore } from '@/stores';
 import { deviceType } from '../utils/common';
 const roomStore = useRoomStore();
 const toast = useToast();
-const { room } = storeToRefs(roomStore);
+const { room: rooms } = storeToRefs(roomStore);
 const router = useRouter();
 const props = defineProps({
   room: {
@@ -20,23 +20,18 @@ const props = defineProps({
   },
 });
 const { name, message: msg, avatar, roomId } = toRefs(props.room);
+console.log('avatar', avatar.value.url);
 const formateTime = (time) => {
-  return dayjs(time).format('YYYY/MM/DD HH:MM');
-};
-const provideDefault = () => {
-  return (
-    avatar.value.url ??
-    new URL('../assets/avatars/user_default.png', import.meta.url)
-  );
+  return dayjs(time).format('MM/DD HH:MM');
 };
 const goChatRoom = () => {
-  if (room.value.length === 3) {
+  if (rooms.value.length === 3) {
     toast.error('您最多只能跟三個人聊天呦！');
     return;
   }
   const roomObj = { roomId, name, avatar };
   console.log('roomObj====', roomObj);
-  roomStore.updateRoom([...room.value, roomObj]);
+  roomStore.updateRoom([...rooms.value, roomObj]);
   if (deviceType() !== 'desktop') {
     router.push('/chat-room');
     return;
@@ -51,7 +46,7 @@ const goChatRoom = () => {
     class="shadow-normal mb-4 flex h-[77px] cursor-pointer items-baseline justify-between rounded-lg border-2 border-black bg-white p-4"
   >
     <div class="flex">
-      <AvatarVue size="40" :imgUrl="provideDefault()" />
+      <AvatarVue size="40" :imgUrl="avatar?.url" />
       <div class="flex-1 pl-2">
         <p class="font-bold">{{ name }}</p>
         <p
