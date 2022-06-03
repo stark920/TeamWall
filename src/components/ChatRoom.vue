@@ -166,7 +166,11 @@ const scrollBottom = async () => {
 };
 
 const closeRoom = () => {
+  console.log('roomId', roomId.value);
+  console.log('room.value', room.value);
+  room.value.forEach((room) => console.log('room.roomId', room.roomId));
   const keepRoom = room.value.filter((room) => room.roomId !== roomId.value);
+  console.log('[keepRoom]', keepRoom.length);
   roomStore.updateRoom(keepRoom);
 };
 
@@ -197,7 +201,6 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   console.warn('onBeforeUnmount');
-  roomStore.updateRoom([]);
   socket.emit('leaveRoom', roomId.value);
   socket.off();
   socket.disconnect();
