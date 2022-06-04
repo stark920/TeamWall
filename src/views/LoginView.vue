@@ -42,7 +42,7 @@ onMounted(() => {
         <img src="@/assets/images/login-image.svg" alt="login-image" />
       </div>
       <div class="flex flex-col items-center">
-        <div class="mx-4 mb-4 md:mx-10">
+        <div class="mx-4 md:mx-10">
           <img src="@/assets/images/logo.png" alt="logo" />
         </div>
         <RouterView></RouterView>

@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import PostCard from '@/components/PostCard.vue';
 import PostFilter from '@/components/PostFilter.vue';
 import PostEmptyCard from '@/components/PostEmptyCard.vue';
-import { apiPost } from '@/utils/apiPost';
+import { apiPost, token } from '@/utils/apiPost';
 import PostLoadingCard from '@/components/PostLoadingCard.vue';
 const isLoading = ref(true);
 const posts = ref([]);
@@ -28,7 +28,9 @@ const getPosts = (sort = 1, searchKey = '') => {
     });
 };
 onMounted(() => {
-  getPosts();
+  if (token()) {
+    getPosts();
+  }
 });
 </script>
 

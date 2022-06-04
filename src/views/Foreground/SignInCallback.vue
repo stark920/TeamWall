@@ -4,7 +4,7 @@ import { useUserStore } from '@/stores';
 const userStore = useUserStore();
 const router = useRouter();
 const route = useRoute();
-console.log(route.query);
+
 if (
   route.query.token &&
   route.query.id &&
@@ -18,7 +18,11 @@ if (
     avatar: route.query.avatar,
   };
   userStore.updateUser(user);
-  router.push({ name: 'posts' });
+  if (route.query.mode && route.query.mode === 'forgetPassword') {
+    router.push({ name: 'profile-settings' });
+  } else {
+    router.push({ name: 'posts' });
+  }
 } else {
   router.push({ name: 'sign-in' });
 }
