@@ -8,7 +8,7 @@ const { room } = storeToRefs(roomStore);
 
 <template>
   <div
-    class="pointer-events-none fixed bottom-0 right-10 hidden w-4/5 justify-end lg:flex"
+    class="pointer-events-none fixed bottom-0 right-10 hidden w-4/5 lg:flex lg:items-end lg:justify-end"
   >
     <template v-for="item in room" :key="item.roomId">
       <chat-room :roomInfo="item" />

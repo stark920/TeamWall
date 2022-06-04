@@ -14,7 +14,7 @@ const useChat = () => {
   };
   const handleRoom = (data) => {
     const { roomId, name, avatar } = data;
-    const roomObj = { roomId, name, avatar };
+    const roomObj = { roomId, name, avatar, isOpen: true };
     const device = deviceType();
     console.log('device', device);
     if (device === 'desktop') {

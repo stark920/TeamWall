@@ -42,7 +42,7 @@ onMounted(() => {
     class="fixed bottom-0 left-0 flex w-full items-center justify-between bg-slate-700 p-2 md:absolute"
   >
     <div
-      class="flex max-h-36 min-h-[32px] w-11/12 items-center overflow-hidden break-all rounded-2xl bg-white px-2 outline-none"
+      class="flex max-h-36 min-h-[32px] w-[90%] items-center overflow-hidden break-all rounded-2xl bg-white px-2 outline-none"
       contenteditable="true"
       id="test"
       role="textbox"
