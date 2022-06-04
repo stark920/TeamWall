@@ -1,5 +1,4 @@
 <script setup>
-import { ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
 import Avatar from '../Avatar.vue';
 import { apiUser } from '@/utils/apiUser';
@@ -19,16 +18,8 @@ defineProps({
 });
 
 const signOut = () => {
-  apiUser
-    .signOut()
-    .then(() => {
-      localStorage.removeItem('metaWall');
-      router.push({ name: 'sign-in' });
-    })
-    .catch(() => {
-      localStorage.removeItem('metaWall');
-      router.push({ name: 'sign-in' });
-    });
+  localStorage.removeItem('metaWall');
+  router.push({ name: 'sign-in' });
 };
 </script>
 
