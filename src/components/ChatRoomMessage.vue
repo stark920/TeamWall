@@ -23,7 +23,7 @@ const formateTime = (time) => {
 </script>
 
 <template>
-  <div class="m-4">
+  <div class="m-4 lg:mx-2">
     <div :class="['flex items-end', { 'flex-row-reverse': isSelf }]">
       <div
         :class="[

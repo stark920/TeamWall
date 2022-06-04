@@ -10,11 +10,13 @@ import {
 } from 'vue';
 import ChatRoomMessage from './ChatRoomMessage.vue';
 import ChatRoomInputBox from './ChatRoomInputBox.vue';
-import Close from '../components/icons/IconCross.vue';
-import Back from '../components/icons/IconBack.vue';
+import Close from '@/components/icons/IconCross.vue';
+import Back from '@/components/icons/IconBack.vue';
 import IconLoading from '@/components/icons/IconLoading.vue';
+import IconMinus from '@/components/icons/IconMinus.vue';
+import IconPlus from '@/components/icons/IconPlus.vue';
 import AvatarVue from './Avatar.vue';
-import eventBus from '../utils/eventBus';
+import eventBus from '@/utils/eventBus';
 import { API_URL } from '@/global/constant';
 import { storeToRefs } from 'pinia';
 import { useRoomStore, useUserStore } from '@/stores';
@@ -44,7 +46,7 @@ const props = defineProps({
   },
 });
 
-const { roomId, name, avatar } = toRefs(props.roomInfo);
+const { roomId, name, avatar, isOpen } = toRefs(props.roomInfo);
 
 let token = localStorage.getItem('metaWall');
 if (!token) {
@@ -162,6 +164,11 @@ const closeRoom = () => {
   roomStore.updateRoom(keepRoom);
 };
 
+const handleOpen = () => {
+  const updatedRoom = room.value.find((room) => room.roomId === roomId.value);
+  updatedRoom.isOpen = !updatedRoom.isOpen;
+};
+
 const detectTop = () => {
   messageContainer.value.addEventListener(
     'scroll',
@@ -196,25 +203,43 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    class="pointer-events-auto relative h-screen overflow-hidden rounded-tl-lg rounded-tr-lg border-black lg:ml-4 lg:h-[455px] lg:w-[338px] lg:border-2"
+    :class="[
+      'pointer-events-auto relative h-screen overflow-hidden rounded-tl-lg rounded-tr-lg border-black lg:bottom-0 lg:ml-4 lg:h-[455px] lg:w-[338px] lg:border-2',
+      { 'lg:h-14': !isOpen },
+    ]"
   >
     <div
-      class="flex h-14 items-center justify-between border-b-2 border-black bg-white px-2 py-2 lg:px-4"
+      class="flex h-14 items-center justify-between border-b-2 border-black bg-white px-2 py-2 lg:px-2"
     >
       <div class="flex items-center">
         <Back @click="toPrevPage" class="mr-2 block h-8 w-8 lg:hidden" />
         <AvatarVue size="40" :imgUrl="avatar.url" />
-        <span class="pl-4 font-bold">{{ name }}</span>
+        <div class="flex flex-col justify-between pl-2">
+          <span class="font-bold">{{ name }}</span>
+          <span v-show="typingFlag" class="text-xs text-gray-500"
+            >對方正在輸入中...</span
+          >
+        </div>
       </div>
-      <span v-show="typingFlag" class="text-xs text-gray-500"
-        >對方正在輸入中...</span
-      >
-      <Close
-        class="hidden h-6 w-6 cursor-pointer hover:opacity-50 lg:block"
-        @click="closeRoom"
-      />
+      <div class="hidden lg:flex">
+        <IconMinus
+          v-show="isOpen"
+          class="h-6 w-6 cursor-pointer hover:opacity-50"
+          @click="handleOpen"
+        />
+        <IconPlus
+          v-show="!isOpen"
+          class="h-6 w-6 cursor-pointer hover:opacity-50"
+          @click="handleOpen"
+        />
+        <Close
+          class="h-6 w-6 cursor-pointer hover:opacity-50"
+          @click="closeRoom"
+        />
+      </div>
     </div>
     <div
+      v-show="isOpen"
       id="messageContainer"
       ref="messageContainer"
       class="relative h-[calc(100vh-56px-48px)] overflow-y-auto bg-slate-100 lg:h-[350px]"
@@ -239,7 +264,11 @@ onBeforeUnmount(() => {
     >
       您有新訊息
     </div>
-    <chat-room-input-box @userTyping="userTyping" @sendMessage="sendMessage" />
+    <chat-room-input-box
+      v-show="isOpen"
+      @userTyping="userTyping"
+      @sendMessage="sendMessage"
+    />
   </div>
 </template>
 
