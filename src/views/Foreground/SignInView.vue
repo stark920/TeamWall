@@ -71,6 +71,9 @@ const displayHexSchoolDialog = ref(false);
 
 <template>
   <ul class="w-full" @keyup.enter.exact="signIn">
+    <li class="mb-8 w-full text-center text-2xl font-bold">
+      到元宇宙展開全新社交圈
+    </li>
     <li class="mb-4 w-full">
       <input
         class="w-full border-2 border-black py-4 px-6 font-azeret"
@@ -111,12 +114,20 @@ const displayHexSchoolDialog = ref(false);
         ></IconLoading>
       </button>
     </li>
-    <li class="text-center">
-      <router-link to="sign-up">註冊</router-link>
+    <li class="flex justify-between">
+      <router-link
+        to="forget-password"
+        class="hover:text-primary hover:underline"
+      >
+        忘記密碼？
+      </router-link>
+      <router-link to="sign-up" class="hover:text-primary hover:underline">
+        註冊新帳號
+      </router-link>
     </li>
     <li>
       <div
-        class="mt-8 mb-4 border-t-2 border-gray-300 text-center text-gray-500"
+        class="my-4 border-t-2 border-gray-300 pt-2 text-center text-gray-500"
       >
         使用其他登入方式
       </div>

@@ -1,5 +1,4 @@
 <script setup>
-import { ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
 import Avatar from '../Avatar.vue';
 import { apiUser } from '@/utils/apiUser';
@@ -17,18 +16,10 @@ defineProps({
     default: '#',
   },
 });
-const showMenu = ref(false);
+
 const signOut = () => {
-  apiUser
-    .signOut()
-    .then(() => {
-      localStorage.removeItem('metaWall');
-      router.push({ name: 'sign-in' });
-    })
-    .catch(() => {
-      localStorage.removeItem('metaWall');
-      router.push({ name: 'sign-in' });
-    });
+  localStorage.removeItem('metaWall');
+  router.push({ name: 'sign-in' });
 };
 </script>
 
@@ -39,10 +30,11 @@ const signOut = () => {
         <h1 class="font-paytone text-3xl text-black hover:animate-pulse">
           <RouterLink to="/"> MetaWall </RouterLink>
         </h1>
-        <div class="relative">
+        <div class="relative h-full">
           <div
-            class="flex cursor-pointer items-center"
+            class="reference flex h-full cursor-pointer items-center"
             @click="showMenu = !showMenu"
+            tabindex="0"
           >
             <Avatar size="30" :imgUrl="avatar" />
             <h2
@@ -50,31 +42,42 @@ const signOut = () => {
             >
               {{ name }}
             </h2>
-          </div>
-          <div
-            v-show="showMenu"
-            class="absolute right-0 top-[calc(100%+0.5rem)] z-50 grid w-[180px] border-2 border-black text-center"
-          >
-            <router-link
-              :to="userPageUrl"
-              class="bg-white py-2 hover:bg-secondary"
-              >我的貼文牆</router-link
+            <div
+              class="user-menu absolute right-0 top-[calc(100%-4px)] z-50 grid w-[180px] border-2 border-black text-center"
             >
-            <router-link
-              to="/profile/settings"
-              class="border-t-2 border-b-2 border-black bg-white py-2 hover:bg-secondary"
-              >修改個人資料</router-link
-            >
-            <button
-              type="button"
-              class="bg-white py-2 hover:bg-secondary"
-              @click="signOut"
-            >
-              登出
-            </button>
+              <router-link
+                :to="userPageUrl"
+                class="bg-white py-2 hover:bg-secondary"
+                >我的貼文牆</router-link
+              >
+              <router-link
+                to="/profile/settings"
+                class="border-t-2 border-b-2 border-black bg-white py-2 hover:bg-secondary"
+                >修改個人資料</router-link
+              >
+              <button
+                type="button"
+                class="bg-white py-2 hover:bg-secondary"
+                @click="signOut"
+              >
+                登出
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.user-menu {
+  visibility: hidden;
+  transition: all linear 0.3s;
+}
+.reference:hover > .user-menu,
+.reference:focus > .user-menu,
+.reference:focus-within > .user-menu {
+  visibility: visible;
+}
+</style>
