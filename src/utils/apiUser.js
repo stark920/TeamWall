@@ -39,11 +39,11 @@ usersRequest.interceptors.response.use(
 export const apiUser = {
   signIn: (data) => usersRequest.post('/sign-in', data),
   signUp: (data) => usersRequest.post('/sign-up', data),
-  signOut: () => usersRequest.delete('/sign-out', token()),
   check: () => usersRequest.get('/check', token()),
   updateProfile: (data) => usersRequest.patch('/profile', data, token()),
   updatePassword: (data) => usersRequest.patch('/profile/pwd', data, token()),
   getProfile: (id) => usersRequest.get(`/${id}`, token()),
-  follow: (id, data) => usersRequest.post(`/${id}/follow`, {}, token()),
+  follow: (id) => usersRequest.post(`/${id}/follow`, {}, token()),
   deleteFollow: (id) => usersRequest.delete(`/${id}/follow`, token()),
+  sendForgetMail: (data) => usersRequest.post('/forget-password', data),
 };

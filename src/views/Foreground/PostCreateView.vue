@@ -1,41 +1,126 @@
 <script setup>
-import { ref, reactive } from 'vue';
 import CardTitle from '@/components/CardTitle.vue';
+import { ref, reactive, watch } from 'vue';
 import { apiPost } from '@/utils/apiPost';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
-const postContent = ref('');
+const uploadImages = ref();
 
-const data = reactive({
-  isWarnHint: false,
-  preview: null,
-  image: '',
+const postValidates = {
+  contentLength: 1,
+  fileNum: 10,
+  fileSize: 1024 * 1024,
+  fileType: ['image/jpg', 'image/jpeg', 'image/png'],
+};
+
+const postData = reactive({
+  content: '',
+  images: [],
+  previews: [],
+  warnHint: [],
 });
 
-const previewImage = (event) => {
-  var input = event.target;
-  if (input.files) {
-    var reader = new FileReader();
-    reader.onload = (e) => {
-      data.preview = e.target.result;
-    };
-    console.log(input.files[0]);
-    data.image = input.files[0];
-    reader.readAsDataURL(input.files[0]);
+watch(postData.warnHint, () => {
+  setTimeout(function () {
+    postData.warnHint.length = 0;
+  }, 3000);
+});
+
+const checkPostData = {
+  content() {
+    return postData.content.trim().length < postValidates.contentLength
+      ? [`內容至少需要輸入 ${postValidates.contentLength} 個字`]
+      : null;
+  },
+  file(file) {
+    const errors = [];
+    if (file.size > postValidates.fileSize) {
+      errors.push(
+        `${file.name}：圖片檔案過大，僅限 ${
+          postValidates.fileSize / (1024 * 1024)
+        } MB 以下檔案`
+      );
+    }
+    if (postValidates.fileType.indexOf(file.type) < 0) {
+      const acceptTypeString = postValidates.fileType
+        .map((type) => type.split('/')[1])
+        .join('、');
+      errors.push(`${file.name}：圖片格式錯誤，僅限 ${acceptTypeString} 圖片`);
+    }
+    return errors.length > 0 ? errors : null;
+  },
+};
+
+const handleImageUpload = (e) => {
+  if (!uploadImages.value.files) {
+    return;
+  }
+
+  if (
+    uploadImages.value.files.length + postData.images.length >
+    postValidates.fileNum
+  ) {
+    postData.warnHint.push(
+      `一則貼文最多可以上傳 ${postValidates.fileNum} 張圖片`
+    );
+    uploadImages.value = null;
+    e.target.value = null;
+    return;
+  }
+
+  const errorMessage = [];
+  for (const file of uploadImages.value.files) {
+    const errors = checkPostData.file(file);
+    if (errors) {
+      errorMessage.push(...errors);
+    } else {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        postData.previews.push(e.target.result);
+      };
+      reader.readAsDataURL(file);
+      postData.images.push(file);
+    }
+  }
+
+  uploadImages.value = null;
+  e.target.value = null;
+
+  if (errorMessage.length > 0) {
+    postData.warnHint = errorMessage;
   }
 };
 
+const removeImage = (index) => {
+  postData.previews.splice(index, 1);
+  postData.images.splice(index, 1);
+};
+
 const submitPost = () => {
-  data.isWarnHint = true;
+  const checkContent = checkPostData.content();
+  if (checkContent) {
+    postData.warnHint.push(checkContent);
+    return;
+  }
+  const form = new FormData();
+  form.append('content', postData.content);
+  postData.images.forEach((image) => {
+    form.append('photos', image);
+  });
+
   apiPost
-    .upload({
-      content: postContent.value,
-      updateImage: data.preview,
-    })
+    .upload(form)
     .then((res) => {
-      console.log(res);
+      const userId = res.data.data.userId;
+      if (userId) {
+        router.push(`/profile/${userId}`);
+      } else {
+        alert('新增失敗, 請洽管理員');
+      }
     })
-    .catch((err) => {
-      console.log(err);
+    .catch(() => {
+      alert('新增失敗, 請洽管理員');
     });
 };
 </script>
@@ -46,31 +131,57 @@ const submitPost = () => {
   <div class="rounded-lg border-2 border-black bg-white p-8 shadow-post">
     <p>貼文內容</p>
     <textarea
-      name="postContent"
-      rows="6"
+      rows="10"
       placeholder="輸入您的貼文內容"
-      class="mt-1 w-full rounded-none border-2 px-4 py-3 focus:border-black focus:shadow-transparent"
-      @focus="isWarnHint = false"
-      v-model="postContent"
+      class="mt-1 w-full resize-none border-2 px-4 py-3 focus:border-primary focus:shadow-transparent"
+      v-model="postData.content"
     ></textarea>
-    <div
-      class="relative my-4 w-32 gap-y-8 rounded bg-black py-1 px-8 text-white"
+    <label
+      for="customFileInput"
+      class="my-4 inline-block cursor-pointer rounded bg-black py-1 px-8 text-white"
+      >上傳圖片</label
     >
-      <input
-        ref="inputDOM"
-        type="file"
-        accept="image/*"
-        class="absolute left-0 z-10 w-full cursor-pointer opacity-0"
-        @change="previewImage"
-      />
-      <span>上傳圖片</span>
-    </div>
-    <div class="mb-6 h-40 w-full rounded-lg border-2 border-black">
-      <img :src="data.preview" class="h-full" />
+    <input
+      id="customFileInput"
+      ref="uploadImages"
+      type="file"
+      :accept="postValidates.fileType.join(', ')"
+      class="hidden"
+      @change="handleImageUpload"
+      multiple
+    />
+    <div
+      :class="{
+        'items-center justify-center py-4': postData.previews.length === 0,
+        'grid-cols-2': postData.previews.length > 1,
+      }"
+      class="mb-4 grid w-full overflow-hidden rounded-lg border-2 border-black"
+    >
+      <span v-show="postData.previews.length === 0" class="text-gray-500">
+        尚未上傳圖片
+      </span>
+      <template v-if="postData.previews.length > 0">
+        <div
+          v-for="(image, index) of postData.previews"
+          class="relative aspect-video hover:brightness-110"
+          :key="index"
+        >
+          <span
+            @click="removeImage(index)"
+            class="absolute top-1 right-1 cursor-pointer rounded-md bg-white px-2 opacity-50 hover:opacity-100"
+          >
+            移除
+          </span>
+          <img :src="image" />
+        </div>
+      </template>
     </div>
     <div class="text-center">
-      <div v-show="isWarnHint" class="text-red_x -mt-2 mb-2 text-sm">
-        圖片檔案過大，僅限 1mb 以下檔案<br />圖片格式錯誤，僅限 JPG、PNG 圖片
+      <div
+        v-show="postData.warnHint.length > 0"
+        class="mb-4 whitespace-pre-wrap text-sm text-alert"
+      >
+        {{ postData.warnHint.join('\n') }}
       </div>
       <button
         class="rounded-lg border-2 border-black bg-subtitle py-3 px-32 font-semibold hover:bg-warning hover:text-black hover:shadow-btn"

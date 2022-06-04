@@ -66,6 +66,11 @@ const router = createRouter({
           component: () => import('../views/Foreground/SignUpView.vue'),
         },
         {
+          path: '/forget-password',
+          name: 'forget-password',
+          component: () => import('../views/Foreground/ForgetPasswordView.vue'),
+        },
+        {
           path: '/callback',
           name: 'callback',
           component: () => import('../views/Foreground/SignInCallback.vue'),

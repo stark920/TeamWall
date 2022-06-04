@@ -1,38 +1,88 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import CardTitle from '@/components/CardTitle.vue';
+import PostEmptyCard from '@/components/PostEmptyCard.vue';
+import UserInfo from '../../components/UserInfo.vue';
+import { apiFollow } from '@/utils/apiFollow';
 
-const list = ref([
-  {
-    name: '波吉',
-    img: '',
-    tracks: 90,
-    key: 'personalDynamics',
-    createdAt: '2022/2/14 12:00',
-  },
-]);
+const isLoading = ref(true);
+const followList = ref([]);
+
+onMounted(() => {
+  apiFollow
+    .getAll()
+    .then((res) => {
+      if (res.data.data) {
+        isLoading.value = false;
+        followList.value = res.data.data;
+      }
+    })
+    .catch(() => {
+      alert('讀取追蹤列表失敗');
+      isLoading.value = false;
+    });
+});
+
+function toLocaleDate(data) {
+  const date = new Date(data);
+  if (date instanceof Date && !isNaN(date)) {
+    return date.toLocaleString();
+  }
+  return '';
+}
+
+function getPassedDay(data) {
+  const date = new Date(data);
+  if (date instanceof Date && !isNaN(date)) {
+    const oldTime = date.getTime();
+    const newTime = Date.now();
+    const passedDay = ((newTime - oldTime) / (1000 * 60 * 60 * 24)).toFixed(0);
+    return passedDay;
+  }
+  return '';
+}
 </script>
 
 <template>
   <CardTitle title="追蹤名單"></CardTitle>
-  <ul>
-    <li
-      v-for="(item, idx) in list"
-      :key="idx"
-      class="mb-4 flex items-end justify-between rounded-lg border-2 border-black bg-white p-4 shadow-post"
-    >
-      <div class="flex items-center">
-        <div class="h-10 w-10 rounded-full bg-secondary">
-          <img v-if="item.img" :src="item.img" :alt="item.name" />
-        </div>
-        <div class="ml-4 cursor-pointer" @click="$emit('change-key', item.key)">
-          <p class="hover:text-blue_x font-extrabold hover:underline">
-            {{ item.name }}
-          </p>
-          <p class="text-gray_m text-sm">追蹤時間：{{ item.createdAt }}</p>
-        </div>
-      </div>
-      <div class="text-sm">您已追蹤 {{ item.tracks }} 天！</div>
-    </li>
-  </ul>
+  <Suspense>
+    <template v-if="isLoading">
+      <ul class="animate-pulse">
+        <li
+          v-for="index of 3"
+          :key="index"
+          class="mb-4 flex items-end justify-between rounded-lg border-2 border-black bg-white p-4 shadow-post"
+        >
+          <UserInfo></UserInfo>
+
+          <div class="text-sm">您已追蹤 ?? 天！</div>
+        </li>
+      </ul>
+    </template>
+    <template v-else>
+      <ul v-if="followList.length > 0">
+        <li
+          v-for="(user, index) of followList"
+          :key="index"
+          class="mb-4 flex items-end justify-between rounded-lg border-2 border-black bg-white p-4 shadow-post"
+        >
+          <UserInfo
+            :name="user.name"
+            :img-url="user.avatar"
+            :sub-title="toLocaleDate(user.followCreatedAt)"
+            :user-page-url="`/profile/${user.id}`"
+          ></UserInfo>
+
+          <div class="text-sm">
+            您已追蹤 {{ getPassedDay(user.followCreatedAt) }} 天！
+          </div>
+        </li>
+      </ul>
+      <PostEmptyCard v-else>
+        <p class="p-8 text-center text-subtitle">
+          目前尚無追蹤名單，追蹤其他人吧！
+        </p>
+      </PostEmptyCard>
+    </template>
+  </Suspense>
 </template>

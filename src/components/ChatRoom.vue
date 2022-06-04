@@ -1,14 +1,22 @@
 <script setup>
 import { useToast } from 'vue-toastification';
-import { nextTick, reactive, onMounted, onBeforeUnmount, ref } from 'vue';
+import {
+  nextTick,
+  reactive,
+  onMounted,
+  onBeforeUnmount,
+  toRefs,
+  ref,
+} from 'vue';
 import ChatRoomMessage from './ChatRoomMessage.vue';
 import ChatRoomInputBox from './ChatRoomInputBox.vue';
-import Close from '../components/icons/IconCross.vue';
-import Back from '../components/icons/IconBack.vue';
+import Close from '@/components/icons/IconCross.vue';
+import Back from '@/components/icons/IconBack.vue';
 import IconLoading from '@/components/icons/IconLoading.vue';
+import IconMinus from '@/components/icons/IconMinus.vue';
+import IconPlus from '@/components/icons/IconPlus.vue';
 import AvatarVue from './Avatar.vue';
-import eventBus from '../utils/eventBus';
-import { deviceType } from '../utils/common';
+import eventBus from '@/utils/eventBus';
 import { API_URL } from '@/global/constant';
 import { storeToRefs } from 'pinia';
 import { useRoomStore, useUserStore } from '@/stores';
@@ -30,6 +38,16 @@ const scrollRecord = ref(0);
 const messageList = reactive([]);
 let timer = null;
 
+const props = defineProps({
+  roomInfo: {
+    type: Object,
+    required: true,
+    default: () => {},
+  },
+});
+
+const { roomId, name, avatar, isOpen } = toRefs(props.roomInfo);
+
 let token = localStorage.getItem('metaWall');
 if (!token) {
   toast.error('請先登入喔！');
@@ -41,26 +59,22 @@ token.startsWith('Bearer') && (token = token.split(' ')[1]);
 const socket = io(`${API_URL}/chat`, {
   query: {
     token,
-    room: room.value.roomId,
+    room: roomId.value,
   },
-  // autoConnect: false,
-  forceNew: true,
+  auth: {
+    token,
+  },
 });
 // 建立連線
 socket.on('connect', () => {
-  console.log('connect----');
-  // TODO 不用setTimeout getHistory會偶發性失效
-  setTimeout(() => {
-    getHistory();
-  }, 200);
+  getHistory();
 });
 
-socket.emit('joinRoom', room.value.roomId);
 // 接收到別人傳的訊息
 socket.on('chatMessage', (msg) => {
   console.log('接收到別人傳的訊息', msg);
   messageList.push(msg);
-  eventBus.emit('updateChatRecord', { roomId: room.value.roomId, msg });
+  eventBus.emit('updateChatRecord', { roomId: roomId.value, msg });
   if (
     messageContainer.value.scrollHeight - messageContainer.value.scrollTop >
     messageContainer.value.clientHeight
@@ -146,7 +160,13 @@ const scrollBottom = async () => {
 };
 
 const closeRoom = () => {
-  eventBus.emit('handleRoom', false);
+  const keepRoom = room.value.filter((room) => room.roomId !== roomId.value);
+  roomStore.updateRoom(keepRoom);
+};
+
+const handleOpen = () => {
+  const updatedRoom = room.value.find((room) => room.roomId === roomId.value);
+  updatedRoom.isOpen = !updatedRoom.isOpen;
 };
 
 const detectTop = () => {
@@ -164,58 +184,65 @@ const detectTop = () => {
 
 const toPrevPage = () => {
   router.go(-1);
-};
-const provideDefault = () => {
-  console.log('room', room);
-  return (
-    room.value.avatar?.url ??
-    new URL('../assets/avatars/user_default.png', import.meta.url)
-  );
+  roomStore.updateRoom([]);
 };
 
 onMounted(() => {
   console.warn('mounted');
-  // 鎖ios橡皮筋效果
-  deviceType() !== 'desktop' &&
-    (document.body.style = 'overflow: hidden;position:fixed');
   detectTop();
 });
 
 onBeforeUnmount(() => {
   console.warn('onBeforeUnmount');
-  roomStore.updateRoom({});
-  socket.emit('leaveRoom', room.value.roomId);
+  socket.emit('leaveRoom', roomId.value);
   socket.off();
   socket.disconnect();
-  document.body.style = '';
   clearTimeout(timer);
 });
 </script>
 
 <template>
   <div
-    class="bottom-0 right-10 h-screen w-screen overflow-hidden rounded-tl-lg rounded-tr-lg border-black md:fixed md:h-[455px] md:w-[338px] md:border-2"
+    :class="[
+      'pointer-events-auto relative h-screen overflow-hidden rounded-tl-lg rounded-tr-lg border-black lg:bottom-0 lg:ml-4 lg:h-[455px] lg:w-[338px] lg:border-2',
+      { 'lg:h-14': !isOpen },
+    ]"
   >
     <div
-      class="flex h-14 items-center justify-between border-b-2 border-black bg-white px-2 py-2 md:px-4"
+      class="flex h-14 items-center justify-between border-b-2 border-black bg-white px-2 py-2 lg:px-2"
     >
       <div class="flex items-center">
-        <Back @click="toPrevPage" class="mr-2 block h-8 w-8 md:hidden" />
-        <AvatarVue size="40" :imgUrl="provideDefault()" />
-        <span class="pl-4 font-bold">{{ room.name }}</span>
+        <Back @click="toPrevPage" class="mr-2 block h-8 w-8 lg:hidden" />
+        <AvatarVue size="40" :imgUrl="avatar.url" />
+        <div class="flex flex-col justify-between pl-2">
+          <span class="font-bold">{{ name }}</span>
+          <span v-show="typingFlag" class="text-xs text-gray-500"
+            >對方正在輸入中...</span
+          >
+        </div>
       </div>
-      <span v-show="typingFlag" class="text-xs text-gray-500"
-        >對方正在輸入中...</span
-      >
-      <Close
-        class="hidden h-6 w-6 cursor-pointer hover:opacity-50 md:block"
-        @click="closeRoom"
-      />
+      <div class="hidden lg:flex">
+        <IconMinus
+          v-show="isOpen"
+          class="h-6 w-6 cursor-pointer hover:opacity-50"
+          @click="handleOpen"
+        />
+        <IconPlus
+          v-show="!isOpen"
+          class="h-6 w-6 cursor-pointer hover:opacity-50"
+          @click="handleOpen"
+        />
+        <Close
+          class="h-6 w-6 cursor-pointer hover:opacity-50"
+          @click="closeRoom"
+        />
+      </div>
     </div>
     <div
+      v-show="isOpen"
       id="messageContainer"
       ref="messageContainer"
-      class="inner relative overflow-y-auto bg-slate-100"
+      class="relative h-[calc(100vh-56px-48px)] overflow-y-auto bg-slate-100 lg:h-[350px]"
     >
       <div class="text-center" v-if="!isLoading && messageList.length === 0">
         開始聊天吧！
@@ -237,19 +264,15 @@ onBeforeUnmount(() => {
     >
       您有新訊息
     </div>
-    <chat-room-input-box @userTyping="userTyping" @sendMessage="sendMessage" />
+    <chat-room-input-box
+      v-show="isOpen"
+      @userTyping="userTyping"
+      @sendMessage="sendMessage"
+    />
   </div>
 </template>
 
 <style scoped>
-.inner {
-  height: 350px;
-}
-@media only screen and (max-width: 640px) {
-  .inner {
-    height: calc(100vh - 56px - 48px);
-  }
-}
 @supports (-webkit-touch-callout: none) {
   .h-screen {
     height: -webkit-fill-available;
