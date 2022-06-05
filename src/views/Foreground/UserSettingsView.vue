@@ -4,7 +4,13 @@ import CardTitle from '@/components/CardTitle.vue';
 import AvatarVue from '@/components/Avatar.vue';
 import IconLoading from '@/components/icons/IconLoading.vue';
 import useVuelidate from '@vuelidate/core';
-import { required, minLength, maxLength, helpers, sameAs } from '@vuelidate/validators';
+import {
+  required,
+  minLength,
+  maxLength,
+  helpers,
+  sameAs,
+} from '@vuelidate/validators';
 import { useUserStore } from '@/stores';
 import { apiUser } from '@/utils/apiUser';
 
@@ -47,8 +53,11 @@ const changeTab = (name) => {
 // Profile
 const changeUserProfile = ref({ ...userStore.user });
 watch(userStore, (newValue) => {
-  changeUserProfile.value = {...newValue.user};
+  changeUserProfile.value = { ...newValue.user };
 });
+if (changeUserProfile.value.gender === undefined) {
+  changeUserProfile.value.gender = 'other';
+}
 const vProfile$ = useVuelidate(nameRules, changeUserProfile);
 const imageFile = ref(null);
 const avatarForm = ref(null);
@@ -199,13 +208,13 @@ const resetStatusMessage = () => {
           v-show="avatarPreviewInfo.base64"
           type="reset"
           value="取消"
-          class="mb-4 mr-4 rounded border border-black bg-white px-10 py-1 text-black cursor-pointer"
+          class="mb-4 mr-4 cursor-pointer rounded border border-black bg-white px-10 py-1 text-black"
           @click="resetAvatar"
         />
         <input
           type="button"
           :value="avatarPreviewInfo.base64 === '' ? '上傳大頭照' : '再選一張'"
-          class="mb-4 rounded border border-black bg-black px-6 py-1 text-white cursor-pointer"
+          class="mb-4 cursor-pointer rounded border border-black bg-black px-6 py-1 text-white"
           @click="imageFile.click()"
         />
         <p v-if="avatarPreviewInfo.hasError" class="mb-4 text-alert">
@@ -221,7 +230,7 @@ const resetStatusMessage = () => {
             name=""
             id="nickName"
             placeholder="請輸入暱稱"
-            class="border-2 border-black w-full"
+            class="w-full border-2 border-black"
             @blur="vProfile$.name.$touch"
           />
         </div>
