@@ -4,7 +4,7 @@ import CardTitle from '@/components/CardTitle.vue';
 import AvatarVue from '@/components/Avatar.vue';
 import IconLoading from '@/components/icons/IconLoading.vue';
 import useVuelidate from '@vuelidate/core';
-import { required, minLength, helpers, sameAs } from '@vuelidate/validators';
+import { required, minLength, maxLength, helpers, sameAs } from '@vuelidate/validators';
 import { useUserStore } from '@/stores';
 import { apiUser } from '@/utils/apiUser';
 
@@ -18,6 +18,7 @@ const nameRules = computed(() => ({
   name: {
     required: helpers.withMessage('暱稱必填', required),
     minLength: helpers.withMessage('暱稱至少 2 個字元以上', minLength(2)),
+    maxLength: helpers.withMessage('暱稱不能高於 10 個字元', maxLength(10)),
   },
 }));
 const passwordRules = computed(() => ({
