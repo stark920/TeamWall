@@ -221,7 +221,7 @@ const resetStatusMessage = () => {
           Tip: {{ avatarPreviewInfo.errorMessage.size }}
         </p>
       </form>
-      <form @submit.prevent="updateUserProfile" action="" class="w-80">
+      <form @submit.prevent="updateUserProfile" action="" class="w-10/12 lg:w-8/12">
         <div class="mb-1">
           <label for="nickName" class="mb-1 block">暱稱</label>
           <input
@@ -249,25 +249,25 @@ const resetStatusMessage = () => {
             name="gender"
             id="male"
             value="male"
-            class="mr-3"
+            class="mr-1 lg:mr-3"
           />
-          <label for="male" class="mr-7">男性</label>
+          <label for="male" class="mr-2 lg:mr-7">男性</label>
           <input
             v-model="changeUserProfile.gender"
             type="radio"
             name="gender"
             id="female"
             value="female"
-            class="mr-3"
+            class="mr-1 lg:mr-3"
           />
-          <label for="female" class="mr-7">女性</label>
+          <label for="female" class="mr-2 lg:mr-7">女性</label>
           <input
             v-model="changeUserProfile.gender"
             type="radio"
             name="gender"
             id="others"
             value="others"
-            class="mr-3"
+            class="mr-1 lg:mr-3"
           />
           <label for="others" class="">不公開</label>
         </div>
@@ -288,7 +288,7 @@ const resetStatusMessage = () => {
       <form
         @submit.prevent="updateUserPwd"
         action=""
-        class="flex-col items-center w-80"
+        class="flex-col items-center w-10/12 lg:w-8/12"
       >
         <div class="mb-1">
           <label for="newPassword" class="mb-1 block">輸入新密碼</label>
