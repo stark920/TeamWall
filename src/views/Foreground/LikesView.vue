@@ -5,8 +5,10 @@ import LikeLoadingCard from '@/components/LikeLoadingCard.vue';
 import PostEmptyCard from '@/components/PostEmptyCard.vue';
 import { ref, onMounted } from 'vue';
 import { apiLike } from '@/utils/apiLike';
-const isLoading = ref(false);
+import { useToast } from 'vue-toastification';
+const toast = useToast();
 
+const isLoading = ref(false);
 const likePosts = ref([]);
 
 const getLikes = () => {
@@ -15,12 +17,13 @@ const getLikes = () => {
     .getAll()
     .then((res) => {
       if (res.data.data) {
-        isLoading.value = false;
         likePosts.value = res.data.data.posts;
+        isLoading.value = false;
       }
     })
-    .catch((err) => {
-      console.log(err);
+    .catch(() => {
+      toast.error('讀取按讚列表失敗');
+      isLoading.value = false;
     });
 };
 

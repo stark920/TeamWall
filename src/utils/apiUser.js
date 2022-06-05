@@ -46,4 +46,5 @@ export const apiUser = {
   follow: (id) => usersRequest.post(`/${id}/follow`, {}, token()),
   deleteFollow: (id) => usersRequest.delete(`/${id}/follow`, token()),
   sendForgetMail: (data) => usersRequest.post('/forget-password', data),
+  getAllFollow: () => usersRequest.get('/follows', token()),
 };
