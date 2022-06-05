@@ -76,6 +76,7 @@ const sendComment = (postID) => {
     .then((res) => {
       updateInnerPostComments(res.data.data);
       toast.success('新增留言成功');
+      newComment.value = '';
       isSendingComment.value = false;
     })
     .catch(() => {
