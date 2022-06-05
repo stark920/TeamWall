@@ -19,6 +19,8 @@ const getLikes = () => {
       if (res.data.data) {
         likePosts.value = res.data.data.posts;
         isLoading.value = false;
+      } else {
+        isLoading.value = false;
       }
     })
     .catch(() => {
