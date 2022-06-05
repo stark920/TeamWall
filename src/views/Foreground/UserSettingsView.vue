@@ -231,6 +231,7 @@ const resetStatusMessage = () => {
             id="nickName"
             placeholder="請輸入暱稱"
             class="w-full border-2 border-black"
+            maxlength="10"
             @blur="vProfile$.name.$touch"
           />
         </div>
