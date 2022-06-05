@@ -13,7 +13,8 @@ import { useToast } from 'vue-toastification';
 import { toLocaleDate } from '../utils/filter';
 const toast = useToast();
 const userStore = useUserStore();
-const isSending = ref(false);
+const isSendingLike = ref(false);
+const isSendingComment = ref(false);
 const newComment = ref('');
 
 const props = defineProps({
@@ -39,17 +40,17 @@ const innerComments = computed(() => {
 
 // 按讚貼文
 const likePost = (id) => {
-  isSending.value = true;
+  isSendingLike.value = true;
   const data = { posts: id };
   apiLike
     .toggle(data)
     .then(() => {
       updateInnerPostLikes(userStore.user.id);
-      isSending.value = false;
+      isSendingLike.value = false;
     })
     .catch(() => {
       toast.error('連線異常，請稍後再試');
-      isSending.value = false;
+      isSendingLike.value = false;
     });
 };
 
@@ -69,17 +70,17 @@ const sendComment = (postID) => {
     toast.error('您尚未輸入任何訊息');
     return;
   }
-  isSending.value = true;
+  isSendingComment.value = true;
   apiComment
     .send(postID, { content: newComment.value })
     .then((res) => {
       updateInnerPostComments(res.data.data);
       toast.success('新增留言成功');
-      isSending.value = false;
+      isSendingComment.value = false;
     })
     .catch(() => {
       toast.error('留言失敗，請稍後再試');
-      isSending.value = false;
+      isSendingComment.value = false;
     });
 };
 
@@ -116,8 +117,8 @@ const updateInnerPostComments = (data) => {
         type="button"
         class="flex items-center justify-center py-5"
         @click="likePost(innerPost._id)"
-        :disabled="isSending"
-        :class="{ 'cursor-not-allowed': isSending }"
+        :disabled="isSendingLike"
+        :class="{ 'cursor-not-allowed': isSendingLike }"
       >
         <IconThumbsUp
           v-if="!innerPost.likes?.includes(userStore.user.id)"
@@ -139,13 +140,13 @@ const updateInnerPostComments = (data) => {
         <button
           class="flex w-full max-w-[128px] items-center justify-center border-l-2 border-black bg-primary text-base text-white"
           @click="sendComment(innerPost._id)"
-          :disabled="isSending"
-          :class="{ 'cursor-not-allowed bg-slate-500': isSending }"
+          :disabled="isSendingComment"
+          :class="{ 'cursor-not-allowed bg-slate-500': isSendingComment }"
         >
           <span>留言</span>
           <IconLoading
             class="ml-1 h-4 w-4 animate-spin"
-            :class="{ hidden: !isSending }"
+            :class="{ hidden: !isSendingComment }"
           ></IconLoading>
         </button>
       </div>
