@@ -221,7 +221,7 @@ const resetStatusMessage = () => {
           Tip: {{ avatarPreviewInfo.errorMessage.size }}
         </p>
       </form>
-      <form @submit.prevent="updateUserProfile" action="" class="">
+      <form @submit.prevent="updateUserProfile" action="" class="w-80">
         <div class="mb-1">
           <label for="nickName" class="mb-1 block">暱稱</label>
           <input
@@ -288,7 +288,7 @@ const resetStatusMessage = () => {
       <form
         @submit.prevent="updateUserPwd"
         action=""
-        class="flex-col items-center"
+        class="flex-col items-center w-80"
       >
         <div class="mb-1">
           <label for="newPassword" class="mb-1 block">輸入新密碼</label>
@@ -298,6 +298,7 @@ const resetStatusMessage = () => {
             id="newPassword"
             placeholder="請輸入新密碼"
             class="w-full border-2 border-black"
+            maxlength="20"
             @blur="vPassword$.password.$touch"
             required
           />
@@ -316,6 +317,7 @@ const resetStatusMessage = () => {
             id="checkPassword"
             placeholder="再次輸入新密碼"
             class="w-full border-2 border-black"
+            maxlength="20"
             @blur="vPassword$.passwordConfirm.$touch"
             required
           />
