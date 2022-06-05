@@ -1,9 +1,11 @@
 <script setup>
 import CardTitle from '@/components/CardTitle.vue';
 import IconLoading from '@/components/icons/IconLoading.vue';
-import { ref, reactive, watch } from 'vue';
+import { ref, reactive } from 'vue';
 import { apiPost } from '@/utils/apiPost';
 import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
+const toast = useToast();
 const router = useRouter();
 
 const uploadImages = ref();
@@ -21,12 +23,6 @@ const postData = reactive({
   images: [],
   previews: [],
   warnHint: [],
-});
-
-watch(postData.warnHint, () => {
-  setTimeout(function () {
-    postData.warnHint.length = 0;
-  }, 3000);
 });
 
 const checkPostData = {
@@ -63,9 +59,7 @@ const handleImageUpload = (e) => {
     uploadImages.value.files.length + postData.images.length >
     postValidates.fileNum
   ) {
-    postData.warnHint.push(
-      `一則貼文最多可以上傳 ${postValidates.fileNum} 張圖片`
-    );
+    toast.error(`一則貼文最多可以上傳 ${postValidates.fileNum} 張圖片`);
     uploadImages.value = null;
     e.target.value = null;
     return;
@@ -91,6 +85,9 @@ const handleImageUpload = (e) => {
 
   if (errorMessage.length > 0) {
     postData.warnHint = errorMessage;
+    setTimeout(function () {
+      postData.warnHint.length = 0;
+    }, 5000);
   }
 };
 
@@ -105,7 +102,7 @@ const submitPost = () => {
   }
   const checkContent = checkPostData.content();
   if (checkContent) {
-    postData.warnHint.push(checkContent);
+    toast.error(checkContent.toString());
     return;
   }
   isSending.value = true;
@@ -122,11 +119,11 @@ const submitPost = () => {
       if (userId) {
         router.push(`/profile/${userId}`);
       } else {
-        alert('新增失敗, 請洽管理員');
+        toast.error('新增貼文失敗，請稍後再試');
       }
     })
     .catch(() => {
-      alert('新增失敗, 請洽管理員');
+      toast.error('新增貼文失敗，請稍後再試');
     });
 };
 </script>

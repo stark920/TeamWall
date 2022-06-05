@@ -2,15 +2,18 @@
 import { ref, onMounted } from 'vue';
 import CardTitle from '@/components/CardTitle.vue';
 import PostEmptyCard from '@/components/PostEmptyCard.vue';
-import UserInfo from '../../components/UserInfo.vue';
-import { apiFollow } from '@/utils/apiFollow';
+import UserInfo from '@/components/UserInfo.vue';
+import { apiUser } from '@/utils/apiUser';
+import { toLocaleDate, getPassedDay } from '@/utils/filter';
+import { useToast } from 'vue-toastification';
+const toast = useToast();
 
 const isLoading = ref(true);
 const followList = ref([]);
 
 onMounted(() => {
-  apiFollow
-    .getAll()
+  apiUser
+    .getAllFollow()
     .then((res) => {
       if (res.data.data) {
         isLoading.value = false;
@@ -18,29 +21,10 @@ onMounted(() => {
       }
     })
     .catch(() => {
-      alert('讀取追蹤列表失敗');
+      toast.error('讀取追蹤列表失敗');
       isLoading.value = false;
     });
 });
-
-function toLocaleDate(data) {
-  const date = new Date(data);
-  if (date instanceof Date && !isNaN(date)) {
-    return date.toLocaleString();
-  }
-  return '';
-}
-
-function getPassedDay(data) {
-  const date = new Date(data);
-  if (date instanceof Date && !isNaN(date)) {
-    const oldTime = date.getTime();
-    const newTime = Date.now();
-    const passedDay = ((newTime - oldTime) / (1000 * 60 * 60 * 24)).toFixed(0);
-    return passedDay;
-  }
-  return '';
-}
 </script>
 
 <template>

@@ -13,21 +13,21 @@ const router = useRouter();
 const isLoading = ref(true);
 
 onMounted(() => {
-  if (userStore?.name) {
-    isLoading.value = !isLoading.value;
+  if (userStore.name) {
+    isLoading.value = false;
     return;
   }
   if (!token()) {
-    return router.replace('/sign-in');
+    router.replace('/sign-in');
   }
   apiUser
     .check()
     .then((res) => {
       userStore.updateUser(res.data.data);
-      isLoading.value = !isLoading.value;
+      isLoading.value = false;
     })
     .catch(() => {
-      return router.replace('/sign-in');
+      router.replace('/sign-in');
     });
 });
 </script>
