@@ -37,5 +37,6 @@ commentRequest.interceptors.response.use(
 );
 
 export const apiComment = {
+  get: (postID) => commentRequest.get(`/${postID}`, token()),
   send: (postID, data) => commentRequest.post(`/${postID}`, data, token()),
 };

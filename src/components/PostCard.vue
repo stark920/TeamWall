@@ -13,7 +13,13 @@ import { useToast } from 'vue-toastification';
 import { toLocaleDate } from '../utils/filter';
 const toast = useToast();
 const userStore = useUserStore();
+
 const isSendingLike = ref(false);
+
+const innerComments = ref([]);
+const isGettingComments = ref(false);
+const displayComments = ref(false);
+
 const isSendingComment = ref(false);
 const newComment = ref('');
 
@@ -27,15 +33,6 @@ const props = defineProps({
 const innerPost = ref(toRaw(props.post));
 watch(props, (curr) => {
   innerPost.value = toRaw(curr.post);
-});
-
-const innerComments = computed(() => {
-  const comments = innerPost.value.comments;
-  return comments.sort((a, b) => {
-    const dateTime1 = new Date(a.createdAt);
-    const dateTime2 = new Date(b.createdAt);
-    return dateTime1 - dateTime2;
-  });
 });
 
 // 按讚貼文
@@ -65,6 +62,25 @@ const updateInnerPostLikes = (id) => {
   }
 };
 
+const getComments = (postID) => {
+  if (isGettingComments.value) {
+    return;
+  }
+  isGettingComments.value = true;
+
+  apiComment
+    .get(postID)
+    .then((res) => {
+      innerComments.value = res.data.data;
+      displayComments.value = true;
+      isGettingComments.value = false;
+    })
+    .catch(() => {
+      toast.error('取得留言失敗，請稍後再試');
+      isGettingComments.value = false;
+    });
+};
+
 const sendComment = (postID) => {
   if (newComment.value.trim() === '') {
     toast.error('您尚未輸入任何訊息');
@@ -91,12 +107,23 @@ const updateInnerPostComments = (data) => {
     userId: {
       _id: data.userId._id,
       name: data.userId.name,
-      avatar: data.userId.avatar.url,
+      avatar: {
+        url: data.userId.avatar.url,
+      },
     },
     createdAt: data.createdAt,
   };
-  innerPost.value.comments.push(comment);
+  innerComments.value.push(comment);
 };
+
+const sortedComments = computed(() => {
+  const comments = innerComments.value;
+  return comments.sort((a, b) => {
+    const dateTime1 = new Date(a.createdAt);
+    const dateTime2 = new Date(b.createdAt);
+    return dateTime1 - dateTime2;
+  });
+});
 </script>
 
 <template>
@@ -153,13 +180,25 @@ const updateInnerPostComments = (data) => {
       </div>
     </div>
     <div
+      v-show="innerPost.comments.length > 0 && !displayComments"
+      class="mb-4 inline-flex cursor-pointer items-center font-bold text-primary hover:underline"
+      @click="getComments(innerPost._id)"
+    >
+      <span>查看留言</span>
+      <IconLoading
+        v-show="isGettingComments"
+        class="ml-1 h-4 w-4 animate-spin"
+      ></IconLoading>
+    </div>
+    <div
+      v-show="displayComments"
       class="mb-4 rounded-lg bg-secondary px-4 py-5"
-      v-for="comment in innerComments"
+      v-for="comment in sortedComments"
       :key="comment._id"
     >
       <UserInfo
         class="mb-4"
-        :imgUrl="comment.userId.avatar"
+        :imgUrl="comment.userId.avatar.url"
         :name="comment.userId.name"
         :userPageUrl="`/profile/${comment.userId._id}`"
         :subTitle="toLocaleDate(comment.createdAt)"
