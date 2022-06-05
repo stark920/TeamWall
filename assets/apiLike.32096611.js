@@ -1,1 +1,0 @@
-import{A as o,B as l}from"./index.5a0da958.js";const e=o.create({baseURL:`${l}/likes`,timeout:2e4}),t=()=>localStorage.getItem("metaWall")?{headers:{Authorization:localStorage.getItem("metaWall")}}:!1,r={getAll:()=>e.get("",t()),toggle:a=>e.post("/likePost",a,t())};export{r as a};

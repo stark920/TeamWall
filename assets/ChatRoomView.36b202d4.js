@@ -1,1 +1,0 @@
-import{N as e,O as t,a,f as n,l as c,a5 as m}from"./index.5a0da958.js";const _={setup(f){const r=e(),{room:s}=t(r);return(u,l)=>{var o;return a(),n(m,{roomInfo:(o=c(s))==null?void 0:o[0]},null,8,["roomInfo"])}}};export{_ as default};
