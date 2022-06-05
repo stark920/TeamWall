@@ -32,7 +32,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="min-h-screen w-full">
+  <div class="min-h-screen w-full pb-20">
     <Navbar
       :name="userStore.user.name"
       :avatar="userStore.user.avatar"
