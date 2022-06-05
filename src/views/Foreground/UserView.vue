@@ -1,34 +1,41 @@
 <template>
-  <div
-    class="track relative mb-4 flex rounded-lg border-2 border-black bg-white"
-  >
-    <div><Avatar :img-url="userProfile.avatar" size="80"></Avatar></div>
-    <div class="flex w-full justify-between p-4">
-      <div>
-        <h2>{{ userProfile.name }}</h2>
-        <span>{{ userProfile.followers?.length }} 人追蹤</span>
+  <div class="relative mb-4">
+    <div
+      class="flex h-20 overflow-hidden rounded-lg border-2 border-black bg-white"
+    >
+      <div class="aspect-square h-full border-r-2 border-black">
+        <img :src="userProfile.avatar" alt="Avatar" />
       </div>
-      <div
-        class="flex items-center justify-center"
-        v-if="id !== userStore.user?.id"
-      >
-        <button
-          type="button"
-          class="rounded-lg border-2 border-black px-8 py-1.5 shadow-post hover:bg-primary hover:text-white"
-          :class="isFollow ? 'bg-secondary' : 'bg-warning'"
-          @click="followUser"
+      <div class="flex w-full justify-between p-4">
+        <div>
+          <h2>{{ userProfile.name }}</h2>
+          <span>{{ userProfile.followers?.length }} 人追蹤</span>
+        </div>
+        <div
+          class="flex items-center justify-center"
+          v-if="id !== userStore.user?.id"
         >
-          {{ isFollow ? '取消追蹤' : '追蹤' }}
-        </button>
-        <button
-          @click="sendMessage"
-          class="ml-2 flex items-center justify-center rounded-lg border-2 border-black px-6 py-1.5 shadow-post"
-        >
-          <span>傳送訊息</span>
-          <IconLoading v-show="pending" class="ml-1 h-4 w-4 animate-spin" />
-        </button>
+          <button
+            type="button"
+            class="rounded-lg border-2 border-black px-8 py-1.5 shadow-post hover:bg-primary hover:text-white"
+            :class="isFollow ? 'bg-secondary' : 'bg-warning'"
+            @click="followUser"
+          >
+            {{ isFollow ? '取消追蹤' : '追蹤' }}
+          </button>
+          <button
+            @click="sendMessage"
+            class="ml-2 flex items-center justify-center rounded-lg border-2 border-black px-6 py-1.5 shadow-post hover:bg-gray-300"
+          >
+            <span>傳送訊息</span>
+            <IconLoading v-show="pending" class="ml-1 h-4 w-4 animate-spin" />
+          </button>
+        </div>
       </div>
     </div>
+    <div
+      class="absolute top-1 right-1 -z-10 h-full w-full rounded-lg border-2 border-black bg-white"
+    ></div>
   </div>
   <PostFilter @get-posts="getPosts" />
 
@@ -60,7 +67,6 @@ import PostFilter from '@/components/PostFilter.vue';
 import PostEmptyCard from '@/components/PostEmptyCard.vue';
 import PostCard from '@/components/PostCard.vue';
 import PostLoadingCard from '@/components/PostLoadingCard.vue';
-import Avatar from '../../components/Avatar.vue';
 import IconLoading from '@/components/icons/IconLoading.vue';
 import { useUserStore } from '@/stores';
 import { ref, onMounted, computed, watch } from 'vue';
@@ -189,19 +195,3 @@ watch(route, (curr) => {
   }
 });
 </script>
-
-<style scoped>
-.track::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: #fff;
-  border: 2px solid #000040;
-  border-radius: 8px;
-  top: 4px;
-  right: 4px;
-  z-index: -1;
-  box-sizing: content-box;
-}
-</style>
