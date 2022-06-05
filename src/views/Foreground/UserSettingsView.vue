@@ -46,7 +46,7 @@ const changeTab = (name) => {
 // Profile
 const changeUserProfile = ref({ ...userStore.user });
 watch(userStore, (newValue) => {
-  changeUserProfile.value = newValue.user;
+  changeUserProfile.value = {...newValue.user};
 });
 const vProfile$ = useVuelidate(nameRules, changeUserProfile);
 const imageFile = ref(null);
@@ -198,13 +198,13 @@ const resetStatusMessage = () => {
           v-show="avatarPreviewInfo.base64"
           type="reset"
           value="取消"
-          class="mb-4 mr-4 rounded border border-black bg-white px-10 py-1 text-black"
+          class="mb-4 mr-4 rounded border border-black bg-white px-10 py-1 text-black cursor-pointer"
           @click="resetAvatar"
         />
         <input
           type="button"
           :value="avatarPreviewInfo.base64 === '' ? '上傳大頭照' : '再選一張'"
-          class="mb-4 rounded border border-black bg-black px-6 py-1 text-white"
+          class="mb-4 rounded border border-black bg-black px-6 py-1 text-white cursor-pointer"
           @click="imageFile.click()"
         />
         <p v-if="avatarPreviewInfo.hasError" class="mb-4 text-alert">
@@ -220,7 +220,7 @@ const resetStatusMessage = () => {
             name=""
             id="nickName"
             placeholder="請輸入暱稱"
-            class="border-2 border-black"
+            class="border-2 border-black w-full"
             @blur="vProfile$.name.$touch"
           />
         </div>
@@ -249,7 +249,16 @@ const resetStatusMessage = () => {
             value="female"
             class="mr-3"
           />
-          <label for="female" class="">女性</label>
+          <label for="female" class="mr-7">女性</label>
+          <input
+            v-model="changeUserProfile.gender"
+            type="radio"
+            name="gender"
+            id="others"
+            value="others"
+            class="mr-3"
+          />
+          <label for="others" class="">不公開</label>
         </div>
         <button
           type="submit"
