@@ -10,11 +10,11 @@ const router = useRouter();
 const isLoading = ref(true);
 
 onMounted(() => {
-  if (userStore?.name) {
+  if (userStore.name) {
     return router.replace({ name: 'posts' });
   }
   if (!token()) {
-    isLoading.value = !isLoading.value;
+    isLoading.value = false;
     return;
   }
   apiUser
@@ -24,7 +24,7 @@ onMounted(() => {
       router.replace({ name: 'posts' });
     })
     .catch(() => {
-      isLoading.value = !isLoading.value;
+      isLoading.value = false;
       return;
     });
 });

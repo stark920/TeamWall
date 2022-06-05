@@ -4,6 +4,8 @@ import IconLoading from '@/components/icons/IconLoading.vue';
 import { required, email, helpers } from '@vuelidate/validators';
 import { ref, computed } from 'vue';
 import { apiUser } from '@/utils/apiUser';
+import { useToast } from 'vue-toastification';
+const toast = useToast();
 
 const form = ref({ email: '' });
 const rules = computed(() => ({
@@ -14,7 +16,7 @@ const rules = computed(() => ({
 }));
 const v$ = useVuelidate(rules, form.value);
 const isSending = ref(false);
-const errorMessage = ref('');
+
 function resetData() {
   form.value.email = '';
   isSending.value = false;
@@ -28,14 +30,11 @@ const sendForgetMail = async () => {
     .sendForgetMail({ email: form.value.email })
     .then((res) => {
       resetData();
-      alert(res.data.message);
+      toast.success(res.data.message);
     })
     .catch((error) => {
-      errorMessage.value = error.message;
       resetData();
-      setTimeout(() => {
-        errorMessage.value = '';
-      }, 2000);
+      toast.error(error.message);
     });
 };
 </script>
@@ -55,9 +54,6 @@ const sendForgetMail = async () => {
       <div v-if="v$.email.$errors.length > 0" class="font-azeret text-alert">
         {{ v$.email.$errors[0].$message }}
       </div>
-    </li>
-    <li class="mb-12 text-center text-alert">
-      <p>{{ errorMessage }}</p>
     </li>
     <li class="mb-4 w-full">
       <button
