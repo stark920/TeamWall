@@ -18,10 +18,8 @@ const getLikes = () => {
     .then((res) => {
       if (res.data.data) {
         likePosts.value = res.data.data.posts;
-        isLoading.value = false;
-      } else {
-        isLoading.value = false;
       }
+      isLoading.value = false;
     })
     .catch(() => {
       toast.error('讀取按讚列表失敗');
