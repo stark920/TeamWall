@@ -16,13 +16,6 @@ const userStore = useUserStore();
 
 const isSendingLike = ref(false);
 
-const innerComments = ref([]);
-const isGettingComments = ref(false);
-const displayComments = ref(false);
-
-const isSendingComment = ref(false);
-const newComment = ref('');
-
 const props = defineProps({
   post: {
     type: Object,
@@ -34,6 +27,13 @@ const innerPost = ref(toRaw(props.post));
 watch(props, (curr) => {
   innerPost.value = toRaw(curr.post);
 });
+
+const innerComments = ref(innerPost.value.comments);
+const isGettingComments = ref(false);
+const displayComments = ref(false);
+
+const isSendingComment = ref(false);
+const newComment = ref('');
 
 // 按讚貼文
 const likePost = (id) => {
@@ -157,7 +157,10 @@ const sortedComments = computed(() => {
       </button>
     </div>
     <!--留言-->
-    <div class="mb-5 flex items-center">
+    <div
+      class="mb-5 flex items-center"
+      @keyup.enter.exact="sendComment(innerPost._id)"
+    >
       <AvatarVue class="mx-2" size="40" :imgUrl="userStore.user.avatar" />
       <div class="flex w-full border-2 border-black">
         <input
@@ -180,30 +183,29 @@ const sortedComments = computed(() => {
       </div>
     </div>
     <div
-      v-show="innerPost.comments.length > 0 && !displayComments"
+      v-show="innerPost.commentsNum > 0 && !displayComments"
       class="mb-4 inline-flex cursor-pointer items-center font-bold text-primary hover:underline"
       @click="getComments(innerPost._id)"
     >
-      <span>查看留言</span>
+      <span>查看其他 {{ innerPost.commentsNum - 1 }} 則較早留言</span>
       <IconLoading
         v-show="isGettingComments"
         class="ml-1 h-4 w-4 animate-spin"
       ></IconLoading>
     </div>
     <div
-      v-show="displayComments"
-      class="mb-4 rounded-lg bg-secondary px-4 py-5"
+      class="mb-4 rounded-lg bg-secondary p-4"
       v-for="comment in sortedComments"
       :key="comment._id"
     >
       <UserInfo
         class="mb-4"
-        :imgUrl="comment.userId.avatar.url"
+        :imgUrl="comment.userId.avatar.url ?? comment.userId.avatar"
         :name="comment.userId.name"
         :userPageUrl="`/profile/${comment.userId._id}`"
         :subTitle="toLocaleDate(comment.createdAt)"
       />
-      <p class="mb-4 whitespace-pre">{{ comment.content }}</p>
+      <p class="whitespace-pre">{{ comment.content }}</p>
     </div>
   </div>
 </template>
