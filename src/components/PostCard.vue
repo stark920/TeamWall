@@ -135,7 +135,7 @@ const sortedComments = computed(() => {
       :userPageUrl="`/profile/${innerPost.userId?._id}`"
       :subTitle="$filters.dateTime(innerPost.createdAt)"
     />
-    <p class="mb-4 whitespace-pre">{{ innerPost.content }}</p>
+    <p class="mb-4 whitespace-pre-wrap">{{ innerPost.content }}</p>
     <PostImagesCardVue
       v-if="innerPost.image?.length > 0"
       :images="innerPost.image"
