@@ -26,7 +26,7 @@
             :src="item"
             class="object-center"
             :class="{
-              'max-h-96': newImages.length == 1,
+              'max-h-full': newImages.length == 1,
               'max-h-48':
                 newImages.length == 2 ||
                 newImages.length == 3 ||
