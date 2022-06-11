@@ -183,7 +183,7 @@ const sortedComments = computed(() => {
       </div>
     </div>
     <div
-      v-show="innerPost.commentsNum > 0 && !displayComments"
+      v-show="innerPost.commentsNum > 1 && !displayComments"
       class="mb-4 inline-flex cursor-pointer items-center font-bold text-primary hover:underline"
       @click="getComments(innerPost._id)"
     >
